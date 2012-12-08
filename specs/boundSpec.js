@@ -29,6 +29,21 @@ describe('render', function(){
     expect($node.attr('contents')).toEqual('name');
   });
 
+  it('adds a .bound() method to objects that have been rendered against', function(){
+    var user = {name: 'alice'};
+    $('<div></div>').boundRender(user);
+    expect(user.bound).toEqual(jasmine.any(Function));
+  });
+
+  it('updates the html property after calling the .bound() method on a rendered-against scope that has changed', function(){
+    var $node = $('<div contents="name"></div>');
+    var user = {name: 'alice'};
+    $node.boundRender(user);
+    user.name = 'al';
+    user.bound();
+    expect($node.html()).toEqual('al');
+  });
+
   it('can add html to a node', function(){
     var user = {name: 'alice'};
     var $node = $('<div contents="name"></div>');
