@@ -14,7 +14,7 @@ describe('render', function(){
     global.age = '30';
     var $node = $('<div contents="age"></div>');
     $node.bound({name: 'alice'});
-    expect($node.html()).toEqual('alice');
+    expect($node.html()).toEqual('30');
     delete global.age;
   });
 
@@ -23,12 +23,4 @@ describe('render', function(){
     $node.bound({name: 'alice'});
     expect($node.attr('contents')).toEqual('name');
   });
-
-  it('can add html to a node', function(){
-    var user = {name: 'alice'};
-    var $node = $('<div contents="name"></div>');
-    render($node, user);
-    expect($node.html()).toEqual('alice');
-  });
-
 });
