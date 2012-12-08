@@ -4,10 +4,18 @@ describe('render', function(){
   });
 
   it('can add html to a node', function(){
-    var user = {name: 'alice'};
     var $node = $('<div contents="name"></div>');
-    render($node, user);
+    $node.bound({name: 'alice'});
     expect($node.html()).toEqual('alice');
+  });
+
+  it('falls back onto the global scope for keys that are not found on the input', function(){
+    var global = (function(){ return this; }());
+    global.age = '30';
+    var $node = $('<div contents="age"></div>');
+    $node.bound({name: 'alice'});
+    expect($node.html()).toEqual('alice');
+    delete global.age;
   });
 
   it('does not remove a directive attribute after following it', function(){
@@ -15,4 +23,12 @@ describe('render', function(){
     $node.bound({name: 'alice'});
     expect($node.attr('contents')).toEqual('name');
   });
+
+  it('can add html to a node', function(){
+    var user = {name: 'alice'};
+    var $node = $('<div contents="name"></div>');
+    render($node, user);
+    expect($node.html()).toEqual('alice');
+  });
+
 });
