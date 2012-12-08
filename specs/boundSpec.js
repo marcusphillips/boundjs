@@ -1,4 +1,10 @@
 describe('render', function(){
+  var global = (function(){ return this; }());
+
+  it('adds a bound() function to the global scope', function(){
+    expect(global.bound).toEqual(jasmine.any(Function));
+  });
+
   it('adds a .bound() method to jQuery objects', function(){
     expect($('<div></div>').bound).toEqual(jasmine.any(Function));
   });
@@ -10,7 +16,6 @@ describe('render', function(){
   });
 
   it('falls back onto the global scope for keys that are not found on the input', function(){
-    var global = (function(){ return this; }());
     global.age = '30';
     var $node = $('<div contents="age"></div>');
     $node.bound({name: 'alice'});
