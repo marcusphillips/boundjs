@@ -1,10 +1,10 @@
 describe('proxies', function(){
-  it('should return the input object as a result of calling bound()', function(){
+  xit('should return the input object as a result of calling bound()', function(){
     var user = {name:'alice'};
     expect(bound(user)).toEqual(user);
   });
 
-  it('should augment objects passed into bound() with a .bound() method', function(){
+  xit('should augment objects passed into bound() with a .bound() method', function(){
     expect(bound({}).boundControl).toEqual(jasmine.any(Function));
   });
 
