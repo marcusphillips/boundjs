@@ -29,18 +29,18 @@ describe('render', function(){
     expect($node.attr('contents')).toEqual('name');
   });
 
-  it('adds a .proxy() method to objects that have been rendered against', function(){
+  it('adds a .boundControl() method to objects that have been rendered against', function(){
     var user = {name: 'alice'};
     $('<div></div>').boundRender(user);
-    expect(user.proxy).toEqual(jasmine.any(Function));
+    expect(user.boundControl).toEqual(jasmine.any(Function));
   });
 
-  it('updates the html property after calling the .proxy() method on a rendered-against scope that has changed', function(){
+  it('updates the html property after calling the .boundControl() method on a rendered-against scope that has changed', function(){
     var $node = $('<div contents="name"></div>');
     var user = {name: 'alice'};
     $node.boundRender(user);
     user.name = 'al';
-    user.proxy();
+    user.boundControl();
     expect($node.html()).toEqual('al');
   });
 
