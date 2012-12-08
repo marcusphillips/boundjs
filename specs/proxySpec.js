@@ -5,7 +5,7 @@ describe('proxies', function(){
   });
 
   it('should augment objects passed into bound() with a .bound() method', function(){
-    expect(bound({}).bound).toEqual(jasmine.any(Function));
+    expect(bound({}).boundControl).toEqual(jasmine.any(Function));
   });
 
 });
