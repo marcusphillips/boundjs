@@ -1,4 +1,5 @@
 (function(){
+  var global = this;
 
   $.fn.boundRender = function(context){
     render(this, context);
