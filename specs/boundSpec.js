@@ -5,7 +5,7 @@ describe('render', function(){
     expect(global.bound).toEqual(jasmine.any(Function));
   });
 
-  it('adds a .bound() method to jQuery objects', function(){
+  it('adds a .boundRender() method to jQuery objects', function(){
     expect($('<div></div>').bound).toEqual(jasmine.any(Function));
   });
 
