@@ -3,7 +3,7 @@
 
   var bound = function(){};
 
-  $.fn.bound = function(context){
+  $.fn.boundRender = function(context){
     render(this, context);
   };
 
