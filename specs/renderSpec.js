@@ -1,10 +1,6 @@
 describe('render', function(){
   var global = (function(){ return this; }());
 
-  it('adds a bound() function to the global scope', function(){
-    expect(global.bound).toEqual(jasmine.any(Function));
-  });
-
   it('adds a .boundRender() method to jQuery objects', function(){
     expect($('<div></div>').boundRender).toEqual(jasmine.any(Function));
   });
