@@ -19,7 +19,7 @@ describe('render', function(){
     global.age = '30';
     var $node = $('<div contents="age"></div>');
     $node.bound({name: 'alice'});
-    expect($node.html()).toEqual('alice');
+    expect($node.html()).toEqual('30');
     delete global.age;
   });
 
