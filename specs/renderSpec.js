@@ -21,14 +21,13 @@ describe('render', function(){
 
   it('does not add any text to the node if the directive attribute is not found on the input and in the global scope', function() {
     var $node = $('<div contents="age"></div>');
-    $node.boundRender({name: 'alice'});
+    $node.boundRender({food: 'sausage'});
     expect($node.html()).toEqual('');
   });
   
   it('thorws an error (TypeError) if no context is passed', function() {
       var $node = $('<div contents="age"></div>');
       expect(function(){$node.boundRender();}).toThrow();
-      // expect($node.html()).toEqual('');
     });
 
   it('does not remove a directive attribute after following it', function(){
