@@ -35,7 +35,7 @@ describe('render', function(){
     expect(user.boundControl).toEqual(jasmine.any(Function));
   });
 
-  xit('updates the html property after calling the .boundControl() method on a rendered-against scope that has changed', function(){
+  it('updates the html property by calling the .boundControl() method on a rendered-against scope that has changed', function(){
     var $node = $('<div contents="name"></div>');
     var user = {name: 'alice'};
     $node.boundRender(user);
