@@ -3,6 +3,7 @@
 
   $.fn.boundRender = function(context){
     render(this, context);
+    return this;
   };
 
   var render = function($node, context){
