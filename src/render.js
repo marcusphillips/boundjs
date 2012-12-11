@@ -2,33 +2,15 @@
   var global = this;
 
   $.fn.boundRender = function(context){
-    render(this, context);
+    bound.render(this, context);
     return this;
   };
 
-  var render = function($node, context){
-    var directive = $node.attr("contents");
-
-    var updateContents = function(){
-      $node.html(context[directive] ? context[directive] : global[directive]);
-    };
-
-    context.__dependents__ = context.__dependents__ || {};
-    context.__dependents__[directive] = context.__dependents__[directive] || [];
-    context.__dependents__[directive].push(updateContents);
-    updateContents();
-
-    context.boundControl = function() {
-      for(var i = 0; i < context.__dependents__[directive].length; i++) {
-          context.__dependents__[directive][i]();
-      }
-
-      // checkAllPropertiesForChange
-      // for each property that changed
-      //   iterate across its __dependents__
-      //     invalidate them
-    };
-
+  bound.render = function($node, context){
+    bound.autorun(function(){
+      var directive = $node.attr("contents");
+      $node.html(bound(context).ctrl('has', directive) ? context.ctrl('get', directive) : bound('global', 'get', directive));
+    });
   };
 
 }());
