@@ -58,6 +58,38 @@ describe('render', function(){
     expect($node.html()).toEqual('al');
   });
 
+  it('should update the html property of all nodes that it has been rendered against', function(){
+    jasmine.Clock.useMock();
+    var $node = $('<div contents="name"></div>');
+    var $node2 = $('<div contents="age"></div>');
+    var user = {name: 'alice', age: 30};
+    $node.boundRender(user);
+    $node2.boundRender(user);
+    user.name = 'al';
+    user.age = 24;
+    user.ctrl();
+    jasmine.Clock.tick(0);
+    expect($node.html()).toEqual('al');
+    expect($node2.html()).toEqual('24');
+  });
+
+  it('should only update the html property of nodes in the current context when ctrl() is called', function(){
+    jasmine.Clock.useMock();
+    var $node = $('<div contents="name"></div>');
+    var $node2 = $('<div contents="name"></div>');
+    var user = {name: 'alice'};
+    var user2 = {name: 'bob'};
+    $node.boundRender(user);
+    $node2.boundRender(user2);
+    user.name = 'al';
+    user2.name = 'robert';
+    user.ctrl();
+    jasmine.Clock.tick(0);
+    expect($node.html()).toEqual('al');
+    expect($node2.html()).toEqual('bob');
+  });
+
+
   xit('should update nodes nested within the top level node', function(){
   });
 
