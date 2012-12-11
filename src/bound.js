@@ -1,52 +1,60 @@
 (function(){
   var global = this;
 
-  var bound = function(target){
-    _.raiseIf(window.jQuery && target instanceof window.jQuery || target.nodeType === 1, 'bound() cannot yet proxy node-like objects');
-    if(typeof target === 'string'){
-      return libraryCommands[target].apply({}, _.toArray(arguments).slice(1));
-    }
-    _.defaults(target, {
-      ctrl: ctrlMethod,
-      _dependentContextSets: {}
-    });
-    return target;
-//    return new Proxy(target);
+  var bound = function(commandName) {
+    return commands[commandName].apply(this, _.toArray(arguments).slice(1));
   };
 
-  var ctrlMethod = function(commandName) {
-    var args = _.toArray(arguments).slice(1);
-    //todo: this probably never evicts invalidated contexts
-    if (arguments.length) {
-      return commands[commandName].apply(this, args);
-    } else {
-      _.invoke(getDependentContextSets(this), 'invalidateAll');
-    }
+  var Proxy = function(target){
+    this.target = target;
+    _.defaults(target, {
+      _dependentContextSets: {},
+      bound: bound
+    });
   };
 
   var commands = {
+
+    // when no command is passed at all
+    'undefined': function(){
+      //todo: this probably never evicts invalidated contexts
+      _.invoke(this._dependentContextSets, 'invalidateAll');
+      return this;
+    },
+
     has: function(key){
+      if(key === undefined || key === null){
+        return false;
+      }
+      _.raiseIf(typeof key !== 'string', 'string required');
       addKeyDependency(this, key);
       return key in this;
     },
     get: function(key){
+      if(key === undefined || key === null){
+        return false;
+      }
+      _.raiseIf(typeof key !== 'string', 'string required');
       addKeyDependency(this, key);
       return this[key];
     },
     set: function(key, value){
-      // todo: keep track of the current state to compare to future states
+      if(key === undefined || key === null){
+        return false;
+      }
+      _.raiseIf(typeof key !== 'string', 'string required');
+      // todo: keep track of the current state to compare to future states, here and in del
       this[key] = value;
       ensuredContextSet(this, key).invalidateAll();
     },
     del: function(key){
-      // todo: keep track of the current state to compare to future states
+      if(key === undefined || key === null){
+        return false;
+      }
+      _.raiseIf(typeof key !== 'string', 'string required');
       delete this[key];
       ensuredContextSet(this, key).invalidateAll();
     }
-  };
-
-  var getDependentContextSets = function(object){
-    return object === global ? globalDependentContextSets : object._dependentContextSets;
   };
 
   var addKeyDependency = function(object, key){
@@ -54,16 +62,14 @@
   };
 
   var ensuredContextSet = function(object, key){
-    var dependentContextSets = object === global ? globalDependentContextSets : object._dependentContextSets;
-    return (dependentContextSets[key] = dependentContextSets[key] || new bound._ContextSet());
-  };
-  var globalDependentContextSets = {};
-
-  var libraryCommands = {
-    global: function(commandName){
-      return commands[commandName].apply(global, _.toArray(arguments).slice(1));
-    }
+    return (object._dependentContextSets[key] = object._dependentContextSets[key] || new bound._ContextSet());
   };
 
-  global.bound = bound;
+  new Proxy(global);
+
+  global.bound.proxy = function(target){
+    _.raiseIf(window.jQuery && target instanceof window.jQuery || target.nodeType === 1, 'bound() cannot yet proxy node-like objects');
+    return new Proxy(target).target;
+  };
+
 }());

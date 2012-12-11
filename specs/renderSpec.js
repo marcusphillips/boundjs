@@ -5,7 +5,7 @@ describe('render', function(){
     expect($empty.render).toEqual(any(Function));
   });
 
-  it('returns the original jquery object from .render()', function(){
+  it('returns the original jquery object from jquery\'s .render()', function(){
     expect($empty.render({})).toEqual(any(jQuery));
   });
 
@@ -34,15 +34,15 @@ describe('render', function(){
     expect($name.render(alice).attr('contents')).toEqual('name');
   });
 
-  it('adds a .ctrl() method to objects that have been rendered against', function(){
+  it('adds a .bound() method to objects that have been rendered against', function(){
     var object = {};
     $empty.render(object);
-    expect(object.ctrl).toEqual(any(Function));
+    expect(object.bound).toEqual(any(Function));
   });
 
-  it('updates the html property by calling the .ctrl() method on a rendered-against scope that has changed', function(){
+  it('updates the html property by calling the .bound() method on a rendered-against scope that has changed', function(){
     $name.render(alice);
-    _.extend(alice, {name: 'al'}).ctrl();
+    _.extend(alice, {name: 'al'}).bound();
     jasmine.Clock.tick(0);
     expect($name.html()).toEqual('al');
   });
@@ -53,18 +53,18 @@ describe('render', function(){
     $age.render(alice);
     alice.name = 'al';
     alice.age = 24;
-    alice.ctrl();
+    alice.bound();
     jasmine.Clock.tick(0);
     expect($name.html()).toEqual('al');
     expect($age.html()).toEqual('24');
   });
 
-  it('should only update the html property of nodes in the current context when ctrl() is called', function(){
+  it('should only update the html property of nodes in the current context when bound() is called', function(){
     $name.render(alice);
     $name2.render(bob);
     alice.name = 'al';
     bob.name = 'robert';
-    alice.ctrl();
+    alice.bound();
     jasmine.Clock.tick(0);
     expect($name.html()).toEqual('al');
     expect($name2.html()).toEqual('bob');
@@ -94,7 +94,7 @@ describe('render', function(){
   xit('should update nodes nested within the top level node', function(){
   });
 
-  xit('should update only the values associated with keys passed in to .ctrl()', function(){
+  xit('should update only the values associated with keys passed in to .bound()', function(){
   });
 
   xit('if a value is found on an object found low in the scope chain, and the value of at that key is changed on a higher level of the chain, those changes do not result in a rerender of the node that depended on the leaf object', function(){
