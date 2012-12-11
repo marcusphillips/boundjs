@@ -11,6 +11,9 @@
   <script src="lib/jasmine-1.3.0/jasmine.js"></script>
   <script src="lib/jasmine-1.3.0/jasmine-html.js"></script>
 
+  <script src="testEnv/testEnv.js"></script>
+  <script src="testEnv/fixtures.js"></script>
+
   <!-- include source files here... -->
   <script src="src/bound.js"></script>
   <script src="src/deps.js"></script>
@@ -24,8 +27,11 @@
   <script src="specs/proxySpec.js"></script>
   <script src="specs/scopeChainSpec.js"></script>
 
-  <script type="text/javascript">
+  <script>
     (function() {
+      testEnv.integrateJasmine();
+      jasmine.Clock.useMock();
+
       var jasmineEnv = jasmine.getEnv();
       jasmineEnv.updateInterval = 1000;
 
@@ -56,5 +62,12 @@
 </head>
 
 <body>
+  <div id="fixtures" style="display:none;">
+
+    <div fixture="empty"></div>
+    <div fixture="name" contents="name"></div>
+    <div fixture="age" contents="age"></div>
+
+  </div>
 </body>
 </html>

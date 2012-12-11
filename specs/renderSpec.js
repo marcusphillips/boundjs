@@ -1,99 +1,79 @@
 describe('render', function(){
   var global = (function(){ return this; }());
 
-  it('adds a .boundRender() method to jQuery objects', function(){
-    expect($('<div/>').boundRender).toEqual(jasmine.any(Function));
+  it('adds a .render() method to jQuery objects', function(){
+    expect($empty.render).toEqual(any(Function));
   });
 
-  it('returns the original jquery object from .boundRender()', function(){
-    expect($('<div/>').boundRender({})).toEqual(jasmine.any(jQuery));
+  it('returns the original jquery object from .render()', function(){
+    expect($empty.render({})).toEqual(any(jQuery));
   });
 
   it('modifies the html of a rendered node that has the contains directive', function(){
-    expect($('<div contents="name"></div>').boundRender({name: 'alice'}).html()).toEqual('alice');
+    expect($name.render(alice).html()).toEqual('alice');
   });
 
   it('falls back onto the global scope for keys that are not found on the input', function(){
-    global.age = '30';
-    var $node = $('<div contents="age"></div>');
-    $node.boundRender({name: 'alice'});
-    expect($node.html()).toEqual('30');
-    delete global.age;
+    global.food = 'sausage';
+    expect($('<div contents="food"></div>').render(alice).html()).toEqual('sausage');
+    delete global.food;
   });
 
   xit('does not operate on nodes that have no directives', function(){
   });
 
   it('does not add any text to the node if the directive attribute is not found on the input and in the global scope', function() {
-    var $node = $('<div contents="age"></div>');
-    $node.boundRender({name: 'alice'});
-    expect($node.html()).toEqual('');
+    expect($('<div contents="unicorns"></div>').render(alice).html()).toEqual('');
   });
 
   it('throws an error (TypeError) if no context is passed', function() {
-    var $node = $('<div contents="age"></div>');
-    expect(function(){$node.boundRender();}).toThrow();
+    expect(function(){$empty.render();}).toThrow();
   });
 
   it('does not remove a directive attribute after following it', function(){
-    var $node = $('<div contents="name"></div>');
-    $node.boundRender({name: 'alice'});
-    expect($node.attr('contents')).toEqual('name');
+    expect($name.render(alice).attr('contents')).toEqual('name');
   });
 
   it('adds a .ctrl() method to objects that have been rendered against', function(){
-    var user = {name: 'alice'};
-    $('<div></div>').boundRender(user);
-    expect(user.ctrl).toEqual(jasmine.any(Function));
+    var object = {};
+    $empty.render(object);
+    expect(object.ctrl).toEqual(any(Function));
   });
 
   it('updates the html property by calling the .ctrl() method on a rendered-against scope that has changed', function(){
-    jasmine.Clock.useMock();
-    var $node = $('<div contents="name"></div>');
-    var user = {name: 'alice'};
-    $node.boundRender(user);
-    user.name = 'al';
-    user.ctrl();
+    $name.render(alice);
+    _.extend(alice, {name: 'al'}).ctrl();
     jasmine.Clock.tick(0);
-    expect($node.html()).toEqual('al');
+    expect($name.html()).toEqual('al');
   });
 
 
   it('should update the html property of all nodes that it has been rendered against', function(){
-    jasmine.Clock.useMock();
-    var $node = $('<div contents="name"></div>');
-    var $node2 = $('<div contents="age"></div>');
-    var user = {name: 'alice', age: 30};
-    $node.boundRender(user);
-    $node2.boundRender(user);
-    user.name = 'al';
-    user.age = 24;
-    user.ctrl();
+    $name.render(alice);
+    $age.render(alice);
+    alice.name = 'al';
+    alice.age = 24;
+    alice.ctrl();
     jasmine.Clock.tick(0);
-    expect($node.html()).toEqual('al');
-    expect($node2.html()).toEqual('24');
+    expect($name.html()).toEqual('al');
+    expect($age.html()).toEqual('24');
   });
 
   it('should only update the html property of nodes in the current context when ctrl() is called', function(){
-    jasmine.Clock.useMock();
-    var $node = $('<div contents="name"></div>');
-    var $node2 = $('<div contents="name"></div>');
-    var user = {name: 'alice'};
-    var user2 = {name: 'bob'};
-    $node.boundRender(user);
-    $node2.boundRender(user2);
-    user.name = 'al';
-    user2.name = 'robert';
-    user.ctrl();
+    $name.render(alice);
+    $name2.render(bob);
+    alice.name = 'al';
+    bob.name = 'robert';
+    alice.ctrl();
     jasmine.Clock.tick(0);
-    expect($node.html()).toEqual('al');
-    expect($node2.html()).toEqual('bob');
+    expect($name.html()).toEqual('al');
+    expect($name2.html()).toEqual('bob');
   });
 
   xit('should handle the bound-attr directive, by adding an attribute with the supplied attribute name and value', function(){
     var $node = $('<div attr-foo="name"></div>');
     var user = {name: 'alice'};
-    $node.boundRender(user);
+    $node.render(user);
     expect($node.attr('foo')).toEqual('alice');
   });
 
@@ -105,7 +85,7 @@ describe('render', function(){
       + '</div>'
     );
     var user = {name: 'alice', age: 30, city: 'SF'};
-    $node.boundRender(user);
+    $node.render(user);
     expect($node.attr('newattr')).toEqual('alice');
     expect($node.find('#b').attr('foo')).toEqual('30');
     expect($node.find('#c').attr('foo')).toEqual('SF');

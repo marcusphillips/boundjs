@@ -1,7 +1,7 @@
 (function(){
   var global = this;
 
-  $.fn.boundRender = function(scope){
+  $.fn.render = function(scope){
     bound.render(this, scope);
     return this;
   };

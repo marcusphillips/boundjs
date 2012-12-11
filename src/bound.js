@@ -2,7 +2,7 @@
   var global = this;
 
   var bound = function(target){
-    _.throwErrorIf(window.jQuery && target instanceof window.jQuery || target.nodeType === 1, 'bound() cannot yet proxy node-like objects');
+    _.raiseIf(window.jQuery && target instanceof window.jQuery || target.nodeType === 1, 'bound() cannot yet proxy node-like objects');
     if(typeof target === 'string'){
       return libraryCommands[target].apply({}, _.toArray(arguments).slice(1));
     }
