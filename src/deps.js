@@ -42,8 +42,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         // If this is first invalidation, schedule a flush.
         // We may be inside a flush already, in which case this
         // is unnecessary but harmless.
-        if (!pending_invalidate.length)
-          setTimeout(bound.flush, 0);
+        pending_invalidate.length || setTimeout(bound.flush, 0);
         pending_invalidate.push(this);
       }
     },
@@ -51,10 +50,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     // calls f immediately if this context was already
     // invalidated. receives one argument, the context.
     onInvalidate: function (f) {
-      if (this._invalidated)
-        f(this);
-      else
-        this._callbacks.push(f);
+      this._invalidated ? f(this) : this._callbacks.push(f);
     }
   });
 
@@ -121,9 +117,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   _ContextSet.prototype.addCurrentContext = function () {
     var self = this;
     var context = bound.Context.current;
-    if (! context)
-      return false;
-    return self.add(context);
+    return context ? self.add(context) : false;
   };
 
   // Invalidate all Contexts in this set.  They will be removed
