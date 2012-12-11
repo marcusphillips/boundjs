@@ -9,4 +9,17 @@ describe('proxies', function(){
     expect(bound({}).boundControl).toEqual(jasmine.any(Function));
   });
 
+  xit('should let you invalidate listeners for one key by exposing a ctrl() command "changed"', function(){
+    var user = bound.proxy({name: 'alice'});
+    var runCount = 0;
+    bound.autorun(function() {
+      user.ctrl('get', 'name');
+      runCount++;
+    });
+    expect(runCount).toEqual(1);
+    user.name = 'al';
+    user.ctrl('changed', 'name');
+    expect(runCount).toEqual(2);
+  });
+
 });
