@@ -53,4 +53,6 @@
     global.any = jasmine.any;
   };
 
+  // todo: wipe out all new global variables once per test
+
 }());
