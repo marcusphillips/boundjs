@@ -58,6 +58,7 @@ describe('render', function(){
     expect($node.html()).toEqual('al');
   });
 
+
   it('should update the html property of all nodes that it has been rendered against', function(){
     jasmine.Clock.useMock();
     var $node = $('<div contents="name"></div>');
@@ -89,6 +90,26 @@ describe('render', function(){
     expect($node2.html()).toEqual('bob');
   });
 
+  xit('should handle the bound-attr directive, by adding an attribute with the supplied attribute name and value', function(){
+    var $node = $('<div attr-foo="name"></div>');
+    var user = {name: 'alice'};
+    $node.boundRender(user);
+    expect($node.attr('foo')).toEqual('alice');
+  });
+
+  xit('should add attributes when the bound-attr directive is present', function(){
+    var $node = $(
+      '<div id="a" attr-foo="name" foo="alice">'
+        + '<div id="b" attr-foo="age"></div>'
+        + '<div id="c" attr-foo="city"></div>'
+      + '</div>'
+    );
+    var user = {name: 'alice', age: 30, city: 'SF'};
+    $node.boundRender(user);
+    expect($node.attr('newattr')).toEqual('alice');
+    expect($node.find('#b').attr('foo')).toEqual('30');
+    expect($node.find('#c').attr('foo')).toEqual('SF');
+  });
 
   xit('should update nodes nested within the top level node', function(){
   });
