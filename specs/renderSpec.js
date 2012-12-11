@@ -59,15 +59,15 @@ describe('render', function(){
   });
 
   xit('should handle the bound-attr directive, by adding an attribute with the supplied attribute name and value', function(){
-    var $node = $('<div bound-attr="\'newattr\' name" newattr="alice"></div>');
+    var $node = $('<div attr-foo="name"></div>');
     var user = {name: 'alice'};
     $node.boundRender(user);
-    expect($node.attr('newattr')).toEqual('alice');
+    expect($node.attr('foo')).toEqual('alice');
   });
 
   xit('should add attributes when the bound-attr directive is present', function(){
     var $node = $(
-      '<div id="a" attr-foo="name">'
+      '<div id="a" attr-foo="name" foo="alice">'
         + '<div id="b" attr-foo="age"></div>'
         + '<div id="c" attr-foo="city"></div>'
       + '</div>'
