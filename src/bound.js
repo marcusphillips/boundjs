@@ -1,7 +1,8 @@
 (function(){
+
   var global = this;
 
-  var bound = function(commandName) {
+  var boundHelper = function(commandName) {
     return commands[commandName].apply(this, _.toArray(arguments).slice(1));
   };
 
@@ -9,7 +10,7 @@
     this.target = target;
     _.defaults(target, {
       _dependentContextSets: {},
-      bound: bound
+      bound: boundHelper
     });
   };
 
@@ -62,12 +63,10 @@
   };
 
   var ensuredContextSet = function(object, key){
-    return (object._dependentContextSets[key] = object._dependentContextSets[key] || new bound._ContextSet());
+    return (object._dependentContextSets[key] = object._dependentContextSets[key] || new boundHelper._ContextSet());
   };
 
-  new Proxy(global);
-
-  global.bound.proxy = function(target){
+  new Proxy(global).target.bound.proxy = function(target){
     _.raiseIf(window.jQuery && target instanceof window.jQuery || target.nodeType === 1, 'bound() cannot yet proxy node-like objects');
     return new Proxy(target).target;
   };
