@@ -1,5 +1,5 @@
 (function(){
-  _.throwErrorIf = function(condition, text){
+  _.raiseIf = function(condition, text){
     if(condition){
       throw new Error(text);
     }

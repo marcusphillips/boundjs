@@ -1,12 +1,16 @@
 (function(){
   var global = this;
 
-  $.fn.boundRender = function(context){
-    bound.render(this, context);
+  $.fn.render = function(scope){
+    bound.render(this, scope);
     return this;
   };
 
-  bound.render = function($node, context){
+  bound.render = function($node, scope){
+    bound.autorun(function(){
+      var directive = $node.attr("contents");
+      $node.html(bound.proxy(scope).bound('has', directive) ? scope.bound('get', directive) : bound('get', directive));
+    });
   };
 
 }());
