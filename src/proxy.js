@@ -34,7 +34,7 @@ myObject.bound('del', 'foo').bound({bar:'baz'}).bound('prop', 'foo');
 
 */
 
-/*
+
 (function(){
   var Proxy = function(object){
     throwErrorIf(object instanceof Proxy, 'cannot proxy a proxy');
@@ -60,7 +60,7 @@ myObject.bound('del', 'foo').bound({bar:'baz'}).bound('prop', 'foo');
         typeof command === 'object' ? proxy.set.apply(proxy, arguments) :
         proxy[command || 'pub'].apply(proxy, slice(arguments, 1))
       );
-      // to facilitate chaining, always return the object object unless a special return value was provided by the method
+      // to facilitate chaining, always return the object unless a special return value was provided by the method
       return command === 'proxy' || result !== proxy ? result : object;
     };
     // hide a flag on the prototype object, since it is unenumerable and is unlikely to be copied accidentally
@@ -69,8 +69,6 @@ myObject.bound('del', 'foo').bound({bar:'baz'}).bound('prop', 'foo');
     var proxy = extend(this, {
       key: unique(object.nodeType === 1 ? 'boundNode' : 'boundObject'),
       object: object,
-      observers: {},
-      observersByProperty: {}
     });
 
     for(var i=0; i<bound.extensions.length; i++){
@@ -93,4 +91,4 @@ myObject.bound('del', 'foo').bound({bar:'baz'}).bound('prop', 'foo');
   });
 
 }());
-*/
+
