@@ -20,10 +20,12 @@ describe('proxies', function(){
     expect(bound.proxy(object).bound).toEqual(bound.proxy(object).bound);
   });
 
-  xit('should not provide the same bound method for a child as the one available on its prototype', function(){
+  it('should not provide the same bound method for a child as the one available on its prototype', function(){
     var parent = bound.proxy({});
     var child = _.create(parent);
-    expect(bound.proxy(child).bound).not.toEqual(parent.bound);
+    var childMethod = bound.proxy(child).bound;
+    var parentMethod = parent.bound;
+    expect(childMethod).not.toEqual(parentMethod);
   });
 
   it('should throw an error if a non bound method is already stored at the key "bound" and bound.proxy() is called on it', function(){

@@ -4,13 +4,13 @@
 
   var boundMethodFlag = {};
   var Proxy = function(target){
-    if('bound' in target && target.bound.prototype === boundMethodFlag){
-      return target.bound('proxy');
+    if(target.hasOwnProperty('bound')){
+      // TODO: bound property of null 
+      return target.bound.prototype === boundMethodFlag ? target.bound('proxy') : _.raise("'bound' key already on object");
     }
     this.target = target;
     var proxy = this;
-    _.raiseIf('bound' in target && target.bound.prototype !== boundMethodFlag, "value already found at key 'bound' on this object.");
-    _.defaults(target, {
+    _.extend(target, {
       _dependentContextSets: {},
       bound: function(commandName) {
         return commandName === 'proxy' ? proxy : commands[commandName].apply(this, _.toArray(arguments).slice(1));
