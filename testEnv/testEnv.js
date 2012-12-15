@@ -1,4 +1,5 @@
 (function(){
+
   var global = this;
 
   var testEnv = global.testEnv = global.testEnv || {};
@@ -51,6 +52,7 @@
     beforeEach(testEnv.beforeAll);
     afterEach(testEnv.afterAll);
     global.any = jasmine.any;
+    global.global = global;
   };
 
   // todo: wipe out all new global variables once per test
