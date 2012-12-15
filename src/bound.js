@@ -2,16 +2,16 @@
 
   var global = this;
 
-  var boundHelper = function(commandName) {
-    return commands[commandName].apply(this, _.toArray(arguments).slice(1));
-  };
-
   var Proxy = function(target){
     this.target = target;
+    _.raiseIf('bound' in target && !target.bound.prototype.IAMATHING, "value already found at key 'bound' on this object.");
     _.defaults(target, {
       _dependentContextSets: {},
-      bound: boundHelper
+      bound: function(commandName) {
+        return commands[commandName].apply(this, _.toArray(arguments).slice(1));
+      }
     });
+    target.bound.prototype.IAMATHING = true;
   };
 
   var commands = {
@@ -63,7 +63,7 @@
   };
 
   var ensuredContextSet = function(object, key){
-    return (object._dependentContextSets[key] = object._dependentContextSets[key] || new boundHelper._ContextSet());
+    return (object._dependentContextSets[key] = object._dependentContextSets[key] || new bound._ContextSet());
   };
 
   new Proxy(global).target.bound.proxy = function(target){

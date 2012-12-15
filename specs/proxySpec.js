@@ -1,23 +1,42 @@
 describe('proxies', function(){
-  xit('should return the input object as a result of calling bound()', function(){
+  it('should return the input object as a result of calling bound()', function(){
     expect(bound.proxy(alice)).toEqual(alice);
   });
 
-  xit('should augment objects passed into bound.proxy() with a .bound() method', function(){
+  it('should augment objects passed into bound.proxy() with a .bound() method', function(){
     expect(bound.proxy({}).bound).toEqual(any(Function));
   });
 
-  xit('should put a unique method object on each object passed in', function(){
-    expect(bound.proxy({}).bound).notToEqual(bound.proxy({}).bound);
+  it('should put a unique method object on each object passed in', function(){
+    var empty1 = {};
+    var empty2 = {};
+    bound.proxy(empty1);
+    bound.proxy(empty2);
+    expect(empty1.bound).not.toBe(empty2.bound);
   });
 
-  xit('should provide the same method if the same object is passed in twice', function(){
+  it('should provide the same method if the same object is passed in twice', function(){
     var object = {};
     expect(bound.proxy(object).bound).toEqual(bound.proxy(object).bound);
   });
 
-  xit('should throw an error if a non bound method is already stored at the key "bound" and bound is called on it', function(){
-    expect(function(){ bound.proxy({bound:3}); }).toThrow();
+  xit('should not provide the same bound method for a child as the one available on its prototype', function(){
+    var parent = bound.proxy({});
+    var child = Object.create(parent);
+    expect(bound.proxy(child).bound).not.toEqual(parent.bound);
+  });
+
+  it('should throw an error if a non bound method is already stored at the key "bound" and bound.proxy() is called on it', function(){
+    expect(function(){
+      bound.proxy({bound:3});
+    }).toThrow();
+  });
+
+  xit('should not throw an error if a bound method is already stored at the key "bound" and bound is called on it', function(){
+    expect(function(){
+      var proxied = bound.proxy({});
+      bound.proxy(proxied);
+    }).not.toThrow();
   });
 
   xit('should throw an error if you try to proxy a proxy', function(){
