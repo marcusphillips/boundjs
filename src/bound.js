@@ -2,16 +2,21 @@
 
   var global = this;
 
+  var boundMethodFlag = {};
   var Proxy = function(target){
+    if('bound' in target && target.bound.prototype === boundMethodFlag){
+      return target.bound('proxy');
+    }
     this.target = target;
-    _.raiseIf('bound' in target && !target.bound.prototype.IAMATHING, "value already found at key 'bound' on this object.");
+    var proxy = this;
+    _.raiseIf('bound' in target && target.bound.prototype !== boundMethodFlag, "value already found at key 'bound' on this object.");
     _.defaults(target, {
       _dependentContextSets: {},
       bound: function(commandName) {
-        return commands[commandName].apply(this, _.toArray(arguments).slice(1));
+        return commandName === 'proxy' ? proxy : commands[commandName].apply(this, _.toArray(arguments).slice(1));
       }
     });
-    target.bound.prototype.IAMATHING = true;
+    target.bound.prototype = boundMethodFlag;
   };
 
   var commands = {

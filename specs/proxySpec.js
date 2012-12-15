@@ -22,7 +22,7 @@ describe('proxies', function(){
 
   xit('should not provide the same bound method for a child as the one available on its prototype', function(){
     var parent = bound.proxy({});
-    var child = Object.create(parent);
+    var child = _.create(parent);
     expect(bound.proxy(child).bound).not.toEqual(parent.bound);
   });
 
