@@ -2,16 +2,21 @@
 
   var global = this;
 
-  var boundHelper = function(commandName) {
-    return commands[commandName].apply(this, _.toArray(arguments).slice(1));
-  };
-
+  var boundMethodFlag = {};
   var Proxy = function(target){
+    if(target.hasOwnProperty('bound')){
+      // TODO: bound property of null 
+      return target.bound.prototype === boundMethodFlag ? target.bound('proxy') : _.raise("'bound' key already on object");
+    }
     this.target = target;
-    _.defaults(target, {
+    var proxy = this;
+    _.extend(target, {
       _dependentContextSets: {},
-      bound: boundHelper
+      bound: function(commandName) {
+        return commandName === 'proxy' ? proxy : commands[commandName].apply(this, _.toArray(arguments).slice(1));
+      }
     });
+    target.bound.prototype = boundMethodFlag;
   };
 
   var commands = {
@@ -63,7 +68,7 @@
   };
 
   var ensuredContextSet = function(object, key){
-    return (object._dependentContextSets[key] = object._dependentContextSets[key] || new boundHelper._ContextSet());
+    return (object._dependentContextSets[key] = object._dependentContextSets[key] || new bound._ContextSet());
   };
 
   new Proxy(global).target.bound.proxy = function(target){
