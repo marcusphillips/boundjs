@@ -1,6 +1,6 @@
 describe('scope chains', function(){
 
-  xit('should provide a scope chain maker function', function(){
+  it('should provide a scope chain maker function', function(){
     expect(bound.topScopeChain).toEqual(jasmine.any(Object));
     expect(bound.topScopeChain.extend).toEqual(jasmine.any(Function));
   });

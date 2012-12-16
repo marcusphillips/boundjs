@@ -52,6 +52,12 @@
     beforeEach(testEnv.beforeAll);
     afterEach(testEnv.afterAll);
     global.any = jasmine.any;
+    global.makeSpied = function(func){
+      func = func || function(){};
+      var container = {func: func};
+      spyOn(container, 'func');
+      return container.func;
+    };
     global.global = global;
   };
 
