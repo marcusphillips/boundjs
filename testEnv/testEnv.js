@@ -1,4 +1,5 @@
 (function(){
+
   var global = this;
 
   var testEnv = global.testEnv = global.testEnv || {};
@@ -57,6 +58,7 @@
       spyOn(container, 'func');
       return container.func;
     };
+    global.global = global;
   };
 
   // todo: wipe out all new global variables once per test
