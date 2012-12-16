@@ -5,11 +5,7 @@ describe('scope chains', function(){
     expect(bound.topScopeChain.extend).toEqual(jasmine.any(Function));
   });
 
-<<<<<<< HEAD
-  it('should allow look ups in the global scope from the top level scope chain', function(){
-=======
   xit('should allow lookups in the global scope from the top level scope chain', function(){
->>>>>>> c5ec51ec262c8b469dbb5dadea6861c236b77c1b
     global.present = 3;
     expect(bound.topScopeChain.get('present')).toEqual(3);
     expect(bound.topScopeChain.get('absent')).toEqual(undefined);
