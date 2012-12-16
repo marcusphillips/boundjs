@@ -11,17 +11,17 @@ describe('scope chains', function(){
     delete global.present;
   });
 
-  xit('should preserve object identity when looking up variables', function(){
+  it('should preserve object identity when looking up variables', function(){
     global.object = {};
     expect(bound.topScopeChain.get('object')).toBe(object);
     delete global.object;
   });
 
-  xit('should fail for lookups in the top level scope chain for keys that are not in the global scope', function(){
+  it('should fail for lookups in the top level scope chain for keys that are not in the global scope', function(){
     expect(bound.topScopeChain.get('absent')).toEqual(undefined);
   });
 
-  xit('should allow lookups of number literal', function(){
+  it('should allow lookups of number literal', function(){
     expect(bound.topScopeChain.get("3")).toEqual(3);
   });
 
