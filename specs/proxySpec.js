@@ -51,6 +51,10 @@ describe('proxies', function(){
     expect(function(){ bound.proxy({}).bound.apply({}); }).toThrow();
   });
 
+  xit('should not add any properties to a object other than .bound()', function(){
+    expect(_.keys(bound.proxy({}))).toEqual(['bound']);
+  });
+
   xit('should allow access to a proxy object by calling the "proxy" command', function(){
     var object = bound.proxy(object);
     var proxy = object.bound('proxy');
