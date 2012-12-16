@@ -9,7 +9,7 @@ describe('render', function(){
     expect($empty.render({})).toEqual(any(jQuery));
   });
 
-  it('modifies the html of a rendered node that has the contains directive', function(){
+  it('modifies the html of a rendered node that has the contents directive', function(){
     expect($name.render(alice).html()).toEqual('alice');
   });
 
@@ -71,23 +71,23 @@ describe('render', function(){
   });
 
   describe('directives', function(){
-    xit('should handle the bound-attr directive, by adding an attribute with the supplied attribute name and value', function(){
+    it('should handle the bound-attr directive, by adding an attribute with the supplied attribute name and value', function(){
       var $node = $('<div attr-foo="name"></div>');
-      expect($node.render(alice).attr('foo')).toEqual('alice');
+      $node.render(alice);
+      expect($node.attr('foo')).toEqual('alice');
     });
   });
 
   xit('should add attributes when the bound-attr directive is present', function(){
     var $node = $(
-      '<div id="a" attr-foo="name" foo="alice">'
+      '<div id="a" attr-foo="name">'
         + '<div id="b" attr-foo="age"></div>'
         + '<div id="c" attr-foo="username"></div>'
       + '</div>'
     );
-    var user = {name: 'alice', age: 30, city: 'SF'};
-    $node.render(user);
-    expect($node.attr('newattr')).toEqual('alice');
-    expect($node.find('#b').attr('foo')).toEqual('30');
+    $node.render(alice);
+    expect($node.attr('foo')).toEqual('alice');
+    expect($node.find('#b').attr('foo')).toEqual('20');
     expect($node.find('#c').attr('foo')).toEqual('alice00');
   });
 
