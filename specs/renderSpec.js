@@ -117,4 +117,7 @@ describe('render', function(){
   xit('if a value is found on an object found low in the scope chain, and the value of at that key is changed on a higher level of the chain, those changes do not result in a rerender of the node that depended on the leaf object', function(){
   });
 
+  xit('should add the approrpriate class when the bound-classes directive is present', function(){
+  });
+
 });
