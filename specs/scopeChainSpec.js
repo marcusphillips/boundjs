@@ -25,7 +25,7 @@ describe('scope chains', function(){
     expect(bound.topScopeChain.get("3")).toEqual(3);
   });
 
-  xit('should allow lookups for string literals in double qoutes', function(){
+  it('should allow lookups for string literals in double qoutes', function(){
     expect(bound.topScopeChain.get('"in doubles"')).toEqual('in doubles');
   });
 
