@@ -3,12 +3,16 @@
 
   $.fn.render = function(scope){
     // todo: should be able to render multiple dom nodes contained in this jquery object
-    var that = this;
+    var $that = this;
     bound.autorun(function(){
       directiveRenderCount++;
       // todo: all directive computations will share a context
       _.each(directiveProcessors, function(processor){
-        processor(that, scope);
+        processor($that, scope);
+      });
+      $children = $that.children();
+      _.each($children, function(child){
+        $(child).render(scope);
       });
     });
     return this;
@@ -25,9 +29,13 @@
 
   var directiveProcessors = {
     contents: function($node, scope) {
+      // todo: write a test that calling render on a scope adds .bound() to that scope
       // todo: what if there is no contents attribute?
       var directive = $node.attr("contents");
-      $node.html(bound.proxy(scope).bound('has', directive) ? scope.bound('get', directive) : bound('get', directive));
+      if(directive){
+        $node.html(bound.proxy(scope).bound('has', directive) ? scope.bound('get', directive) : bound('get', directive));
+      }
+      
     },
     attr: function($node, scope) {
       _.each($node[0].attributes, function(attribute){

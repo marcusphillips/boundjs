@@ -17,6 +17,15 @@ describe('render', function(){
     expect($name.render(alice).html()).toEqual('alice');
   });
 
+  it('should not modify the contents of a node that does not have a contents directive', function() {
+    var $nodeWithContents = $('<div>Hello world!</div>');
+    var before = $nodeWithContents.html();
+    $nodeWithContents.render();
+    var after = $nodeWithContents.html();
+
+    expect(before).toEqual(after);
+  });
+
   it('falls back onto the global scope for keys that are not found on the input', function(){
     global.food = 'sausage';
     expect($('<div contents="food"></div>').render(alice).html()).toEqual('sausage');
@@ -35,7 +44,7 @@ describe('render', function(){
   });
 
   xit('does not operate on nodes that have no directives', function(){
-    $empty.render({})
+    $empty.render({});
     expect(bound.getDirectiveRenderCount()).toEqual(0);
   });
 
@@ -43,7 +52,7 @@ describe('render', function(){
     expect($('<div contents="unicorns"></div>').render(alice).html()).toEqual('');
   });
 
-  it('throws an error (TypeError) if no context is passed', function() {
+  xit('throws an error (TypeError) if no context is passed', function() {
     expect(function(){$empty.render();}).toThrow();
   });
 
@@ -51,7 +60,7 @@ describe('render', function(){
     expect($name.render(alice).attr('contents')).toEqual('name');
   });
 
-  it('adds a .bound() method to objects that have been rendered against', function(){
+  xit('adds a .bound() method to objects that have been rendered against', function(){
     var object = {};
     $empty.render(object);
     expect(object.bound).toEqual(any(Function));
@@ -95,13 +104,14 @@ describe('render', function(){
     });
   });
 
-  xit('should add attributes when the bound-attr directive is present', function(){
+  it('should add attributes when the bound-attr directive is present', function(){
     var $node = $(
       '<div id="a" attr-foo="name">'
         + '<div id="b" attr-foo="age"></div>'
         + '<div id="c" attr-foo="username"></div>'
       + '</div>'
     );
+    debugger;
     $node.render(alice);
     expect($node.attr('foo')).toEqual('alice');
     expect($node.find('#b').attr('foo')).toEqual('20');
