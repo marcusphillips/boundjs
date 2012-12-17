@@ -13,46 +13,52 @@
     _.extend(target, {
       _dependentContextSets: {},
       bound: function(commandName) {
-        return commandName === 'proxy' ? proxy : commands[commandName].apply(this, _.toArray(arguments).slice(1));
+        return proxy[commandName].apply(proxy, _.toArray(arguments).slice(1));
       }
     });
     target.bound.prototype = boundMethodFlag;
   };
 
-  var commands = {
+  Proxy.prototype = {
+    constructor: Proxy,
+
+    proxy: function(){
+      return this;
+    },
 
     // when no command is passed at all
     'undefined': function(){
       //todo: this probably never deletes context sets stored at keys that are entirely cleared from contexts
-      _.invoke(this._dependentContextSets, 'invalidateAll');
+      _.invoke(this.target._dependentContextSets, 'invalidateAll');
       return this;
     },
 
     has: function(key){
-      addKeyDependency(this, key);
-      return key in this;
+      this._addKeyDependency(key);
+      return key in this.target;
     },
     get: function(key){
-      addKeyDependency(this, key);
-      return this[key];
+      this._addKeyDependency(key);
+      return this.target[key];
     },
     set: function(key, value){
       // todo: keep track of the current state to compare to future states, here and in del
-      this[key] = value;
-      ensuredContextSet(this, key).invalidateAll();
+      this.target[key] = value;
+      this._ensuredContextSet(key).invalidateAll();
     },
     del: function(key){
-      delete this[key];
-      ensuredContextSet(this, key).invalidateAll();
+      delete this.target[key];
+      this._ensuredContextSet(key).invalidateAll();
+    },
+
+    _addKeyDependency: function(key){
+      this._ensuredContextSet(key).addCurrentContext();
+    },
+
+    _ensuredContextSet: function(key){
+      return (this.target._dependentContextSets[key] = this.target._dependentContextSets[key] || new bound._ContextSet());
     }
-  };
 
-  var addKeyDependency = function(object, key){
-    ensuredContextSet(object, key).addCurrentContext();
-  };
-
-  var ensuredContextSet = function(object, key){
-    return (object._dependentContextSets[key] = object._dependentContextSets[key] || new bound._ContextSet());
   };
 
   new Proxy(global).target.bound.proxy = function(target){
