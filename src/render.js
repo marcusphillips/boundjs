@@ -2,7 +2,15 @@
   var global = this;
 
   $.fn.render = function(scope){
-    bound.render(this, scope);
+    // todo: should be able to render multiple dom nodes contained in this jquery object
+    var that = this;
+    bound.autorun(function(){
+      directiveRenderCount++;
+      // todo: all directive computations will share a context
+      _.each(directiveProcessors, function(processor){
+        processor(that, scope);
+      });
+    });
     return this;
   };
 
@@ -13,15 +21,6 @@
 
   bound.getDirectiveRenderCount = function(){
     return directiveRenderCount;
-  };
-
-  bound.render = function($node, scope){
-    bound.autorun(function(){
-      directiveRenderCount++;
-      _.each(directiveProcessors, function(processor){
-        processor($node, scope);
-      });
-    });
   };
 
   var directiveProcessors = {
@@ -37,7 +36,6 @@
         }
       });
     }
->>>>>>> development
   };
 
 }());

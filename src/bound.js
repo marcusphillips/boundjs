@@ -5,7 +5,7 @@
   var boundMethodFlag = {};
   var Proxy = function(target){
     if(target.hasOwnProperty('bound')){
-      // TODO: bound property of null 
+      // TODO: bound property of null
       return target.bound.prototype === boundMethodFlag ? target.bound('proxy') : _.raise("'bound' key already on object");
     }
     this.target = target;
@@ -23,7 +23,7 @@
 
     // when no command is passed at all
     'undefined': function(){
-      //todo: this probably never evicts invalidated contexts
+      //todo: this probably never deletes context sets stored at keys that are entirely cleared from contexts
       _.invoke(this._dependentContextSets, 'invalidateAll');
       return this;
     },
