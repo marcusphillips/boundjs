@@ -34,7 +34,7 @@ describe('proxies', function(){
     }).toThrow();
   });
 
-  xit('should not throw an error if a bound method is already stored at the key "bound" and bound is called on it', function(){
+  it('should not throw an error if a bound method is already stored at the key "bound" and bound is called on it', function(){
     expect(function(){
       var proxied = bound.proxy({});
       bound.proxy(proxied);
