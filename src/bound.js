@@ -4,8 +4,9 @@
 
   var boundMethodFlag = {};
   var Proxy = function(target){
+    _.raiseIf(target.hasOwnProperty('target'), "can't bind a proxy to another proxy");
     if(target.hasOwnProperty('bound')){
-      // TODO: bound property of null 
+      // TODO: bound property of null
       return target.bound.prototype === boundMethodFlag ? target.bound('proxy') : _.raise("'bound' key already on object");
     }
     this.target = target;
