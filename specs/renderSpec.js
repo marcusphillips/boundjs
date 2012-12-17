@@ -118,10 +118,11 @@ describe('render', function(){
     var $node = $('<div bound-classes="readState"></div>');
     var message = {readState: 'unread'};
     $node.render(message);
-    expect($node.hasClass('unread')).toBe(true);
-    message.readState = 'unread';
+    expect($node.hasClass('unread')).toBe(false);
+    message.readState = 'read';
     message.bound();
     expect($node.hasClass('unread')).toBe(false);
+    expect($node.hasClass('read')).toBe(true);
   });
 
 });
