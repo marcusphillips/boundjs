@@ -20,7 +20,7 @@ describe('render', function(){
   it('should not modify the contents of a node that does not have a contents directive', function() {
     var $nodeWithContents = $('<div>Hello world!</div>');
     var before = $nodeWithContents.html();
-    $nodeWithContents.render();
+    $nodeWithContents.render(alice);
     var after = $nodeWithContents.html();
 
     expect(before).toEqual(after);
@@ -52,7 +52,7 @@ describe('render', function(){
     expect($('<div contents="unicorns"></div>').render(alice).html()).toEqual('');
   });
 
-  xit('throws an error (TypeError) if no context is passed', function() {
+  it('throws an error (TypeError) if no context is passed', function() {
     expect(function(){$empty.render();}).toThrow();
   });
 
@@ -60,7 +60,7 @@ describe('render', function(){
     expect($name.render(alice).attr('contents')).toEqual('name');
   });
 
-  xit('adds a .bound() method to objects that have been rendered against', function(){
+  it('adds a .bound() method to objects that have been rendered against', function(){
     var object = {};
     $empty.render(object);
     expect(object.bound).toEqual(any(Function));

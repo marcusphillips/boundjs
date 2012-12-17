@@ -2,7 +2,8 @@
   var global = this;
 
   $.fn.render = function(scope){
-    // todo: should be able to render multiple dom nodes contained in this jquery object
+    if(!arguments.length){ throw new Error('render requires a scope'); }
+    bound.proxy(scope);
     var $that = this;
     bound.autorun(function(){
       directiveRenderCount++;
@@ -29,13 +30,11 @@
 
   var directiveProcessors = {
     contents: function($node, scope) {
-      // todo: write a test that calling render on a scope adds .bound() to that scope
-      // todo: what if there is no contents attribute?
       var directive = $node.attr("contents");
       if(directive){
         $node.html(bound.proxy(scope).bound('has', directive) ? scope.bound('get', directive) : bound('get', directive));
       }
-      
+
     },
     attr: function($node, scope) {
       _.each($node[0].attributes, function(attribute){
