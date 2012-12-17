@@ -1,6 +1,10 @@
 describe('render', function(){
   var global = (function(){ return this; }());
 
+  beforeEach(function(){
+    bound.resetDirectiveRenderCount();
+  });
+
   it('adds a .render() method to jQuery objects', function(){
     expect($empty.render).toEqual(any(Function));
   });
@@ -9,7 +13,7 @@ describe('render', function(){
     expect($empty.render({})).toEqual(any(jQuery));
   });
 
-  it('modifies the html of a rendered node that has the contains directive', function(){
+  it('modifies the html of a rendered node that has the contents directive', function(){
     expect($name.render(alice).html()).toEqual('alice');
   });
 
@@ -19,7 +23,20 @@ describe('render', function(){
     delete global.food;
   });
 
+  it('counts the number of directives processed', function(){
+    global.drink = 'coffee';
+    expect(bound.getDirectiveRenderCount()).toEqual(0);     // check that count is at zero
+    $('<div contents="food"></div>').render(alice);         // render something with one directive
+    expect(bound.getDirectiveRenderCount()).toEqual(1);     // check that count is at 1
+    // $('<div contents="food" contents="coffee"></div>').render(alice)  // render something with 2 directives
+    // expect(bound.getDirectiveRenderCount()).toEqual(3);               // check that count is at 3
+    bound.resetDirectiveRenderCount();                      // reset counter
+    expect(bound.getDirectiveRenderCount()).toEqual(0);     // check that count is at 0
+  });
+
   xit('does not operate on nodes that have no directives', function(){
+    $empty.render({})
+    expect(bound.getDirectiveRenderCount()).toEqual(0);
   });
 
   it('does not add any text to the node if the directive attribute is not found on the input and in the global scope', function() {
@@ -71,23 +88,23 @@ describe('render', function(){
   });
 
   describe('directives', function(){
-    xit('should handle the bound-attr directive, by adding an attribute with the supplied attribute name and value', function(){
+    it('should handle the bound-attr directive, by adding an attribute with the supplied attribute name and value', function(){
       var $node = $('<div attr-foo="name"></div>');
-      expect($node.render(alice).attr('foo')).toEqual('alice');
+      $node.render(alice);
+      expect($node.attr('foo')).toEqual('alice');
     });
   });
 
   xit('should add attributes when the bound-attr directive is present', function(){
     var $node = $(
-      '<div id="a" attr-foo="name" foo="alice">'
+      '<div id="a" attr-foo="name">'
         + '<div id="b" attr-foo="age"></div>'
         + '<div id="c" attr-foo="username"></div>'
       + '</div>'
     );
-    var user = {name: 'alice', age: 30, city: 'SF'};
-    $node.render(user);
-    expect($node.attr('newattr')).toEqual('alice');
-    expect($node.find('#b').attr('foo')).toEqual('30');
+    $node.render(alice);
+    expect($node.attr('foo')).toEqual('alice');
+    expect($node.find('#b').attr('foo')).toEqual('20');
     expect($node.find('#c').attr('foo')).toEqual('alice00');
   });
 

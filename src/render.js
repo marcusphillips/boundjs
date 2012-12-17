@@ -2,15 +2,40 @@
   var global = this;
 
   $.fn.render = function(scope){
-    bound.render(this, scope);
+    // todo: should be able to render multiple dom nodes contained in this jquery object
+    var that = this;
+    bound.autorun(function(){
+      directiveRenderCount++;
+      // todo: all directive computations will share a context
+      _.each(directiveProcessors, function(processor){
+        processor(that, scope);
+      });
+    });
     return this;
   };
 
-  bound.render = function($node, scope){
-    bound.autorun(function(){
+  var directiveRenderCount = 0;
+  bound.resetDirectiveRenderCount = function(){
+    directiveRenderCount = 0;
+  };
+
+  bound.getDirectiveRenderCount = function(){
+    return directiveRenderCount;
+  };
+
+  var directiveProcessors = {
+    contents: function($node, scope) {
+      // todo: what if there is no contents attribute?
       var directive = $node.attr("contents");
       $node.html(bound.proxy(scope).bound('has', directive) ? scope.bound('get', directive) : bound('get', directive));
-    });
+    },
+    attr: function($node, scope) {
+      _.each($node[0].attributes, function(attribute){
+        if((/^attr/).test(attribute.name)) {
+          $node.attr((attribute.name).slice("attr-".length), scope[attribute.value]);
+        }
+      });
+    }
   };
 
 }());
