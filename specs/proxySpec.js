@@ -34,16 +34,18 @@ describe('proxies', function(){
     }).toThrow();
   });
 
-  xit('should not throw an error if a bound method is already stored at the key "bound" and bound is called on it', function(){
+  it('should not throw an error if a bound method is already stored at the key "bound" and bound is called on it', function(){
     expect(function(){
       var proxied = bound.proxy({});
       bound.proxy(proxied);
     }).not.toThrow();
   });
 
-  xit('should throw an error if you try to proxy a proxy', function(){
+  it('should throw an error if you try to proxy a proxy', function(){
     var proxy = bound.proxy({}).bound('proxy');
-    expect( bound.proxy(proxy)).toThrow();
+    expect(function() {
+      bound.proxy(proxy);
+    }).toThrow();
   });
 
   xit('should not allow the bound method of one object to be called in the context of another object', function(){
