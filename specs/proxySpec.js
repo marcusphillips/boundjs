@@ -86,6 +86,23 @@ describe('proxies', function(){
     xit('should add meta data about the target object to the proxy object when you call the meta command');
   });
 
+  xit('should not re-run properties dependent on key inclusion when only the property value has changed, not its presence in the object', function(){
+    bound.proxy(alice);
+    var runCount1 = 0;
+    bound.autorun(function(){
+      alice.bound('has', 'hamburger');
+      runCount1 += 1;
+    });
+    var runCount2 = 0;
+    bound.autorun(function(){
+      alice.bound('get', 'name');
+      runCount2 += 1;
+    });
+    alice.bound('set', 'name', 'al');
+    jasmine.Clock.tick();
+    expect([runCount1, runCount2]).toEqual([1, 2]);
+  });
+
   xit('errors when passed an invalid command name');
 
   xit('should let you invalidate listeners for one key by exposing a bound() command "changed"', function(){
