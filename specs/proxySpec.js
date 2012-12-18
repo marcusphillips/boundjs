@@ -54,34 +54,49 @@ describe('proxies', function(){
     }).not.toThrow();
   });
 
-  xit('should not allow the bound method of one object to be called in the context of another object', function(){
+  it('should not allow the bound method of one object to be called in the context of another object', function(){
     // todo: long term, this should actually just have the effect of calling the bound method of the target object instead
-    expect(function(){ bound.proxy({}).bound.apply({}); }).toThrow();
+    var object = {};
+    bound.proxy(object);
+    var otherObject = {};
+    expect(function(){
+      object.bound.apply(otherObject);
+    }).toThrow();
   });
 
   xit('should not add any properties to a object other than .bound()', function(){
     expect(_.keys(bound.proxy({}))).toEqual(['bound']);
   });
 
-  xit('should allow access to a proxy object by calling the "proxy" command', function(){
-    var object = bound.proxy(object);
+  it('should allow access to a proxy object by calling the "proxy" command', function(){
+    var object = {};
+    bound.proxy(object);
     var proxy = object.bound('proxy');
-    expect(proxy).toBe(any(Object));
     var proxyMethods = 'get set del has owns run exec pub sub proxy meta'.split(' ');
     for(var i = 0; i < proxyMethods.length; i++){
       var methodName = proxyMethods[i];
-      expect(proxy[methodName]).toBe(any(Function));
+      expect(proxy[methodName]).toEqual(any(Function));
       spyOn(proxy, methodName);
       var randomNumber = Math.random();
-      object(methodName, randomNumber);
+      proxy[methodName](randomNumber);
       expect(proxy[methodName]).toHaveBeenCalledWith(randomNumber);
     }
   });
 
+  //TODO: add tests for all Proxy methods
+
   describe('bound proxy objects', function(){
-    xit('should expire all dependant computations when called with no command name');
-    xit('should get the value of properties from the target object when you run the get command');
-    xit('should set the value of properties from the target object when you run the set command');
+    xit('should expire all dependant computations when called with no command name', function(){
+
+    });
+    it('should get the value of properties from the target object when you run the get command', function(){
+      var object = {thing:5};
+      bound.proxy(object);
+      expect(object.bound('get','thing')).toEqual(5);
+    });
+    it('should set the value of properties from the target object when you run the set command', function(){
+
+    });
     xit('should delete properties from the target object when you run the del command');
     xit('should re-run work that was dependent on calls to "has" after deleting properties that used to exist');
     xit('should re-run work that was dependent on calls to "has" after setting properties that didnt\'t used to exist');
