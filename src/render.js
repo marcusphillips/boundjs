@@ -2,6 +2,7 @@
   var global = this;
 
   $.fn.render = function(scope){
+    // todo: should be able to render multiple dom nodes contained in this jquery object
     if(!arguments.length){ throw new Error('render requires a scope'); }
     bound.proxy(scope);
     var $that = this;
@@ -11,8 +12,7 @@
       _.each(directiveProcessors, function(processor){
         processor($that, scope);
       });
-      $children = $that.children();
-      _.each($children, function(child){
+      _.each($that.children(), function(child){
         $(child).render(scope);
       });
     });

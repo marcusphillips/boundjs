@@ -111,7 +111,7 @@ describe('render', function(){
         + '<div id="c" attr-foo="username"></div>'
       + '</div>'
     );
-    debugger;
+
     $node.render(alice);
     expect($node.attr('foo')).toEqual('alice');
     expect($node.find('#b').attr('foo')).toEqual('20');
