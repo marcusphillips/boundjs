@@ -46,12 +46,14 @@ describe('proxies', function(){
     expect(bound.proxy(proxy)).toThrow();
   });
 
-  xit('should not allow the bound method of one object to be called in the context of another object', function(){
+  it('should not allow the bound method of one object to be called in the context of another object', function(){
     // todo: long term, this should actually just have the effect of calling the bound method of the target object instead
     var object = {};
     bound.proxy(object);
     var otherObject = {};
-    expect(function(){object.bound.apply(otherObject); }).toThrow();
+    expect(function(){
+      object.bound.apply(otherObject);
+    }).toThrow();
   });
 
   xit('should not add any properties to a object other than .bound()', function(){
@@ -79,11 +81,14 @@ describe('proxies', function(){
     xit('should expire all dependant computations when called with no command name', function(){
 
     });
-    xit('should get the value of properties from the target object when you run the get command', function(){
-
+    it('should get the value of properties from the target object when you run the get command', function(){
+      var object = {thing:5}
+      bound.proxy(object);
+      expect(object.bound('get','thing')).toEqual(5);
+    });
+    it('should set the value of properties from the target object when you run the set command', function(){
 
     });
-    xit('should set the value of properties from the target object when you run the set command');
     xit('should delete properties from the target object when you run the del command');
     xit('should re-run work that was dependent on calls to "has" after deleting properties that used to exist');
     xit('should re-run work that was dependent on calls to "has" after setting properties that didnt\'t used to exist');

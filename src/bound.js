@@ -13,6 +13,9 @@
     _.extend(target, {
       _dependentContextSets: {},
       bound: function(commandName) {
+        if(this !== target){
+          throw new Error("cannot call bound on foreign objects.");
+        }
         return commandName === 'proxy' ? proxy : proxy[commandName].apply(this, _.toArray(arguments).slice(1));
       }
     });
