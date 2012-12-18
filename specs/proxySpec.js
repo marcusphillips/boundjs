@@ -43,12 +43,15 @@ describe('proxies', function(){
 
   xit('should throw an error if you try to proxy a proxy', function(){
     var proxy = bound.proxy({}).bound('proxy');
-    expect( bound.proxy(proxy)).toThrow();
+    expect(bound.proxy(proxy)).toThrow();
   });
 
   xit('should not allow the bound method of one object to be called in the context of another object', function(){
     // todo: long term, this should actually just have the effect of calling the bound method of the target object instead
-    expect(function(){ bound.proxy({}).bound.apply({}); }).toThrow();
+    var object = {};
+    bound.proxy(object);
+    var otherObject = {};
+    expect(function(){object.bound.apply(otherObject); }).toThrow();
   });
 
   xit('should not add any properties to a object other than .bound()', function(){
@@ -58,23 +61,28 @@ describe('proxies', function(){
   it('should allow access to a proxy object by calling the "proxy" command', function(){
     var object = {}
     bound.proxy(object);
-    var remoteControl = object.bound('proxy');
+    var proxy = object.bound('proxy');
     var proxyMethods = 'get set del has owns run exec pub sub proxy meta'.split(' ');
     for(var i = 0; i < proxyMethods.length; i++){
       var methodName = proxyMethods[i];
-      expect(remoteControl[methodName]).toEqual(any(Function));
-      spyOn(remoteControl, methodName);
+      expect(proxy[methodName]).toEqual(any(Function));
+      spyOn(proxy, methodName);
       var randomNumber = Math.random();
-      remoteControl[methodName](randomNumber);
-      expect(remoteControl[methodName]).toHaveBeenCalledWith(randomNumber);
+      proxy[methodName](randomNumber);
+      expect(proxy[methodName]).toHaveBeenCalledWith(randomNumber);
     }
   });
 
   //TODO: add tests for all Proxy methods
 
   describe('bound proxy objects', function(){
-    xit('should expire all dependant computations when called with no command name');
-    xit('should get the value of properties from the target object when you run the get command');
+    xit('should expire all dependant computations when called with no command name', function(){
+
+    });
+    xit('should get the value of properties from the target object when you run the get command', function(){
+
+
+    });
     xit('should set the value of properties from the target object when you run the set command');
     xit('should delete properties from the target object when you run the del command');
     xit('should re-run work that was dependent on calls to "has" after deleting properties that used to exist');
