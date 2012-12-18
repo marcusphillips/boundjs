@@ -13,6 +13,7 @@
     _.extend(target, {
       _dependentContextSets: {},
       bound: function(commandName) {
+        _.raiseIf(this !== target, "cannot call bound on foreign objects.");
         return proxy[commandName].apply(proxy, _.toArray(arguments).slice(1));
       }
     });
@@ -49,6 +50,20 @@
     del: function(key){
       delete this.target[key];
       this._ensuredContextSet(key).invalidateAll();
+    },
+    owns: function(key){
+      this._addKeyDependency(key);
+      return this.hasOwnProperty(key);
+    },
+    run: function(){
+    },
+    exec: function(){
+    },
+    pub: function(){
+    },
+    sub: function(){
+    },
+    meta: function(){
     },
 
     _addKeyDependency: function(key){
