@@ -41,9 +41,11 @@ describe('proxies', function(){
     }).not.toThrow();
   });
 
-  xit('should throw an error if you try to proxy a proxy', function(){
+  it('should throw an error if you try to proxy a proxy', function(){
     var proxy = bound.proxy({}).bound('proxy');
-    expect(bound.proxy(proxy)).toThrow();
+    expect(function() {
+      bound.proxy(proxy);
+    }).toThrow();
   });
 
   it('should not allow the bound method of one object to be called in the context of another object', function(){
