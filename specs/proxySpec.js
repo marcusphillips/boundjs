@@ -46,7 +46,6 @@ describe('proxies', function(){
     expect( bound.proxy(proxy)).toThrow();
   });
 
-  //me
   xit('should not allow the bound method of one object to be called in the context of another object', function(){
     // todo: long term, this should actually just have the effect of calling the bound method of the target object instead
     expect(function(){ bound.proxy({}).bound.apply({}); }).toThrow();
