@@ -24,41 +24,25 @@
 
     // when no command is passed at all
     'undefined': function(){
-      //todo: this probably never evicts invalidated contexts
+      //todo: this probably never deletes context sets stored at keys that are entirely cleared from contexts
       _.invoke(this._dependentContextSets, 'invalidateAll');
       return this;
     },
 
     has: function(key){
-      if(key === undefined || key === null){
-        return false;
-      }
-      _.raiseIf(typeof key !== 'string', 'string required');
       addKeyDependency(this, key);
       return key in this;
     },
     get: function(key){
-      if(key === undefined || key === null){
-        return false;
-      }
-      _.raiseIf(typeof key !== 'string', 'string required');
       addKeyDependency(this, key);
       return this[key];
     },
     set: function(key, value){
-      if(key === undefined || key === null){
-        return false;
-      }
-      _.raiseIf(typeof key !== 'string', 'string required');
       // todo: keep track of the current state to compare to future states, here and in del
       this[key] = value;
       ensuredContextSet(this, key).invalidateAll();
     },
     del: function(key){
-      if(key === undefined || key === null){
-        return false;
-      }
-      _.raiseIf(typeof key !== 'string', 'string required');
       delete this[key];
       ensuredContextSet(this, key).invalidateAll();
     }
