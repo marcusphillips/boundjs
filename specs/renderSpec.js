@@ -95,7 +95,7 @@ describe('render', function(){
     });
   });
 
-  xit('should add attributes when the bound-attr directive is present', function(){
+  xit('should update nodes nested within the top level node', function(){
     var $node = $(
       '<div id="a" attr-foo="name">'
         + '<div id="b" attr-foo="age"></div>'
@@ -108,13 +108,21 @@ describe('render', function(){
     expect($node.find('#c').attr('foo')).toEqual('alice00');
   });
 
-  xit('should update nodes nested within the top level node', function(){
-  });
-
   xit('should update only the values associated with keys passed in to .bound()', function(){
   });
 
   xit('if a value is found on an object found low in the scope chain, and the value of at that key is changed on a higher level of the chain, those changes do not result in a rerender of the node that depended on the leaf object', function(){
+  });
+
+  xit('should add the approrpriate class when the bound-classes directive is present', function(){
+    var $node = $('<div bound-classes="readState"></div>');
+    var message = {readState: 'unread'};
+    $node.render(message);
+    expect($node.hasClass('unread')).toBe(false);
+    message.readState = 'read';
+    message.bound();
+    expect($node.hasClass('unread')).toBe(false);
+    expect($node.hasClass('read')).toBe(true);
   });
 
 });
