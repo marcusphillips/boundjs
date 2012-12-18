@@ -46,6 +46,7 @@ describe('proxies', function(){
     expect( bound.proxy(proxy)).toThrow();
   });
 
+  //me
   xit('should not allow the bound method of one object to be called in the context of another object', function(){
     // todo: long term, this should actually just have the effect of calling the bound method of the target object instead
     expect(function(){ bound.proxy({}).bound.apply({}); }).toThrow();
@@ -55,20 +56,22 @@ describe('proxies', function(){
     expect(_.keys(bound.proxy({}))).toEqual(['bound']);
   });
 
-  xit('should allow access to a proxy object by calling the "proxy" command', function(){
-    var object = bound.proxy(object);
-    var proxy = object.bound('proxy');
-    expect(proxy).toBe(any(Object));
+  it('should allow access to a proxy object by calling the "proxy" command', function(){
+    var object = {}
+    bound.proxy(object);
+    var remoteControl = object.bound('proxy');
     var proxyMethods = 'get set del has owns run exec pub sub proxy meta'.split(' ');
     for(var i = 0; i < proxyMethods.length; i++){
       var methodName = proxyMethods[i];
-      expect(proxy[methodName]).toBe(any(Function));
-      spyOn(proxy, methodName);
+      expect(remoteControl[methodName]).toEqual(any(Function));
+      spyOn(remoteControl, methodName);
       var randomNumber = Math.random();
-      object(methodName, randomNumber);
-      expect(proxy[methodName]).toHaveBeenCalledWith(randomNumber);
+      remoteControl[methodName](randomNumber);
+      expect(remoteControl[methodName]).toHaveBeenCalledWith(randomNumber);
     }
   });
+
+  //TODO: add tests for all Proxy methods
 
   describe('bound proxy objects', function(){
     xit('should expire all dependant computations when called with no command name');
