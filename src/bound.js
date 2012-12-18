@@ -13,13 +13,17 @@
     _.extend(target, {
       _dependentContextSets: {},
       bound: function(commandName) {
-        return commandName === 'proxy' ? proxy : commands[commandName].apply(this, _.toArray(arguments).slice(1));
+        if(this !== target){
+          throw new Error("cannot call bound on foreign objects.");
+        }
+        return commandName === 'proxy' ? proxy : proxy[commandName].apply(this, _.toArray(arguments).slice(1));
       }
     });
     target.bound.prototype = boundMethodFlag;
   };
 
-  var commands = {
+  Proxy.prototype = {
+    constructor: Proxy,
 
     // when no command is passed at all
     'undefined': function(){
@@ -44,6 +48,56 @@
     del: function(key){
       delete this[key];
       ensuredContextSet(this, key).invalidateAll();
+    },
+    owns: function(key){
+      //calls hasOwnProperty
+      if(key === undefined || key === null){
+        return false;
+      }
+      _.raiseIf(typeof key !== 'string', 'string required');
+      return this.hasOwnProperty(key);
+    },
+    run: function(){
+      if(key === undefined || key === null){
+        return false;
+      }
+      _.raiseIf(typeof key !== 'string', 'string required');
+
+    },
+    exec: function(){
+      if(key === undefined || key === null){
+        return false;
+      }
+      _.raiseIf(typeof key !== 'string', 'string required');
+
+    },
+    pub: function(){
+      if(key === undefined || key === null){
+        return false;
+      }
+      _.raiseIf(typeof key !== 'string', 'string required');
+
+    },
+    sub: function(){
+      if(key === undefined || key === null){
+        return false;
+      }
+      _.raiseIf(typeof key !== 'string', 'string required');
+
+    },
+    proxy: function(){
+      if(key === undefined || key === null){
+        return false;
+      }
+      _.raiseIf(typeof key !== 'string', 'string required');
+
+    },
+    meta: function(){
+      if(key === undefined || key === null){
+        return false;
+      }
+      _.raiseIf(typeof key !== 'string', 'string required');
+
     }
   };
 
