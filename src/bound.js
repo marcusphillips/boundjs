@@ -24,7 +24,7 @@
 
     // when no command is passed at all
     'undefined': function(){
-      //todo: this probably never evicts invalidated contexts
+      //todo: this probably never deletes context sets stored at keys that are entirely cleared from contexts
       _.invoke(this._dependentContextSets, 'invalidateAll');
       return this;
     },
