@@ -87,9 +87,20 @@ describe('proxies', function(){
       expect(object.bound('get','thing')).toEqual(5);
     });
     it('should set the value of properties from the target object when you run the set command', function(){
-
+      var object = {}
+      bound.proxy(object);
+      object.bound('set', 'setThing', 2);
+      expect(object.bound('get','setThing')).toEqual(2);
     });
-    xit('should delete properties from the target object when you run the del command');
+    it('should delete properties from the target object when you run the del command', function(){
+      var object = {};
+      bound.proxy(object);
+      object.bound('set', 'setThing', 4);
+      var trulySet = object.bound('get', 'setThing');
+      object.bound('del', 'setThing');
+      var trulyDel = object.bound('get', 'setThing');
+      expect(trulyDel).not.toEqual(trulySet);
+    });
     xit('should re-run work that was dependent on calls to "has" after deleting properties that used to exist');
     xit('should re-run work that was dependent on calls to "has" after setting properties that didnt\'t used to exist');
     xit('should return the presense or absence of a property on the target object when you run the has command');
