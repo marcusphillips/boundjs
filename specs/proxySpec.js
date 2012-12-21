@@ -63,7 +63,7 @@ describe('proxies', function(){
   });
 
   it('should allow access to a proxy object by calling the "proxy" command', function(){
-    var object = {}
+    var object = {};
     bound.proxy(object);
     var proxy = object.bound('proxy');
     var proxyMethods = 'get set del has owns run exec pub sub proxy meta'.split(' ');
@@ -79,28 +79,44 @@ describe('proxies', function(){
 
   //TODO: add tests for all Proxy methods
 
-  describe('bound proxy objects', function(){
+  describe('bound proxy object methods', function(){
+
     xit('should expire all dependant computations when called with no command name', function(){
 
     });
+
     it('should get the value of properties from the target object when you run the get command', function(){
-      var object = {thing:5}
+      var object = {thing:5};
       bound.proxy(object);
       expect(object.bound('get','thing')).toEqual(5);
     });
+
     it('should set the value of properties from the target object when you run the set command', function(){
 
     });
+
     xit('should delete properties from the target object when you run the del command');
+
     xit('should re-run work that was dependent on calls to "has" after deleting properties that used to exist');
+
     xit('should re-run work that was dependent on calls to "has" after setting properties that didnt\'t used to exist');
+
     xit('should return the presense or absence of a property on the target object when you run the has command');
+
     xit('should return the immediate presense or absence of a property (not prototype-inherited) on the target object when you run the owns command');
+
     xit('todo: need to provide a way for users to run a function or a method in an arbitrary context');
+
     xit('should run the specified method (in the context of the target object) when you run the run command, and should return the result');
+
     xit('should run the target function object (in the context of window) when you run the exec command, and should return the result');
+
     xit('todo: should provide an eventing system, including publish and subscribe');
+
     xit('should add meta data about the target object to the proxy object when you call the meta command');
+  });
+
+  xit('should not result in re-runs of dependent contexts for setting properties to the same value they already hold', function(){
   });
 
   xit('should not re-run properties dependent on key inclusion when only the property value has changed, not its presence in the object', function(){
