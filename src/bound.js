@@ -5,7 +5,7 @@
   var boundMethodFlag = {};
   var Proxy = function(target){
     if(target.hasOwnProperty('bound')){
-      // TODO: bound property of null 
+      // TODO: bound property of null
       return target.bound.prototype === boundMethodFlag ? target.bound('proxy') : _.raise("'bound' key already on object");
     }
     this.target = target;
@@ -13,53 +13,88 @@
     _.extend(target, {
       _dependentContextSets: {},
       bound: function(commandName) {
-        return commandName === 'proxy' ? proxy : commands[commandName].apply(this, _.toArray(arguments).slice(1));
+        return commandName === 'proxy' ? proxy : proxy[commandName].apply(this, _.toArray(arguments).slice(1));
       }
     });
     target.bound.prototype = boundMethodFlag;
   };
 
-  var commands = {
+  Proxy.prototype = {
+    constructor: Proxy,
 
     // when no command is passed at all
     'undefined': function(){
-      //todo: this probably never evicts invalidated contexts
+      //todo: this probably never deletes context sets stored at keys that are entirely cleared from contexts
       _.invoke(this._dependentContextSets, 'invalidateAll');
       return this;
     },
 
     has: function(key){
-      if(key === undefined || key === null){
-        return false;
-      }
-      _.raiseIf(typeof key !== 'string', 'string required');
       addKeyDependency(this, key);
       return key in this;
     },
     get: function(key){
-      if(key === undefined || key === null){
-        return false;
-      }
-      _.raiseIf(typeof key !== 'string', 'string required');
       addKeyDependency(this, key);
       return this[key];
     },
     set: function(key, value){
-      if(key === undefined || key === null){
-        return false;
-      }
-      _.raiseIf(typeof key !== 'string', 'string required');
       // todo: keep track of the current state to compare to future states, here and in del
       this[key] = value;
       ensuredContextSet(this, key).invalidateAll();
     },
     del: function(key){
+      delete this[key];
+      ensuredContextSet(this, key).invalidateAll();
+    },
+    owns: function(key){
+      //calls hasOwnProperty
       if(key === undefined || key === null){
         return false;
       }
       _.raiseIf(typeof key !== 'string', 'string required');
-      delete this[key];
-      ensuredContextSet(this, key).invalidateAll();
+      return this.hasOwnProperty(key);
+    },
+    run: function(){
+      if(key === undefined || key === null){
+        return false;
+      }
+      _.raiseIf(typeof key !== 'string', 'string required');
+
+    },
+    exec: function(){
+      if(key === undefined || key === null){
+        return false;
+      }
+      _.raiseIf(typeof key !== 'string', 'string required');
+
+    },
+    pub: function(){
+      if(key === undefined || key === null){
+        return false;
+      }
+      _.raiseIf(typeof key !== 'string', 'string required');
+
+    },
+    sub: function(){
+      if(key === undefined || key === null){
+        return false;
+      }
+      _.raiseIf(typeof key !== 'string', 'string required');
+
+    },
+    proxy: function(){
+      if(key === undefined || key === null){
+        return false;
+      }
+      _.raiseIf(typeof key !== 'string', 'string required');
+
+    },
+    meta: function(){
+      if(key === undefined || key === null){
+        return false;
+      }
+      _.raiseIf(typeof key !== 'string', 'string required');
+
     }
   };
 
