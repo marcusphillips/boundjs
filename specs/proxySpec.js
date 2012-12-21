@@ -48,6 +48,12 @@ describe('proxies', function(){
     }).toThrow();
   });
 
+  it('should not throw an error if you try to proxy an object that already has a target property', function(){
+    expect(function() {
+      bound.proxy({target:3});
+    }).not.toThrow();
+  });
+
   it('should not allow the bound method of one object to be called in the context of another object', function(){
     // todo: long term, this should actually just have the effect of calling the bound method of the target object instead
     var object = {};
@@ -63,7 +69,7 @@ describe('proxies', function(){
   });
 
   it('should allow access to a proxy object by calling the "proxy" command', function(){
-    var object = {}
+    var object = {};
     bound.proxy(object);
     var proxy = object.bound('proxy');
     var proxyMethods = 'get set del has owns run exec pub sub proxy meta'.split(' ');
@@ -84,7 +90,7 @@ describe('proxies', function(){
 
     });
     it('should get the value of properties from the target object when you run the get command', function(){
-      var object = {thing:5}
+      var object = {thing:5};
       bound.proxy(object);
       expect(object.bound('get','thing')).toEqual(5);
     });
