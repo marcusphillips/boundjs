@@ -1,4 +1,5 @@
 describe('proxies', function(){
+
   it('should return the input object as a result of calling bound()', function(){
     expect(bound.proxy(alice)).toEqual(alice);
   });
@@ -48,6 +49,12 @@ describe('proxies', function(){
     }).toThrow();
   });
 
+  it('should not throw an error if you try to proxy an object that already has a target property', function(){
+    expect(function() {
+      bound.proxy({target:3});
+    }).not.toThrow();
+  });
+
   it('should not allow the bound method of one object to be called in the context of another object', function(){
     // todo: long term, this should actually just have the effect of calling the bound method of the target object instead
     var object = {};
@@ -82,7 +89,6 @@ describe('proxies', function(){
   describe('bound proxy object methods', function(){
 
     xit('should expire all dependant computations when called with no command name', function(){
-
     });
 
     it('should get the value of properties from the target object when you run the get command', function(){
@@ -92,10 +98,21 @@ describe('proxies', function(){
     });
 
     it('should set the value of properties from the target object when you run the set command', function(){
-
+      var object = {};
+      bound.proxy(object);
+      object.bound('set', 'setThing', 2);
+      expect(object.bound('get','setThing')).toEqual(2);
     });
 
-    xit('should delete properties from the target object when you run the del command');
+    it('should delete properties from the target object when you run the del command', function(){
+      var object = {};
+      bound.proxy(object);
+      object.bound('set', 'setThing', 4);
+      var trulySet = object.bound('get', 'setThing');
+      object.bound('del', 'setThing');
+      var trulyDel = object.bound('get', 'setThing');
+      expect(trulyDel).not.toEqual(trulySet);
+    });
 
     xit('should re-run work that was dependent on calls to "has" after deleting properties that used to exist');
 
