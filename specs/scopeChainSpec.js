@@ -1,31 +1,31 @@
 describe('scope chains', function(){
 
-  it('should provide a scope chain maker function', function(){
+  xit('should provide a scope chain maker function', function(){
     expect(bound.topScopeChain).toEqual(jasmine.any(Object));
     expect(bound.topScopeChain.extend).toEqual(jasmine.any(Function));
   });
 
-  it('should allow lookups in the global scope from the top level scope chain', function(){
+  xit('should allow lookups in the global scope from the top level scope chain', function(){
     global.present = 3;
     expect(bound.topScopeChain.get('present')).toEqual(3);
     delete global.present;
   });
 
-  it('should preserve object identity when looking up variables', function(){
+  xit('should preserve object identity when looking up variables', function(){
     global.object = {};
     expect(bound.topScopeChain.get('object')).toBe(object);
     delete global.object;
   });
 
-  it('should fail for lookups in the top level scope chain for keys that are not in the global scope', function(){
+  xit('should fail for lookups in the top level scope chain for keys that are not in the global scope', function(){
     expect(bound.topScopeChain.get('absent')).toEqual(undefined);
-  });
+  }); 
 
-  it('should allow lookups of number literal', function(){
+  xit('should allow lookups of number literal', function(){
     expect(bound.topScopeChain.get("3")).toEqual(3);
   });
 
-  it('should allow lookups for string literals in double qoutes', function(){
+  xit('should allow lookups for string literals in double qoutes', function(){
     expect(bound.topScopeChain.get('"in doubles"')).toEqual('in doubles');
   });
 
@@ -33,7 +33,7 @@ describe('scope chains', function(){
     expect(bound.topScopeChain.get("'in singles'")).toEqual('in singles');
   });
 
-  xit('should allow lookups for array literals', function(){
+  it('should allow lookups for array literals', function(){
     expect(bound.topScopeChain.get("['a', 3, false]")).toEqual(['a', 3, false]);
   });
 
