@@ -22,14 +22,21 @@
   <script src="src/render.js"></script>
 
   <!-- include spec files here... -->
-  <script src="specs/boundSpec.js"></script>
   <script src="specs/eventsSpec.js"></script>
   <script src="specs/proxySpec.js"></script>
   <script src="specs/renderSpec.js"></script>
+  <script src="specs/dependencySpec.js"></script>
   <script src="specs/scopeChainSpec.js"></script>
+  <script src="specs/directiveContentsSpec.js"></script>
+  <script src="specs/directiveAttrSpec.js"></script>
+  <script src="specs/directiveLoopSpec.js"></script>
 
   <script>
     (function() {
+      beforeEach(function(){
+        bound.resetDirectiveRenderCount();
+      });
+
       testEnv.integrateJasmine();
       jasmine.Clock.useMock();
 
@@ -57,7 +64,7 @@
         jasmineEnv.execute();
       }
 
-    })();
+    }());
   </script>
 
 </head>
@@ -66,8 +73,12 @@
   <div id="fixtures" style="display:none;">
 
     <div fixture="empty"></div>
+
     <div fixture="name" contents="name"></div>
+
     <div fixture="age" contents="age"></div>
+
+    <div fixture="message" bound-classes="readState" contents="text"></div>
 
     <div fixture="friends" loop="friends">
       <div contents="name"></div>

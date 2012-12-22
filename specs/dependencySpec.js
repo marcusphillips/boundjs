@@ -4,14 +4,14 @@ describe('dependencies', function(){
     var runCount = 0;
     bound.proxy(alice);
     bound.autorun(function(){
-      alice.get('name');
+      alice.bound('get', 'name');
       runCount = runCount + 1;
     });
 
     alice.bound();
     expect(runCount).toBe(1);
 
-    alice.set('set', name, 'alice');
+    alice.bound('set', 'name', 'alice');
     expect(runCount).toBe(1);
   });
 

@@ -1,138 +1,137 @@
-describe('render', function(){
-  var global = (function(){ return this; }());
+describe('rendering', function(){
 
-  beforeEach(function(){
-    bound.resetDirectiveRenderCount();
-  });
+  describe('.render() fundamentals', function(){
 
-  it('adds a .render() method to jQuery objects', function(){
-    expect($empty.render).toEqual(any(Function));
-  });
-
-  it('returns the original jquery object from jquery\'s .render()', function(){
-    expect($empty.render({})).toEqual(any(jQuery));
-  });
-
-  it('modifies the html of a rendered node that has the contents directive', function(){
-    expect($name.render(alice).html()).toEqual('alice');
-  });
-
-  it('should not modify the contents of a node that does not have a contents directive', function() {
-    var $nodeWithContents = $('<div>Hello world!</div>');
-    var before = $nodeWithContents.html();
-    $nodeWithContents.render(alice);
-    var after = $nodeWithContents.html();
-
-    expect(before).toEqual(after);
-  });
-
-  it('falls back onto the global scope for keys that are not found on the input', function(){
-    global.food = 'sausage';
-    expect($('<div contents="food"></div>').render(alice).html()).toEqual('sausage');
-    delete global.food;
-  });
-
-  it('counts the number of directives processed', function(){
-    global.drink = 'coffee';
-    expect(bound.getDirectiveRenderCount()).toEqual(0);     // check that count is at zero
-    $('<div contents="food"></div>').render(alice);         // render something with one directive
-    expect(bound.getDirectiveRenderCount()).toEqual(1);     // check that count is at 1
-    // $('<div contents="food" contents="coffee"></div>').render(alice)  // render something with 2 directives
-    // expect(bound.getDirectiveRenderCount()).toEqual(3);               // check that count is at 3
-    bound.resetDirectiveRenderCount();                      // reset counter
-    expect(bound.getDirectiveRenderCount()).toEqual(0);     // check that count is at 0
-  });
-
-  xit('does not operate on nodes that have no directives', function(){
-    $empty.render({});
-    expect(bound.getDirectiveRenderCount()).toEqual(0);
-  });
-
-  it('does not add any text to the node if the directive attribute is not found on the input and in the global scope', function() {
-    expect($('<div contents="unicorns"></div>').render(alice).html()).toEqual('');
-  });
-
-  it('throws an error (TypeError) if no context is passed', function() {
-    expect(function(){$empty.render();}).toThrow();
-  });
-
-  it('does not remove a directive attribute after following it', function(){
-    expect($name.render(alice).attr('contents')).toEqual('name');
-  });
-
-  it('adds a .bound() method to objects that have been rendered against', function(){
-    var object = {};
-    $empty.render(object);
-    expect(object.bound).toEqual(any(Function));
-  });
-
-  it('updates the html property by calling the .bound() method on a rendered-against scope that has changed', function(){
-    $name.render(alice);
-    _.extend(alice, {name: 'al'}).bound();
-    jasmine.Clock.tick(0);
-    expect($name.html()).toEqual('al');
-  });
-
-
-  it('should update the html property of all nodes that it has been rendered against', function(){
-    $name.render(alice);
-    $age.render(alice);
-    alice.name = 'al';
-    alice.age = 24;
-    alice.bound();
-    jasmine.Clock.tick(0);
-    expect($name.html()).toEqual('al');
-    expect($age.html()).toEqual('24');
-  });
-
-  it('should only update the html property of nodes in the current context when bound() is called', function(){
-    $name.render(alice);
-    $name2.render(bob);
-    alice.name = 'al';
-    bob.name = 'robert';
-    alice.bound();
-    jasmine.Clock.tick(0);
-    expect($name.html()).toEqual('al');
-    expect($name2.html()).toEqual('bob');
-  });
-
-  describe('directives', function(){
-    it('should handle the bound-attr directive, by adding an attribute with the supplied attribute name and value', function(){
-      var $node = $('<div attr-foo="name"></div>');
-      $node.render(alice);
-      expect($node.attr('foo')).toEqual('alice');
+    it('adds a .render() method to jQuery objects', function(){
+      expect($empty.render).toEqual(any(Function));
     });
+
+    it('returns the original jquery object from jquery\'s .render()', function(){
+      expect($empty.render({})).toEqual(any(jQuery));
+    });
+
+    it('throws an error if no namespace is passed', function() {
+      expect(function(){
+        $empty.render();
+      }).toThrow();
+    });
+
+    xit('proxies an object that has been rendered against', function(){
+      var object = {};
+      $empty.render(object);
+      expect(bound.isProxied(object)).toEqual(true);
+    });
+
   });
 
-  it('should update nodes nested within the top level node', function(){
-    var $node = $(
-      '<div id="a" attr-foo="name">'
-        + '<div id="b" attr-foo="age"></div>'
-        + '<div id="c" attr-foo="username"></div>'
-      + '</div>'
-    );
+  describe('directive render operation counting', function(){
 
-    $node.render(alice);
-    expect($node.attr('foo')).toEqual('alice');
-    expect($node.find('#b').attr('foo')).toEqual('20');
-    expect($node.find('#c').attr('foo')).toEqual('alice00');
+    it('counts the number of directives processed', function(){
+      global.drink = 'coffee';
+      expect(bound.getDirectiveRenderCount()).toEqual(0);     // check that count is at zero
+      $('<div contents="food"></div>').render(alice);         // render something with one directive
+      expect(bound.getDirectiveRenderCount()).toEqual(1);     // check that count is at 1
+      // $('<div contents="food" contents="coffee"></div>').render(alice)  // render something with 2 directives
+      // expect(bound.getDirectiveRenderCount()).toEqual(3);               // check that count is at 3
+      bound.resetDirectiveRenderCount();                      // reset counter
+      expect(bound.getDirectiveRenderCount()).toEqual(0);     // check that count is at 0
+    });
+
   });
 
-  xit('should update only the values associated with keys passed in to .bound()', function(){
+  describe('affected nodes', function(){
+
+    xit('does not operate on nodes that have no directives', function(){
+      $empty.render({});
+      expect(bound.getDirectiveRenderCount()).toEqual(0);
+    });
+
+    xit('operates on all nodes in a single jQuery collection', function(){
+      $name.add($age).render(alice);
+      expect(bound.getDirectiveRenderCount()).toEqual(2);
+      expect($name.html()).toEqual('alice');
+      expect($age.html()).toEqual('20');
+    });
+
   });
 
-  xit('if a value is found on an object found low in the scope chain, and the value of at that key is changed on a higher level of the chain, those changes do not result in a rerender of the node that depended on the leaf object', function(){
+  describe('.namespace()', function(){
+
+    xit('returns the lowest-level rendered-against namespace', function(){
+      expect($name.namespace()).toEqual(global);
+      expect($name.render(alice).namespace()).toEqual(alice);
+    });
+
+    xit('returns the namespace inherited from an ancestor when the focal node has no namespace', function(){
+      var $child = $('<div/>');
+      var $parent = $('<div/>').append($child);
+      $parent.render(alice);
+      expect($child.namespace()).toEqual(alice);
+    });
+
   });
 
-  xit('should add the approrpriate class when the bound-classes directive is present', function(){
-    var $node = $('<div bound-classes="readState"></div>');
-    var message = {readState: 'unread'};
-    $node.render(message);
-    expect($node.hasClass('unread')).toBe(false);
-    message.readState = 'read';
-    message.bound();
-    expect($node.hasClass('unread')).toBe(false);
-    expect($node.hasClass('read')).toBe(true);
+  describe('.namespaces()', function(){
+
+    xit('returns an array of all the namespaces in the scope chain', function(){
+      expect($node.render(alice).scopes()).toEqual([global, alice]);
+    });
+
+  });
+
+  describe('following directives', function(){
+
+    it('does not remove a directive attribute after following it', function(){
+      expect($name.render(alice).attr('contents')).toEqual('name');
+    });
+
+    xit('errors when passed an invalid command name');
+
+    it('updates nodes nested within the top level node', function(){
+      $('<div>').append($name).render(alice);
+      expect($name.html()).toEqual('alice');
+    });
+
+  });
+
+  describe('scopes and multiple namespace inputs', function(){
+
+    it('falls back onto the global namespace for keys that are not found on the input namespace', function(){
+      global.food = 'sausage';
+      expect($('<div contents="food"></div>').render(alice).html()).toEqual('sausage');
+      delete global.food;
+    });
+
+    xit('passing two namespaces inputs to .render() adds them both to the scope chain for that node');
+
+    xit('rendering nodes against a scope chain allows for fall-through between the namespaces');
+
+    xit('calling .render() on an object that was already rendered against a namespace results in pushing the new namespace onto the scope chain for that node');
+
+  });
+
+  describe('reactive updates', function(){
+
+    it('refollows the directives of all rendered nodes when .bound() is called on a rendered-against namespace that has changed', function(){
+      $name.render(alice);
+      $age.render(alice);
+      _.extend(alice, {name: 'al', age: 24}).bound();
+      Clock.tick(0);
+      expect($name.html()).toEqual('al');
+      expect($age.html()).toEqual('24');
+    });
+
+    it('should only update the directives of nodes that were rendered against the object that has .bound() called on it', function(){
+      $name.render(alice);
+      $name2.render(bob);
+      alice.name = 'al';
+      bob.name = 'robert';
+      alice.bound();
+      Clock.tick(0);
+      expect($name.html()).toEqual('al');
+      expect($name2.html()).toEqual('bob');
+    });
+
   });
 
 });

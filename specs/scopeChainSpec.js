@@ -1,36 +1,78 @@
-describe('scope chains', function(){
+describe('scopes', function(){
 
-  it('should provide a scope chain maker function', function(){
-    expect(bound.topScopeChain).toEqual(jasmine.any(Object));
-    expect(bound.topScopeChain.extend).toEqual(jasmine.any(Function));
+  var parentScope, childScope;
+
+  beforeEach(function(){
+    parentScope = bound.scope.extend(message);
+    childScope = parentScope.extend(alice);
   });
 
-  xit('should allow lookups in the global scope from the top level scope chain', function(){
-    global.present = 3;
-    expect(bound.topScopeChain.get('present')).toEqual(3);
-    expect(bound.topScopeChain.get('absent')).toEqual(undefined);
-    delete global.present;
+  describe('basics', function(){
+
+    xit('introduces a top level scope', function(){
+      expect(bound.scope).toEqual(any(Object));
+    });
+
+    xit('can create subscopes', function(){
+      expect(bound.scope.extend).toEqual(any(Function));
+    });
+
   });
 
-  xit('should allow lookups of literal objects, arrays, and strings with double and single quotes', function(){
-    expect(bound.topScopeChain.get("3")).toEqual(3);
-    expect(bound.topScopeChain.get('"in doubles"')).toEqual('in doubles');
-    expect(bound.topScopeChain.get("'in singles'")).toEqual('in singles');
-    expect(bound.topScopeChain.get("[]")).toEqual([]);
-    expect(bound.topScopeChain.get("{}")).toEqual({});
-    expect(bound.topScopeChain.get("false")).toEqual(false);
-    expect(bound.topScopeChain.get("true")).toEqual(true);
-    expect(bound.topScopeChain.get("null")).toEqual(null);
-    expect(bound.topScopeChain.get("undefined")).toEqual(undefined);
-    expect(bound.topScopeChain.get('absent')).toEqual(undefined);
-    global.greeting = 'hello';
-    expect(bound.topScopeChain.get('{key: greeting}')).toEqual({key: 'hello'});
-    delete global.greeting;
-    expect(bound.topScopeChain.get('alice.name')).toEqual('alice');
-    expect(bound.topScopeChain.get(''));
+  describe('lookups', function(){
+
+    xit('allows lookups in the global scope from the top level scope', function(){
+      global.present = 3;
+      expect(bound.scope.get('present')).toEqual(3);
+      expect(bound.scope.get('absent')).toEqual(undefined);
+      delete global.present;
+    });
+
+    xit('lookups in a child scope fall through to the parent scope', function(){
+      expect(childScope.get('text')).toEqual('hi');
+    });
+
   });
 
-  xit('should allow you to create child scope chains that delegate upwards', function(){
+  describe('literals', function(){
+
+    xit('should allow lookups of literal objects, arrays, and strings with double and single quotes', function(){
+      _.each({
+        '3': 3,
+        '"in doubles"': 'in doubles',
+        "'in singles'": 'in singles',
+        "[]": [],
+        "{}": {},
+        "false": false,
+        "true": true,
+        "null": null,
+        "undefined": undefined,
+        'absent': undefined,
+        '{key: text}': {key: 'hi'},
+        'bob.name': 'bob'
+      }, function(key, value){
+        expect(childScope.lookup(key)).toEqual(value);
+      });
+    });
+
+  });
+
+  describe('reruns', function(){
+
+    xit('reruns blocks that made lookup in a scope when target namespace changes', function(){
+      var runCount = 0;
+      bound.autorun(function(){
+        parentScope.lookup('text');
+        runCount++;
+      });
+      expect(runCount).toBe(1);
+      message.bound('set', 'text', 'hello');
+      expect(runCount).toBe(2);
+    });
+
+    xit('if a value is found on an object that is low in the scope chain, and the value at that key is changed on a higher level of the chain, those changes do not result in a rerender of directives that depended on the value in the leaf object', function(){
+    });
+
   });
 
 });

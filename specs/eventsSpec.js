@@ -1,5 +1,7 @@
 describe('events', function(){
 
+  // todo: review
+
   var game;
   beforeEach(function(){
     game = {};

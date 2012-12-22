@@ -4,6 +4,13 @@
 
   var testEnv = global.testEnv = global.testEnv || {};
 
+  testEnv.fetchSpecs = function(){
+    var args = arguments;
+    args.length == 1 ? args[0]() : $.getScript(args[0], function(){
+      testEnv.fetchSpecs.apply(global, _.toArray(args).slice(1));
+    });
+  };
+
   testEnv.beforeAll = function(){
     testEnv.refreshNodes();
     testEnv.refreshObjects();
@@ -52,6 +59,7 @@
     beforeEach(testEnv.beforeAll);
     afterEach(testEnv.afterAll);
     global.any = jasmine.any;
+    global.Clock = jasmine.Clock;
     global.makeSpied = function(func){
       func = func || function(){};
       var container = {func: func};

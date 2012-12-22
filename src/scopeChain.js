@@ -1,7 +1,10 @@
 (function(){
-  var that = this;
-  bound.topScopeChain = {};
-  bound.topScopeChain.extend = function(){};
-  bound.topScopeChain.get = function(arg){
+
+  bound.scope = {};
+
+  bound.scope.extend = function(){};
+
+  bound.scope.get = function(arg){
   };
+
 }());
