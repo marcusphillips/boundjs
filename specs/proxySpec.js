@@ -100,7 +100,7 @@ describe('proxies', function(){
       object.bound('del', 'setThing');
       var trulyDel = object.bound('get', 'setThing');
       expect(trulyDel).not.toEqual(trulySet);
-      expect(!object.hasOwnProperty('setThing')).toBe(true);
+      expect(object.hasOwnProperty('setThing')).toBe(false);
     });
     xit('should re-run work that was dependent on calls to "has" after deleting properties that used to exist');
     xit('should re-run work that was dependent on calls to "has" after setting properties that didnt\'t used to exist');
