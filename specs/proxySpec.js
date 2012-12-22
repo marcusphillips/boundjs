@@ -78,7 +78,7 @@ describe('proxies', function(){
   //TODO: add tests for all Proxy methods
 
   describe('bound proxy objects', function(){
-    xit('should expire all dependant computations when called with no command name', function(){
+    xit('should expire all dependent computations when called with no command name', function(){
 
     });
     it('should get the value of properties from the target object when you run the get command', function(){
@@ -100,11 +100,19 @@ describe('proxies', function(){
       object.bound('del', 'setThing');
       var trulyDel = object.bound('get', 'setThing');
       expect(trulyDel).not.toEqual(trulySet);
+      expect(!object.hasOwnProperty('setThing')).toBe(true);
     });
     xit('should re-run work that was dependent on calls to "has" after deleting properties that used to exist');
     xit('should re-run work that was dependent on calls to "has" after setting properties that didnt\'t used to exist');
-    xit('should return the presense or absence of a property on the target object when you run the has command');
-    xit('should return the immediate presense or absence of a property (not prototype-inherited) on the target object when you run the owns command');
+    it('should return the presence or absence of a property on the target object when you run the has command', function(){
+      var object = {};
+      bound.proxy(object);
+      object.bound('set', 'foo', 'bar');
+      expect(object.bound('has', 'foo')).toBe(true);
+      expect(object.bound('has', 'charlie')).toBe(false);
+
+    });
+    xit('should return the immediate presence or absence of a property (not prototype-inherited) on the target object when you run the owns command');
     xit('todo: need to provide a way for users to run a function or a method in an arbitrary context');
     xit('should run the specified method (in the context of the target object) when you run the run command, and should return the result');
     xit('should run the target function object (in the context of window) when you run the exec command, and should return the result');
@@ -112,7 +120,17 @@ describe('proxies', function(){
     xit('should add meta data about the target object to the proxy object when you call the meta command');
   });
 
-  xit('errors when passed an invalid command name');
+  it('errors when passed an invalid command name', function(){
+    var object = {}
+    bound.proxy(object);
+    var proxy = object.bound('proxy');
+    var invalidCommands = ['delete', 1, true, false, ['hello','goodbye'], {thing1:"foo", thing2:"bar"}];
+    for(var i = 0; i < invalidCommands.length; i++){
+      var command = invalidCommands[i];
+      expect(proxy[command]).not.toEqual(any(Function));
+    }
+
+  });
 
   xit('should let you invalidate listeners for one key by exposing a bound() command "changed"', function(){
     var runCount = 0;
