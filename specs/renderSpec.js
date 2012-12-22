@@ -79,13 +79,18 @@ describe('rendering', function(){
 
   });
 
+  describe('.section()', function(){
+    // todo: define a mechanism that retrieves descendant widgets with a given name
+    //   when nodes are rendered that have a section attribute, they register with their ancestor chain
+  });
+
   describe('following directives', function(){
 
     it('does not remove a directive attribute after following it', function(){
       expect($name.render(alice).attr('contents')).toEqual('name');
     });
 
-    xit('errors when passed an invalid command name');
+    xit('errors when passed an invalid directive name');
 
     it('updates nodes nested within the top level node', function(){
       $('<div>').append($name).render(alice);

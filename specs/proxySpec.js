@@ -141,15 +141,20 @@ describe('proxies', function(){
       object.bound('del', 'setThing');
       var trulyDel = object.bound('get', 'setThing');
       expect(trulyDel).not.toEqual(trulySet);
+      expect(!object.hasOwnProperty('setThing')).toBe(true);
     });
 
     xit('should re-run work that was dependent on calls to "has" after deleting properties that used to exist');
 
     xit('should re-run work that was dependent on calls to "has" after setting properties that didnt\'t used to exist');
 
-    xit('should return the presense or absence of a property on the target object when you run the has command');
+    it('should return the presence or absence of a property on the target object when you run the has command', function(){
+      bound.proxy(message);
+      expect(message.bound('has', 'text')).toBe(true);
+      expect(message.bound('has', 'unicorns')).toBe(false);
+    });
 
-    xit('should return the immediate presense or absence of a property (not prototype-inherited) on the target object when you run the owns command');
+    xit('should return the immediate presence or absence of a property (not prototype-inherited) on the target object when you run the owns command');
 
     xit('todo: need to provide a way for users to run a function or a method in an arbitrary context');
 
@@ -184,7 +189,7 @@ describe('proxies', function(){
     xit('should update only the values associated with specified keys', function(){
     });
 
-    xit('should expire all dependant computations when called with no command name', function(){
+    xit('should expire all dependent computations when called with no command name', function(){
     });
 
     xit('should not result in re-runs of dependent contexts for setting properties to the same value they already hold', function(){
@@ -206,6 +211,18 @@ describe('proxies', function(){
       alice.bound('set', 'name', 'al');
       Clock.tick();
       expect([runCount1, runCount2]).toEqual([1, 2]);
+    });
+
+    it('errors when passed an invalid command name', function(){
+      var object = {}
+      bound.proxy(object);
+      var proxy = object.bound('proxy');
+      var invalidCommands = ['delete', 1, true, false, ['hello','goodbye'], {thing1:"foo", thing2:"bar"}];
+      for(var i = 0; i < invalidCommands.length; i++){
+        var command = invalidCommands[i];
+        expect(proxy[command]).not.toEqual(any(Function));
+      }
+
     });
 
   });
