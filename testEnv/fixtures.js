@@ -5,6 +5,11 @@ testEnv.defineFixtureObjectMaker(function(){
 
     shopping: ['cheese', 'eggs', 'milk'],
 
+    message: {
+      text: 'hi',
+      readState: 'unread'
+    },
+
     navItems: [
       {text:'home'},
       {text:'profile'},
@@ -39,9 +44,13 @@ testEnv.defineFixtureObjectMaker(function(){
       name: 'ellen'
     },{
       name: 'hacker'
-    }]
+    }],
+
+    parent: {}
 
   };
+
+  objects.child = _.create(objects.parent);
 
   for(var i = 0; i < objects.people.length; i++){
     var person = objects.people[i];
