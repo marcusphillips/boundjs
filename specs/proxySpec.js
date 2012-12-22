@@ -6,6 +6,11 @@ describe('proxies', function(){
       expect(bound).toEqual(any(Function));
     });
 
+    xit('provides a helper to identify bound methods', function(){
+      expect(bound.isBoundMethod(function(){}).toBe(false));
+      expect(bound.isBoundMethod(bound.proxy({}).bound)).toBe(true);
+    });
+
     it('should return the input object as a result of calling bound()', function(){
       expect(bound.proxy(alice)).toEqual(alice);
     });
@@ -56,6 +61,16 @@ describe('proxies', function(){
         bound.proxy(proxy);
       }).toThrow();
     });
+
+  });
+
+  describe('iteration', function(){
+
+    xit('skips .bound methods');
+
+    xit('does not skip .bound properties that are not bound methods');
+
+    xit('does not skip bound methods stored at keys besides .bound');
 
   });
 

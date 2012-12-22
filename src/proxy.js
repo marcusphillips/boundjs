@@ -7,8 +7,7 @@
     _.raiseIf(window.jQuery && target instanceof window.jQuery || target.nodeType === 1, 'bound() cannot yet proxy node-like objects');
     _.raiseIf(target instanceof Proxy, "can't bind a proxy to another proxy");
     if(target.hasOwnProperty('bound')){
-      // TODO: broken for objects with a bound property of null
-      return target.bound && target.bound.prototype === boundMethodFlag ? target.bound('proxy') : _.raise("'bound' key already on object");
+      return isBoundMethod(target.bound) ? target.bound('proxy') : _.raise("'bound' key already on object");
     }
     this.target = target;
     var proxy = this;
@@ -78,9 +77,25 @@
 
   };
 
+  var isBoundMethod = function(item){
+    return item && item.prototype === boundMethodFlag;
+  };
+
   new Proxy(global);
   global.bound.proxy = function(target){
     return new Proxy(target).target;
+  };
+
+  bound.isBoundMethod = isBoundMethod;
+
+  global.bound.each = function(collection, block, context){
+    var args = _.extend([], arguments);
+    args[1] = function(item, key){
+      if(key !== bound || !bound.isBoundMethod(item)){
+        block.apply(this, arguments);
+      }
+    };
+    _.each.apply(_, args);
   };
 
 }());
