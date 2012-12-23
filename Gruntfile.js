@@ -12,7 +12,7 @@ module.exports = function(grunt) {
         ' Licensed <%= _.pluck(meta.pkg.licenses, "type").join(", ") %> */\n',
       src    : ['src/events.js', 'src/proxy.js', 'src/deps.js', 'src/scope.js', 'src/render.js'],
       vendor : ['lib/underscore/underscore.js', 'lib/jquery/jquery-latest.js', 'src/undermore.js'],
-      specs  : ['specs/**/*.js']
+      specs  : ['specs/**/*Spec.js']
     },
     jasmine : {
       src : '<%= meta.src %>',
