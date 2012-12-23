@@ -20,6 +20,9 @@
     "type": "git",
     "url": "git://github.com/marcusphillips/boundjs.git"
   },
+  "bugs": {
+    "url": "https://github.com/marcusphillips/boundjs/issues"
+  },
   "scripts": {
     "test": "grunt test",
     "dist": "grunt dist"
