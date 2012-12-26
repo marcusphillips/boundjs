@@ -83,7 +83,7 @@ describe('proxies', function(){
       }).toThrow();
     });
 
-    xit('throws an error when a .bound() method is called on its associated object, but the method is not found on the target at the key \'bound\'', function(){
+    it('throws an error when a .bound() method is called on its associated object, but the method is not found on the target at the key \'bound\'', function(){
       var removedMethod = bound.proxy(alice).bound;
       delete alice.bound;
       expect(function(){
