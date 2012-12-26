@@ -6,8 +6,8 @@ describe('proxies', function(){
       expect(bound).toEqual(any(Function));
     });
 
-    xit('provides a helper to identify bound methods', function(){
-      expect(bound.isBoundMethod(function(){}).toBe(false));
+    it('provides a helper to identify bound methods', function(){
+      expect(bound.isBoundMethod(function(){})).toBe(false);
       expect(bound.isBoundMethod(bound.proxy({}).bound)).toBe(true);
     });
 
