@@ -214,15 +214,10 @@ describe('proxies', function(){
     });
 
     it('errors when passed an invalid command name', function(){
-      var object = {}
-      bound.proxy(object);
-      var proxy = object.bound('proxy');
-      var invalidCommands = ['delete', 1, true, false, ['hello','goodbye'], {thing1:"foo", thing2:"bar"}];
-      for(var i = 0; i < invalidCommands.length; i++){
-        var command = invalidCommands[i];
-        expect(proxy[command]).not.toEqual(any(Function));
-      }
-
+      var object = bound.proxy({});
+      expect(function(){
+        object.bound('invalidCommand')
+      }).toThrow();
     });
 
   });
