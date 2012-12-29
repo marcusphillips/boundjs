@@ -6,8 +6,8 @@ describe('proxies', function(){
       expect(bound).toEqual(any(Function));
     });
 
-    xit('provides a helper to identify bound methods', function(){
-      expect(bound.isBoundMethod(function(){}).toBe(false));
+    it('provides a helper to identify bound methods', function(){
+      expect(bound.isBoundMethod(function(){})).toBe(false);
       expect(bound.isBoundMethod(bound.proxy({}).bound)).toBe(true);
     });
 
@@ -83,7 +83,7 @@ describe('proxies', function(){
       }).toThrow();
     });
 
-    xit('throws an error when a .bound() method is called on its associated object, but the method is not found on the target at the key \'bound\'', function(){
+    it('throws an error when a .bound() method is called on its associated object, but the method is not found on the target at the key \'bound\'', function(){
       var removedMethod = bound.proxy(alice).bound;
       delete alice.bound;
       expect(function(){
@@ -102,46 +102,34 @@ describe('proxies', function(){
   describe('bound proxy object methods', function(){
 
     it('should allow access to a proxy object by calling the "proxy" command', function(){
-      // todo: tursify
-      var object = {};
-      bound.proxy(object);
-      var proxy = object.bound('proxy');
+      var proxy = bound.proxy({}).bound('proxy');
       var proxyMethods = 'get set del has owns run exec pub sub proxy meta'.split(' ');
-      for(var i = 0; i < proxyMethods.length; i++){
-        var methodName = proxyMethods[i];
-        expect(proxy[methodName]).toEqual(any(Function));
-        spyOn(proxy, methodName);
+      _.each(proxyMethods, function(element){
         var randomNumber = Math.random();
-        proxy[methodName](randomNumber);
-        expect(proxy[methodName]).toHaveBeenCalledWith(randomNumber);
-      }
+        spyOn(proxy, element);
+        proxy[element](randomNumber);
+        expect(proxy[element]).toEqual(any(Function));
+        expect(proxy[element]).toHaveBeenCalledWith(randomNumber);
+      });
     });
 
     it('should get the value of properties from the target object when you run the get command', function(){
-      // todo: tursify
-      var object = {thing:5};
-      bound.proxy(object);
+      var object = bound.proxy({thing:5});
       expect(object.bound('get','thing')).toEqual(5);
     });
 
     it('should set the value of properties from the target object when you run the set command', function(){
-      // todo: tursify
-      var object = {};
-      bound.proxy(object);
+      var object = bound.proxy({});
       object.bound('set', 'setThing', 2);
       expect(object.bound('get','setThing')).toEqual(2);
     });
 
     it('should delete properties from the target object when you run the del command', function(){
-      // todo: tursify
-      var object = {};
-      bound.proxy(object);
+      var object = bound.proxy({});
       object.bound('set', 'setThing', 4);
-      var trulySet = object.bound('get', 'setThing');
       object.bound('del', 'setThing');
-      var trulyDel = object.bound('get', 'setThing');
-      expect(trulyDel).not.toEqual(trulySet);
-      expect(object.hasOwnProperty('setThing')).toBe(false);
+      expect(object.bound('get', 'setThing')).not.toEqual(4);
+      expect(object.hasOwnProperty('setThing')).not.toBe(true);
     });
 
     xit('should re-run work that was dependent on calls to "has" after deleting properties that used to exist');
