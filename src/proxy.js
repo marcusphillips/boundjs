@@ -4,15 +4,17 @@
 
   var boundMethodFlag = {};
   var Proxy = function(target){
+    this._dependentContextSets = {};
+
     _.raiseIf(window.jQuery && target instanceof window.jQuery || target.nodeType === 1, 'bound() cannot yet proxy node-like objects');
     _.raiseIf(target instanceof Proxy, "can't bind a proxy to another proxy");
     if(target.hasOwnProperty('bound')){
       return isBoundMethod(target.bound) ? target.bound('proxy') : _.raise("'bound' key already on object");
     }
+
     this.target = target;
     var proxy = this;
     _.extend(target, {
-      _dependentContextSets: {},
       bound: function(commandName) {
         _.raiseIf(this !== target, "cannot call bound on foreign objects.");
         _.raiseIf(target.bound === undefined, "cannot call bound on objects that lack a bound method.");
@@ -36,7 +38,7 @@
     // when no command is passed at all
     'undefined': function(){
       //todo: this probably never deletes context sets stored at keys that are entirely cleared from contexts
-      _.invoke(this.target._dependentContextSets, 'invalidateAll');
+      _.invoke(this._dependentContextSets, 'invalidateAll');
       return this;
     },
 
@@ -77,7 +79,7 @@
     },
 
     _ensuredContextSet: function(key){
-      return (this.target._dependentContextSets[key] = this.target._dependentContextSets[key] || new bound._ContextSet());
+      return (this._dependentContextSets[key] = this._dependentContextSets[key] || new bound._ContextSet());
     }
 
   };

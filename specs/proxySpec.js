@@ -51,7 +51,7 @@ describe('proxies', function(){
       expect(bound.proxy(child).bound).not.toEqual(bound.proxy(parent).bound);
     });
 
-    xit('should not add any properties to a object other than .bound()', function(){
+    it('should not add any properties to a object other than .bound()', function(){
       expect(_.keys(bound.proxy({}))).toEqual(['bound']);
     });
 
