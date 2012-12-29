@@ -35,6 +35,11 @@
           $node.attr((attribute.name).slice("attr-".length), scope[attribute.value]);
         }
       });
+    },
+    addClass: function($node, scope) {
+      var boundClasses = $node.attr("bound-classes");
+      $node.removeClass();  // Will remove ALL classes; need test to ensure it doesn't
+      $node.addClass(scope[boundClasses]);
     }
   };
 

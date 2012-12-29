@@ -114,15 +114,29 @@ describe('render', function(){
   xit('if a value is found on an object found low in the scope chain, and the value of at that key is changed on a higher level of the chain, those changes do not result in a rerender of the node that depended on the leaf object', function(){
   });
 
-  xit('should add the approrpriate class when the bound-classes directive is present', function(){
+  it('should add the approrpriate class when the bound-classes directive is present', function(){
     var $node = $('<div bound-classes="readState"></div>');
     var message = {readState: 'unread'};
+    debugger
     $node.render(message);
+    expect($node.hasClass('unread')).toBe(true);
+    message.readState = 'read';
+    message.bound();  // WHAT IS THIS DOING??? DOES IT CALL RENDER // CLASSES ARE SCOPE SPECIFIC
     expect($node.hasClass('unread')).toBe(false);
+    expect($node.hasClass('read')).toBe(true);
+  });
+
+  xit('should add the approrpriate class when the bound-classes directive is present, but not remove existing, non-bound-classes', function(){
+    var $node = $('<div bound-classes="readState" class="doNotRemove"></div>');
+    var message = {readState: 'unread'};
+    $node.render(message);
+    expect($node.hasClass('unread')).toBe(true);
+    expect($node.hasClass('doNotRemove')).toBe(true);
     message.readState = 'read';
     message.bound();
     expect($node.hasClass('unread')).toBe(false);
     expect($node.hasClass('read')).toBe(true);
+    expect($node.hasClass('doNotRemove')).toBe(true);
   });
 
 });
