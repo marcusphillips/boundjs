@@ -16,6 +16,10 @@
       bound: function(commandName) {
         _.raiseIf(this !== target, "cannot call bound on foreign objects.");
         _.raiseIf(target.bound === undefined, "cannot call bound on objects that lack a bound method.");
+        //questions: 1) is there a more dynamic way to pull out the method names? they could change.
+                  // 2) why doesn't this work??
+        var proxyMethods = ['get', 'set', 'del', 'has', 'owns', 'run', 'exec', 'pub', 'sub', 'proxy', 'meta', undefined];
+        _.raiseIf(!_.contains(proxyMethods, commandName), "invalid command name.");
         return proxy[commandName].apply(proxy, _.toArray(arguments).slice(1));
       }
     });
