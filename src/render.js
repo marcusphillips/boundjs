@@ -7,13 +7,15 @@
     bound.proxy(scope);
     var $that = this;
     bound.autorun(function(){
-      directiveRenderCount++;
-      // todo: all directive computations will share a context
-      _.each(directiveProcessors, function(processor){
-        processor($that, scope);
-      });
-      _.each($that.children(), function(child){
-        $(child).render(scope);
+    _.each($that, function($nodeObject){
+        directiveRenderCount++;
+        // todo: all directive computations will share a context
+        _.each(directiveProcessors, function(processor){
+          processor($($nodeObject), scope);
+        });
+        _.each($($nodeObject).children(), function(child){
+          $(child).render(scope);
+        });
       });
     });
     return this;
@@ -30,12 +32,34 @@
 
   var directiveProcessors = {
     contents: function($node, scope) {
-      var directive = $node.attr("contents");
-      if(directive){
-        $node.html(bound.proxy(scope).bound('has', directive) ? scope.bound('get', directive) : bound('get', directive));
-      }
+        var args, directives, scopes = [];
+        var htmlString = [];
+        var directive = $node.attr("contents");
 
+        if (Array.isArray(scope)) {
+          scopes = scope;
+        } else {
+          scopes.push(scope);
+        }
+
+        if (directive) {
+          directives = directive.split(" ");
+        } else {
+          bound.resetDirectiveRenderCount();
+        }
+
+        if(directives){
+          _.each(directives, function(directive){
+            _.each(scopes, function(scope){
+              htmlString.push(bound.proxy(scope).bound('has', directive) ? scope.bound('get', directive) : bound('get', directive));
+            });
+          });
+          $node.html(htmlString.join(" "));
+        } else {
+          $node.html(bound.proxy(scope).bound('has', directive) ? scope.bound('get', directive) : bound('get', directive));
+        }
     },
+
     attr: function($node, scope) {
       _.each($node[0].attributes, function(attribute){
         if((/^attr/).test(attribute.name)) {

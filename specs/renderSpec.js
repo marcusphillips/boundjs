@@ -41,12 +41,12 @@ describe('rendering', function(){
 
   describe('affected nodes', function(){
 
-    xit('does not operate on nodes that have no directives', function(){
+    it('does not operate on nodes that have no directives', function(){
       $empty.render({});
       expect(bound.getDirectiveRenderCount()).toEqual(0);
     });
 
-    xit('operates on all nodes in a single jQuery collection', function(){
+    it('operates on all nodes in a single jQuery collection', function(){
       $name.add($age).render(alice);
       expect(bound.getDirectiveRenderCount()).toEqual(2);
       expect($name.html()).toEqual('alice');
@@ -107,25 +107,29 @@ describe('rendering', function(){
       delete global.food;
     });
 
-    xit('passing two namespaces inputs to .render() adds them both to the scope chain for that node');
+    it('passing two namespaces inputs to .render() adds them both to the scope chain for that node', function(){      
+      var bob = {name: "bob"};
+      var alice = {name: "alice"};
+      expect($('<div contents="name"></div>').render([alice, bob]).html()).toEqual('alice bob');
+    });
 
-    xit('rendering nodes against a scope chain allows for fall-through between the namespaces');
+    it('rendering nodes against a scope chain allows for fall-through between the namespaces', function(){
+      global.food = 'sausage';
+      var alice = {name: "alice"};
+      expect($('<div contents="food name"></div>').render(alice).html()).toEqual('sausage alice');
+      delete global.food;
+    });
 
-    xit('calling .render() on an object that was already rendered against a namespace results in pushing the new namespace onto the scope chain for that node');
+    xit('calling .render() on an object that was already rendered against a namespace results in pushing the new namespace onto the scope chain for that node', function(){
+      // global.name = 'harry';
+      var alice = {name: "alice"};
+      expect($('<div contents="name"></div>').render(alice).html()).toEqual('alice harry');
+      var alice = {name: "alice"};
+      expect($('<div contents="name"></div>').render(alice).html()).toEqual('alice harry');
+      // delete global.name;
+    });
 
   });
-
-  xit('should add the approrpriate class when the bound-classes directive is present, but not remove existing, non-bound-classes', function(){
-    var $node = $('<div bound-classes="readState" class="doNotRemove"></div>');
-    var message = {readState: 'unread'};
-    $node.render(message);
-    expect($node.hasClass('unread')).toBe(true);
-    expect($node.hasClass('doNotRemove')).toBe(true);
-    message.readState = 'read';
-    message.bound();
-    expect($node.hasClass('unread')).toBe(false);
-    expect($node.hasClass('read')).toBe(true);
-    expect($node.hasClass('doNotRemove')).toBe(true);
 
   describe('reactive updates', function(){
 
@@ -149,7 +153,6 @@ describe('rendering', function(){
       expect($name2.html()).toEqual('bob');
     });
 
->>>>>>> fec47fd919c71d55cba844bdc901d110065464f2
   });
 
 });
