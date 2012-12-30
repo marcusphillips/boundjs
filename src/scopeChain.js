@@ -80,7 +80,18 @@
 
       var consumeHash = function(){
         var result = {};
-        //
+        var key;
+        var val;
+        consume("{");
+        consumeSpace();
+        //code for key
+        consume(':');
+        consumeSpace();
+        //code for value
+        consume(',')
+        consumeSpace();
+        //code for recursion
+        result[key] = val
         return result;
       };
 
@@ -114,6 +125,8 @@
         throw new Error("Bad string");
       };
 
+
+      //TODO nested array 
       var consumeArray = function(){
         var result = [];
         consume('[');

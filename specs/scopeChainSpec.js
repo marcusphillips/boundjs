@@ -29,9 +29,13 @@ describe('scope chains', function(){
     expect(bound.topScopeChain.get("32223")).toEqual(32223);
   });
 
-  it('should allow lookups of big number literal', function(){
+  it('should allow lookups of number literal that contains 0 in front of it.', function(){
     expect(bound.topScopeChain.get("0032223")).toEqual(32223);
   });      
+
+  it('should allow lookups of number literal that contains 0 middle of it.', function(){
+    expect(bound.topScopeChain.get("010023")).toEqual(10023);
+  });
 
   it('should allow lookups for string literals in double qoutes', function(){
     expect(bound.topScopeChain.get('"in doubles"')).toEqual('in doubles');
@@ -48,6 +52,10 @@ describe('scope chains', function(){
   it('should allow lookups for array literals', function(){
     expect(bound.topScopeChain.get("['a', 3, false]")).toEqual(['a', 3, false]);
   });
+
+  xit('should allow lookups for nested array literals', function(){
+    expect(bound.topScopeChain.get("[[1], [2], [3]]")).toEqual([[1], [2], [3]]);
+  });  
 
   xit('should allow lookups for object literals', function(){
     expect(bound.topScopeChain.get("{key: 'value'}")).toEqual({key: 'value'});
