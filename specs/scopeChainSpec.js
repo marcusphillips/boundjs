@@ -53,7 +53,7 @@ describe('scope chains', function(){
     expect(bound.topScopeChain.get("['a', 3, false]")).toEqual(['a', 3, false]);
   });
 
-  xit('should allow lookups for nested array literals', function(){
+  it('should allow lookups for nested array literals', function(){
     expect(bound.topScopeChain.get("[[1], [2], [3]]")).toEqual([[1], [2], [3]]);
   });  
 
@@ -86,13 +86,13 @@ describe('scope chains', function(){
     expect(bound.topScopeChain.get("undefined")).toEqual(undefined);
   });
 
-  xit('should allow lookups for objects composed from variable substitutions', function(){
+  it('should allow lookups for objects composed from variable substitutions', function(){
     global.greeting = 'hello';
     expect(bound.topScopeChain.get('{key: greeting}')).toEqual({key: 'hello'});
     delete global.greeting;
   });
 
-  xit('', function(){
+  it('', function(){
     expect(bound.topScopeChain.get('alice.name')).toEqual('alice');
   });
 

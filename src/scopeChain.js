@@ -145,8 +145,6 @@
         throw new Error("Bad string");
       };
 
-
-      //TODO nested array 
       var consumeArray = function(){
         var result = [];
         consume('[');
