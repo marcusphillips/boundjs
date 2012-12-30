@@ -9,8 +9,11 @@
     var parse = function(json){
       var i = 0;
 
-      var next = function(){
-        var char = json[i];
+      var consume = function(expVal){
+        var char = peek();
+        if(char !== expVal){
+          throw new Error("Expected " + char + " to be " + expVal)
+        }
         i++;
         return char;
       };
@@ -21,19 +24,20 @@
 
       var consumeValue = function(){
         var result;
-        if(parsers[peek()]){
-          result = parsers[peek()]();
-        }else if(/\d/.test(peek())){
-          result = consumeNumber();
-        }else if(/\w/.test(peek())){
-          result = consumeToken();
+        var char = peek()
+        if(parsers[char]){
+          return parsers[char]();
+        }else if(/\d/.test(char)){
+          return consumeNumber();
+        }else if(/\w/.test(char)){
+          return consumeToken();
         }
         return result;
       };
 
-      var consumeWhiteSpace = function(){
+      var consumeSpace = function(){
         while(peek() === ' '){
-          next();
+          consume(' ');
         }
       };
 
@@ -42,13 +46,36 @@
       var consumeNumber = function(){
         var result = 0;
         while(/\d/.test(peek())){
-          result = result + next();
+          result = result + peek();
+          i++
         }
         return +result;
       };
 
       var consumeToken = function(){
-
+        switch (peek()) {
+          case "t":
+            consume("t");
+            consume("r");
+            consume("u");
+            consume("e");
+            return true;
+          case "f":
+            consume("f");
+            consume("a");
+            consume("l");
+            consume("s");
+            consume("e");
+            return false;
+          case "n":
+            consume("n");
+            consume("u");
+            consume("l");
+            consume("l");
+            return null;
+          default:
+          return undefined;
+        }
       }
 
       var consumeHash = function(){
@@ -58,32 +85,52 @@
       };
 
       var consumeDoubleQ = function(){
-        next();
         var result = '';
-        while(peek() !== '"'){
-          result += next();
+        consume('"');
+        consumeSpace();
+        while(peek()){
+          result += peek();
+          i++;
+          if(peek() === '"'){
+            consume('"');
+            return result;
+          }
         }
-        return result;
+        throw new Error("Bad string");
       };
 
       var consumeSingleQ = function(){
-        next();
         var result = '';
-        while(peek() !== "'"){
-          result += next();
+        consume("'");
+        consumeSpace();
+        while(peek()){
+          result += peek();
+          i++;
+          if(peek() === "'"){
+            consume("'");
+            return result;
+          }
         }
-        return result;
+        throw new Error("Bad string");
       };
 
       var consumeArray = function(){
         var result = [];
-        while(next() !== ']'){
-          result.push(peek());
-          if(next() === ','){
-            next();
+        consume('[');
+        consumeSpace();
+        if(peek() === ']'){
+          consume(']');
+          return result;
+        }
+        while(peek()){
+          result.push(consumeValue());
+          if(peek() === ']'){
+            return result;
           }
-        };
-        return result;
+          consume(',');
+          consumeSpace();
+        }
+        throw new Error("Bad array");
       };
 
       var parsers = {
@@ -91,7 +138,7 @@
         '{': consumeHash,
         '"': consumeDoubleQ,
         "'": consumeSingleQ,
-        ' ': consumeWhiteSpace
+        ' ': consumeSpace
       };
 
       return consumeValue();
