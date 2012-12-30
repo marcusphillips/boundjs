@@ -57,9 +57,21 @@ describe('scope chains', function(){
     expect(bound.topScopeChain.get("[[1], [2], [3]]")).toEqual([[1], [2], [3]]);
   });  
 
-  xit('should allow lookups for object literals', function(){
+  it('should allow lookups for object literals', function(){
     expect(bound.topScopeChain.get("{key: 'value'}")).toEqual({key: 'value'});
   });
+
+  it('should allow lookups for object literals that has mulifly keys and values', function(){
+    expect(bound.topScopeChain.get("{key: 'value', key2: 'value2', key3: 'value3'}")).toEqual({key: 'value', key2: 'value2', key3: 'value3'});
+  }); 
+
+  it('should allow lookups for object literals when values are arrays', function(){
+    expect(bound.topScopeChain.get("{key: [1,2,3,4], key2: [5,6,7,8], key3: [5,6,7,8]}")).toEqual({key: [1,2,3,4], key2: [5,6,7,8], key3: [5,6,7,8]});
+  });
+
+  it('should allow lookups for object literals when values are objects', function(){
+    expect(bound.topScopeChain.get("{key: {key4: 'value'}, key2: {key4: 'value2'}, key3: {key4: 'value3'}}")).toEqual({key: {key4: 'value'}, key2: {key4: 'value2'}, key3: {key4: 'value3'}});
+  }); 
 
   it('should allow lookups for boolean values', function(){
     expect(bound.topScopeChain.get("false")).toEqual(false);

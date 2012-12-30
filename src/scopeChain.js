@@ -80,20 +80,40 @@
 
       var consumeHash = function(){
         var result = {};
-        var key;
-        var val;
-        consume("{");
-        consumeSpace();
-        //code for key
-        consume(':');
-        consumeSpace();
-        //code for value
-        consume(',')
-        consumeSpace();
-        //code for recursion
-        result[key] = val
+        var keys = [];
+        var values = [];
+        consume('{');
+        while(peek()){
+          keys.push(key());
+          consumeSpace();
+          values.push(consumeValue());
+          if(peek() === ','){
+            consume(',');
+            consumeSpace();
+          };
+          if(peek() === '}'){
+            consume('}');
+            break;
+          }; 
+        }
+        for(var i = 0; i < keys.length; i++){
+          result[keys[i]]= values[i] 
+        };
         return result;
       };
+
+      var key = function(){
+        var result = '';
+        consumeSpace();
+        while(peek()){
+          result += peek();
+          i++;
+          if(peek()===':'){
+            consume(':');
+            return result;
+          }
+        }
+      }
 
       var consumeDoubleQ = function(){
         var result = '';
@@ -138,6 +158,7 @@
         while(peek()){
           result.push(consumeValue());
           if(peek() === ']'){
+            consume(']');
             return result;
           }
           consume(',');
