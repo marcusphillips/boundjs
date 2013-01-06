@@ -166,11 +166,11 @@ describe('proxies', function(){
       expect(runCount).toEqual(1);
       alice.name = 'al';
       alice.bound('changed', 'name');
-      Clock.tick();
+      Clock.tick(0);
       expect(runCount).toEqual(2);
       alice.age = 21;
       alice.bound('changed', 'age');
-      Clock.tick();
+      Clock.tick(0);
       expect(runCount).toEqual(2);
     });
 
@@ -183,7 +183,7 @@ describe('proxies', function(){
     xit('should not result in re-runs of dependent contexts for setting properties to the same value they already hold', function(){
     });
 
-    xit('should not re-run properties dependent on key inclusion when only the property value has changed, not its presence in the object', function(){
+    it('should not re-run properties dependent on key inclusion when only the property value has changed, not its presence in the object', function(){
       // todo: tursify
       bound.proxy(alice);
       var runCount1 = 0;
@@ -197,7 +197,7 @@ describe('proxies', function(){
         runCount2 += 1;
       });
       alice.bound('set', 'name', 'al');
-      Clock.tick();
+      Clock.tick(0);
       expect([runCount1, runCount2]).toEqual([1, 2]);
     });
 
