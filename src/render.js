@@ -1,20 +1,22 @@
 (function(){
   var global = this;
 
-  $.fn.render = function(scope){
+  $.fn.render = function(namespace){
     // todo: should be able to render multiple dom nodes contained in this jquery object
-    if(!arguments.length){ throw new Error('render requires a scope'); }
-    bound.proxy(scope);
+    if(!arguments.length){ throw new Error('render requires a namespace'); }
+    
+    bound.proxy(namespace);
     var $that = this;
     bound.autorun(function(){
-    _.each($that, function($nodeObject){
-        directiveRenderCount++;
-        // todo: all directive computations will share a context
+      $that.each(function(){
+        var $node = $(this);
+          // directiveRenderCount++;
+          // todo: all directive computations will share a context
         _.each(directiveProcessors, function(processor){
-          processor($($nodeObject), scope);
+          processor($node, namespace);
         });
-        _.each($($nodeObject).children(), function(child){
-          $(child).render(scope);
+        $node.children().each(function(){
+          $(this).render(namespace);
         });
       });
     });
@@ -31,46 +33,33 @@
   };
 
   var directiveProcessors = {
-    contents: function($node, scope) {
-        var args, directives, scopes = [];
-        var htmlString = [];
-        var directive = $node.attr("contents");
+    contents: function($node, namespace) {
+      var args, directives, namespace;
+      var htmlString = [];
+      var directives = $node.attr("contents");
 
-        if (Array.isArray(scope)) {
-          scopes = scope;
-        } else {
-          scopes.push(scope);
-        }
-
-        if (directive) {
-          directives = directive.split(" ");
-        } else {
-          bound.resetDirectiveRenderCount();
-        }
-
-        if(directives){
-          _.each(directives, function(directive){
-            _.each(scopes, function(scope){
-              htmlString.push(bound.proxy(scope).bound('has', directive) ? scope.bound('get', directive) : bound('get', directive));
-            });
-          });
-          $node.html(htmlString.join(" "));
-        } else {
-          $node.html(bound.proxy(scope).bound('has', directive) ? scope.bound('get', directive) : bound('get', directive));
-        }
+      if(directives){
+        directives = directives.split(" ");
+        _.each(directives, function(directive){
+          htmlString.push(bound.proxy(namespace).bound('has', directive) ? namespace.bound('get', directive) : bound('get', directive));
+        });
+        $node.html(htmlString.join(" "));
+        directiveRenderCount++;
+      }
     },
 
-    attr: function($node, scope) {
+    attr: function($node, namespace) {
       _.each($node[0].attributes, function(attribute){
+      // _.each($node.attributes, function(attribute){
         if((/^attr/).test(attribute.name)) {
-          $node.attr((attribute.name).slice("attr-".length), scope[attribute.value]);
+          $node.attr((attribute.name).slice("attr-".length), namespace[attribute.value]);
         }
       });
     },
-    addClass: function($node, scope) {
+    addClass: function($node, namespace) {
       var boundClasses = $node.attr("bound-classes");
       $node.removeClass();  // Will remove ALL classes; need test to ensure it doesn't
-      $node.addClass(scope[boundClasses]);
+      $node.addClass(namespace[boundClasses]);
     }
   };
 
