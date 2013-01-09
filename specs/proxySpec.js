@@ -89,6 +89,11 @@ describe('proxies', function(){
       expect(function(){
         removedMethod.apply(alice);
       }).toThrow();
+
+      alice.bound = function(){};
+      expect(function(){
+        removedMethod.apply(alice);
+      }).toThrow();
     });
 
     xit('should augment child objects with their own .bound() property when a call to .bound() delegates through to the prototype object', function(){

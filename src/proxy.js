@@ -11,6 +11,11 @@
     }
     this.target = target;
     var proxy = this;
+    var boundMethod = function(commandName) {
+      _.raiseIf(this !== target, "cannot call bound on foreign objects.");
+      _.raiseIf(target.bound !== boundMethod, "cannot call bound on objects that lack a bound method.");
+      return proxy[commandName].apply(proxy, _.toArray(arguments).slice(1));
+    };
     _.extend(target, {
       _dependentContextSets: {},
       bound: function(commandName) {
