@@ -50,7 +50,6 @@
 
     attr: function($node, namespace) {
       _.each($node[0].attributes, function(attribute){
-      // _.each($node.attributes, function(attribute){
         if((/^attr/).test(attribute.name)) {
           $node.attr((attribute.name).slice("attr-".length), namespace[attribute.value]);
         }
