@@ -34,7 +34,7 @@
 
   var directiveProcessors = {
     contents: function($node, namespace) {
-      var args, directives, namespace;
+      var directives;
       var htmlString = [];
       var directives = $node.attr("contents");
 
