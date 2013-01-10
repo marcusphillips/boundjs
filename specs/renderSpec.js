@@ -106,8 +106,6 @@ describe('rendering', function(){
     });
 
     it('passing two namespaces to .render() adds them both to the scope chain for that node', function(){      
-      var $name = $('<div contents="name"></div>');
-
       expect($name.render(alice, bob).html()).toEqual('bob');
       expect($name.render(alice, {}).html()).toEqual('alice');
       expect($name.render({}, alice).html()).toEqual('alice');
@@ -116,16 +114,13 @@ describe('rendering', function(){
 
     xit('rendering nodes against a scope chain allows for fall-through between the namespaces', function(){
       global.food = 'sausage';
-      var alice = {name: "alice"};
       expect($('<div contents="food name"></div>').render(alice).html()).toEqual('sausage alice');
       delete global.food;
     });
 
     xit('calling .render() on an object that was already rendered against a namespace results in pushing the new namespace onto the scope chain for that node', function(){
       // global.name = 'harry';
-      var alice = {name: "alice"};
       expect($('<div contents="name"></div>').render(alice).html()).toEqual('alice harry');
-      var alice = {name: "alice"};
       expect($('<div contents="name"></div>').render(alice).html()).toEqual('alice harry');
       // delete global.name;
     });
