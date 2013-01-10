@@ -108,7 +108,13 @@ describe('rendering', function(){
     it('passing two namespaces to .render() adds them both to the scope chain for that node', function(){      
       var bob = {name: "bob"};
       var alice = {name: "alice"};
-      expect($('<div contents="name"></div>').render(alice, bob).html()).toEqual('bob');
+
+      var $name = $('<div contents="name"></div>');
+      
+      expect($name.render(alice, bob).html()).toEqual('bob');
+      expect($name.render(alice, {}).html()).toEqual('alice');
+      expect($name.render({}, alice).html()).toEqual('alice');
+      expect($name.render(alice, bob).html()).toEqual('bob');
     });
 
     xit('rendering nodes against a scope chain allows for fall-through between the namespaces', function(){
