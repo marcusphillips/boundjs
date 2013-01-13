@@ -18,11 +18,7 @@
     };
     _.extend(target, {
       _dependentContextSets: {},
-      bound: function(commandName) {
-        _.raiseIf(this !== target, "cannot call bound on foreign objects.");
-        _.raiseIf(target.bound === undefined, "cannot call bound on objects that lack a bound method.");
-        return proxy[commandName].apply(proxy, _.toArray(arguments).slice(1));
-      }
+      bound: boundMethod
     });
     target.bound.prototype = boundMethodFlag;
   };
