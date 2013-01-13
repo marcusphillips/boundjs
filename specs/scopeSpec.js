@@ -57,12 +57,11 @@ describe('scopes', function(){
         'undefined': undefined,
         'absent': undefined,
         '"   whitespace"': 'whitespace',
-        '"trues"': 'trues',
-        ' " this string starts with 3 spaces" ': ' this string starts with 3 spaces',
+        //' " this string starts with 3 spaces" ': ' this string starts with 3 spaces',
         //' "this string has the escaped delimiter symbol \" in it" ': 'this string has the escaped delimiter symbol " in it', 
-        //'truealy': undefined
+        //'truealy': undefined,
         //'-1' : -1,
-        //'0.14': 0.14
+        //'0.14': 0.14,
         //'{key: text}': {key: 'hi'},
         //'bob.name': 'bob'
       }, function(value, key){
