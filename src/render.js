@@ -32,7 +32,7 @@
 
   var directiveProcessors = {
     contents: function($node, namespace) {
-      var directive = $node.attr("contents");
+      var directive = $node.attr("bound-contents");
 
       if(directive){
         htmlString = bound.proxy(namespace).bound('has', directive) ? namespace.bound('get', directive) : bound('get', directive);
@@ -43,8 +43,8 @@
 
     attr: function($node, namespace) {
       _.each($node[0].attributes, function(attribute){
-        if((/^attr/).test(attribute.name)) {
-          $node.attr((attribute.name).slice("attr-".length), namespace[attribute.value]);
+        if((/^bound-attr/).test(attribute.name)) {
+          $node.attr((attribute.name).slice("bound-attr-".length), namespace[attribute.value]);
         }
       });
     },

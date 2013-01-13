@@ -28,7 +28,7 @@ describe('rendering', function(){
 
     it('counts the number of directives processed', function(){
       expect(bound.getDirectiveRenderCount()).toEqual(0);
-      $('<div contents="name"></div>').render(alice);
+      $('<div bound-contents="name"></div>').render(alice);
       expect(bound.getDirectiveRenderCount()).toEqual(1);
       bound.resetDirectiveRenderCount();
       expect(bound.getDirectiveRenderCount()).toEqual(0);
@@ -84,7 +84,7 @@ describe('rendering', function(){
   describe('following directives', function(){
 
     it('does not remove a directive attribute after following it', function(){
-      expect($name.render(alice).attr('contents')).toEqual('name');
+      expect($name.render(alice).attr('bound-contents')).toEqual('name');
     });
 
     xit('errors when passed an invalid directive name');
@@ -99,7 +99,7 @@ describe('rendering', function(){
   describe('scopes and multiple namespace inputs', function(){
 
     xit('falls back onto the global namespace for keys that are not found on the input namespace', function(){
-      expect($('<div contents="name"></div>').render().html()).toEqual('alice');
+      expect($('<div bound-contents="name"></div>').render().html()).toEqual('alice');
     });
 
     xit('passing two namespaces to .render() adds them both to the scope chain for that node', function(){      
@@ -110,8 +110,8 @@ describe('rendering', function(){
     });
 
     it('calling .render() on an object that was already rendered against a namespace results in pushing the new namespace onto the scope chain for that node', function(){
-      expect($('<div contents="name"></div>').render(alice).html()).toEqual('alice');
-      expect($('<div contents="name"></div>').render(bob).html()).toEqual('bob');
+      expect($('<div bound-contents="name"></div>').render(alice).html()).toEqual('alice');
+      expect($('<div bound-contents="name"></div>').render(bob).html()).toEqual('bob');
     });
 
   });
