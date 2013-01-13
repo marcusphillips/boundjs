@@ -61,7 +61,7 @@
     },
     owns: function(key){
       this._addKeyDependency(key);
-      return this.hasOwnProperty(key);
+      return this.target.hasOwnProperty(key);
     },
     run: function(){
     },

@@ -160,7 +160,12 @@ describe('proxies', function(){
       expect(message.bound('has', 'unicorns')).toBe(false);
     });
 
-    xit('should return the immediate presence or absence of a property (not prototype-inherited) on the target object when you run the owns command');
+    it('should return the immediate presence or absence of a property (not prototype-inherited) on the target object when you run the owns command', function(){
+      bound.proxy(parent).bound('set', 'prop', 2);
+      expect(child.bound('owns', 'prop')).toBe(false);
+      child.bound('set', 'prop', 2);
+      expect(child.bound('owns', 'prop')).toBe(true);
+    });
 
     xit('todo: need to provide a way for users to run a function or a method in an arbitrary context');
 
