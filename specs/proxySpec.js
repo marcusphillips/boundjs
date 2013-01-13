@@ -51,7 +51,7 @@ describe('proxies', function(){
       expect(bound.proxy(child).bound).not.toEqual(bound.proxy(parent).bound);
     });
 
-    xit('should not add any properties to a object other than .bound()', function(){
+    it('should not add any properties to a object other than .bound()', function(){
       expect(_.keys(bound.proxy({}))).toEqual(['bound']);
     });
 
@@ -181,6 +181,8 @@ describe('proxies', function(){
     });
 
     xit('should not result in re-runs of dependent contexts for setting properties to the same value they already hold', function(){
+      
+      
     });
 
     xit('should not re-run properties dependent on key inclusion when only the property value has changed, not its presence in the object', function(){
@@ -202,15 +204,9 @@ describe('proxies', function(){
     });
 
     it('errors when passed an invalid command name', function(){
-      var object = {};
-      bound.proxy(object);
-      var proxy = object.bound('proxy');
-      var invalidCommands = ['delete', 1, true, false, ['hello','goodbye'], {thing1:"foo", thing2:"bar"}];
-      for(var i = 0; i < invalidCommands.length; i++){
-        var command = invalidCommands[i];
-        expect(proxy[command]).not.toEqual(any(Function));
-      }
-
+      expect(function(){
+        bound.proxy({}).bound('invalidCommand');
+      }).toThrow();
     });
 
   });
