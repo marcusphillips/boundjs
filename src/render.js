@@ -3,7 +3,6 @@
 
   $.fn.render = function(namespace){
     // todo: should be able to render multiple dom nodes contained in this jquery object
-    
     bound.proxy(namespace);
     var $that = this;
     bound.autorun(function(){
@@ -33,7 +32,6 @@
   var directiveProcessors = {
     contents: function($node, namespace) {
       var directive = $node.attr("bound-contents");
-
       if(directive){
         htmlString = bound.proxy(namespace).bound('has', directive) ? namespace.bound('get', directive) : bound('get', directive);
         $node.html(htmlString);
@@ -51,7 +49,7 @@
 
     'class': function($node, namespace) {
       var boundClasses = $node.attr("bound-classes");
-      $node.removeClass();  // Will remove ALL classes; need test to ensure it doesn't
+      $node.removeClass();  // TODO: Will remove ALL classes; need test to ensure it doesn't
       $node.addClass(namespace[boundClasses]);
     }
   };

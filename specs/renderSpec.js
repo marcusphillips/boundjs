@@ -121,7 +121,7 @@ describe('rendering', function(){
     it('refollows the directives of all rendered nodes when .bound() is called on a rendered-against namespace that has changed', function(){
       $name.render(alice);
       $age.render(alice);
-      _.extend(alice, {name: 'al', age: 24}).bound();
+      _.extend(alice, {name: 'al', age: 24}).bound(); // TODO: Refactor to use the bound 'set' method
       Clock.tick(0);
       expect($name.html()).toEqual('al');
       expect($age.html()).toEqual('24');
@@ -132,7 +132,7 @@ describe('rendering', function(){
       $name2.render(bob);
       alice.name = 'al';
       bob.name = 'robert';
-      alice.bound();
+      alice.bound();  // TODO: Refactor to use the bound 'set' method
       Clock.tick(0);
       expect($name.html()).toEqual('al');
       expect($name2.html()).toEqual('bob');

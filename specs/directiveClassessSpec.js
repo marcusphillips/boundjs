@@ -6,7 +6,7 @@ describe('bound-classes directive', function(){
     $message.render(message);
     expect($message.hasClass('unread')).toBe(true);
     expect($message.hasClass('read')).toBe(false);
-    message.bound('set', {readState: 'read'});
+    message.bound('set', {readState: 'read'});  // TODO: Refactor to use the bound 'set' method
     Clock.tick();
     expect($message.hasClass('unread')).toBe(false);
     expect($message.hasClass('read')).toBe(true);
