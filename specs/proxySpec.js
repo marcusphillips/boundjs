@@ -94,13 +94,18 @@ describe('proxies', function(){
       expect(function(){
         removedMethod.apply(alice);
       }).toThrow();
+
+      alice.wrongkey = removedMethod;
+      expect(function(){
+        alice.wrongKey();
+      }).toThrow();
     });
 
     it('should augment child objects with their own .bound() property when a call to .bound() delegates through to the prototype object', function(){
       bound.proxy(parent);
       expect(parent.bound).toEqual(child.bound);
       child.bound(); // delegates to parent.bound()
-      expect(child.bound).not.toEqual(parent.bound);
+      expect(parent.bound).not.toEqual(child.bound);
     });
 
     it('should change contexts to the child when augmenting that child with its own .bound() property', function(){
