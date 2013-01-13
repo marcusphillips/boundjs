@@ -1,10 +1,10 @@
 --- Projects ---
-- Documentation (!)
+- Documentation (rev + everyone)
 - Build process (nathan)
 - bound-contents (DONE)
   - subviews
 - Proxy (DONE)
-  - Array dependencies (mark rev)
+  - Array dependencies (rev)
     - directive: bound-loop (mark rosetti)
   - helper function augmentation
 - directive: bound-classes (paul)
