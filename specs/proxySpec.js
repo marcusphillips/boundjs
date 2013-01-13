@@ -96,10 +96,18 @@ describe('proxies', function(){
       }).toThrow();
     });
 
-    xit('should augment child objects with their own .bound() property when a call to .bound() delegates through to the prototype object', function(){
-      expect(child.bound).toEqual(bound.proxy(parent).bound);
+    it('should augment child objects with their own .bound() property when a call to .bound() delegates through to the prototype object', function(){
+      bound.proxy(parent);
+      expect(parent.bound).toEqual(child.bound);
       child.bound(); // delegates to parent.bound()
       expect(child.bound).not.toEqual(parent.bound);
+    });
+
+    it('should change contexts to the child when augmenting that child with its own .bound() property', function(){
+      bound.proxy(parent);
+      child.bound('set', 'setThing', 2); // delegates to parent.bound()
+      expect(child.bound('get', 'setThing')).toEqual(2);
+      expect(parent.bound('get', 'setThing')).not.toEqual(2);
     });
 
   });
