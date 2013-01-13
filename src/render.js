@@ -12,9 +12,7 @@
       _.each(directiveProcessors, function(processor){
         processor($that, scope);
       });
-      _.each($that.children(), function(child){
-        $(child).render(scope);
-      });
+      renderChildren($that, scope); // handles 'bound-with' directives
     });
     return this;
   };
@@ -26,6 +24,13 @@
 
   bound.getDirectiveRenderCount = function(){
     return directiveRenderCount;
+  };
+
+  var renderChildren = function($node, scope) {
+    var childrenScope = $node.attr("bound-with") ? $node.attr("bound-with") : scope;
+    _.each($node.children(), function(child){
+      $(child).render(childrenScope);
+    });
   };
 
   var directiveProcessors = {
