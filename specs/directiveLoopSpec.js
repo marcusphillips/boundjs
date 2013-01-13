@@ -1,6 +1,6 @@
 describe('proxies', function(){
 
-  xit('should populate a loop directive node with copies of the template node', function(){
+  xit('should populate a bound-loop directive node with copies of the template node', function(){
     var $children = $friends.render(david).children();
     expect($children.length).toEqual(4);
     expect([

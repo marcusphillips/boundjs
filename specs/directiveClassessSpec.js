@@ -1,4 +1,4 @@
-describe('classes directive', function(){
+describe('bound-classes directive', function(){
 
   xit('adds the approrpriate class when the bound-classes directive is present, and removes the class added by bound when the observed property changes', function(){
     expect($message.hasClass('unread')).toBe(false);
