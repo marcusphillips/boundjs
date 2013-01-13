@@ -1,7 +1,6 @@
 (function(){
 
   var global = this;
-
   var boundMethodFlag = {};
   var Proxy = function(target){
     _.raiseIf(window.jQuery && target instanceof window.jQuery || target.nodeType === 1, 'bound() cannot yet proxy node-like objects');
@@ -11,13 +10,19 @@
     }
     this.target = target;
     var proxy = this;
+
+    var boundMethod = function(commandName){
+      _.raiseIf(target.bound !== boundMethod, "cannot call bound on objects that lack a bound method.");
+      if (this !== target) {
+        _.raiseIf(!_.isAncestor(target, this), "cannot call bound on foreign objects.");
+        bound.proxy(this);
+        return this.bound.apply(this, arguments);
+      }
+      return proxy[commandName].apply(proxy, _.toArray(arguments).slice(1));
+    };
     _.extend(target, {
       _dependentContextSets: {},
-      bound: function(commandName) {
-        _.raiseIf(this !== target, "cannot call bound on foreign objects.");
-        _.raiseIf(target.bound === undefined, "cannot call bound on objects that lack a bound method.");
-        return proxy[commandName].apply(proxy, _.toArray(arguments).slice(1));
-      }
+      bound: boundMethod
     });
     target.bound.prototype = boundMethodFlag;
   };
