@@ -11,6 +11,9 @@
 - Parser (june)
   - Scopes
     - directive: bound-with
+  - 'if' clauses
+- directive: log
+- directive: debug
 - directive: bound-partial & bound-include
 - directive: bound-if
 - Widgets
