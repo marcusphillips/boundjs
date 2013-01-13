@@ -83,6 +83,7 @@
   };
 
   new Proxy(global);
+  // todo: rename to .ify()
   global.bound.proxy = function(target){
     return new Proxy(target).target;
   };
@@ -92,7 +93,8 @@
   global.bound.each = function(collection, block, context){
     var args = _.extend([], arguments);
     args[1] = function(item, key){
-      if(key !== bound || !bound.isBoundMethod(item)){
+      //todo: write tests for bound.each
+      if(key !== 'bound' || !bound.isBoundMethod(item)){
         block.apply(this, arguments);
       }
     };
