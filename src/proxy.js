@@ -3,11 +3,14 @@
   var global = this;
   var boundMethodFlag = {};
   var Proxy = function(target){
+    this._dependentContextSets = {};
+
     _.raiseIf(window.jQuery && target instanceof window.jQuery || target.nodeType === 1, 'bound() cannot yet proxy node-like objects');
     _.raiseIf(target instanceof Proxy, "can't bind a proxy to another proxy");
     if(target.hasOwnProperty('bound')){
       return isBoundMethod(target.bound) ? target.bound('proxy') : _.raise("'bound' key already on object");
     }
+
     this.target = target;
     var proxy = this;
 
@@ -18,13 +21,11 @@
         bound.proxy(this);
         return this.bound.apply(this, arguments);
       }
+      _.raiseIf(typeof proxy[commandName] !== 'function', 'invalid command name.');
       return proxy[commandName].apply(proxy, _.toArray(arguments).slice(1));
     };
-    _.extend(target, {
-      _dependentContextSets: {},
-      bound: boundMethod
-    });
-    target.bound.prototype = boundMethodFlag;
+    boundMethod.prototype = boundMethodFlag;
+    target.bound = boundMethod;
   };
 
   Proxy.prototype = {
@@ -37,7 +38,7 @@
     // when no command is passed at all
     'undefined': function(){
       //todo: this probably never deletes context sets stored at keys that are entirely cleared from contexts
-      _.invoke(this.target._dependentContextSets, 'invalidateAll');
+      _.invoke(this._dependentContextSets, 'invalidateAll');
       return this;
     },
 
@@ -78,7 +79,7 @@
     },
 
     _ensuredContextSet: function(key){
-      return (this.target._dependentContextSets[key] = this.target._dependentContextSets[key] || new bound._ContextSet());
+      return (this._dependentContextSets[key] = this._dependentContextSets[key] || new bound._ContextSet());
     }
 
   };
@@ -88,6 +89,7 @@
   };
 
   new Proxy(global);
+  // todo: rename to .ify()
   global.bound.proxy = function(target){
     return new Proxy(target).target;
   };
@@ -97,7 +99,8 @@
   global.bound.each = function(collection, block, context){
     var args = _.extend([], arguments);
     args[1] = function(item, key){
-      if(key !== bound || !bound.isBoundMethod(item)){
+      //todo: write tests for bound.each
+      if(key !== 'bound' || !bound.isBoundMethod(item)){
         block.apply(this, arguments);
       }
     };
