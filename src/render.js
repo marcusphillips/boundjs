@@ -30,7 +30,7 @@
 
   var directiveProcessors = {
     contents: function($node, namespace) {
-      var directive = $node.attr("contents");
+      var directive = $node.attr("bound-contents");
       if(directive){
         var contents = bound.proxy(namespace).bound('has', directive) ? namespace.bound('get', directive) : bound('get', directive);
         typeof contents === "string" ? $node.text(contents) : $node.html(contents);
@@ -40,8 +40,8 @@
 
     attr: function($node, namespace) {
       _.each($node[0].attributes, function(attribute){
-        if((/^attr-.+/).test(attribute.name)) {
-          $node.attr((attribute.name).slice("attr-".length), namespace[attribute.value]);
+        if((/^bound-attr-.+/).test(attribute.name)) {
+          $node.attr((attribute.name).slice("bound-attr-".length), namespace[attribute.value]);
           directiveRenderCount++;  
         }
       });
@@ -49,7 +49,7 @@
 
     'class': function($node, namespace) {
       var boundClasses = $node.attr("bound-classes");
-      $node.removeClass();  // Will remove ALL classes; need test to ensure it doesn't
+      $node.removeClass();  // TODO: Will remove ALL classes; need test to ensure it doesn't
       $node.addClass(namespace[boundClasses]);
       // directiveRenderCount++;
     }
