@@ -6,6 +6,7 @@
 - Proxy (DONE)
   - Array dependencies (mark rev)
     - directive: bound-loop (mark rosetti)
+  - helper function augmentation
 - directive: bound-classes (paul)
 - directive: bound-attr (mark rosetti)
 - Parser (june)
