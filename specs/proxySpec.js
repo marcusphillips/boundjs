@@ -51,7 +51,7 @@ describe('proxies', function(){
       expect(bound.proxy(child).bound).not.toEqual(bound.proxy(parent).bound);
     });
 
-    xit('should not add any properties to a object other than .bound()', function(){
+    it('should not add any properties to a object other than .bound()', function(){
       expect(_.keys(bound.proxy({}))).toEqual(['bound']);
     });
 
@@ -89,12 +89,25 @@ describe('proxies', function(){
       expect(function(){
         removedMethod.apply(alice);
       }).toThrow();
+
+      alice.bound = function(){};
+      expect(function(){
+        removedMethod.apply(alice);
+      }).toThrow();
     });
 
-    xit('should augment child objects with their own .bound() property when a call to .bound() delegates through to the prototype object', function(){
-      expect(child.bound).toEqual(bound.proxy(parent).bound);
+    it('should augment child objects with their own .bound() property when a call to .bound() delegates through to the prototype object', function(){
+      bound.proxy(parent);
+      expect(parent.bound).toEqual(child.bound);
       child.bound(); // delegates to parent.bound()
       expect(child.bound).not.toEqual(parent.bound);
+    });
+
+    it('should change contexts to the child when augmenting that child with its own .bound() property', function(){
+      bound.proxy(parent);
+      child.bound('set', 'setThing', 2); // delegates to parent.bound()
+      expect(child.bound('get', 'setThing')).toEqual(2);
+      expect(parent.bound('get', 'setThing')).not.toEqual(2);
     });
 
   });
@@ -166,11 +179,11 @@ describe('proxies', function(){
       expect(runCount).toEqual(1);
       alice.name = 'al';
       alice.bound('changed', 'name');
-      Clock.tick();
+      Clock.tick(0);
       expect(runCount).toEqual(2);
       alice.age = 21;
       alice.bound('changed', 'age');
-      Clock.tick();
+      Clock.tick(0);
       expect(runCount).toEqual(2);
     });
 
@@ -181,9 +194,11 @@ describe('proxies', function(){
     });
 
     xit('should not result in re-runs of dependent contexts for setting properties to the same value they already hold', function(){
+      
+      
     });
 
-    xit('should not re-run properties dependent on key inclusion when only the property value has changed, not its presence in the object', function(){
+    it('should not re-run properties dependent on key inclusion when only the property value has changed, not its presence in the object', function(){
       // todo: tursify
       bound.proxy(alice);
       var runCount1 = 0;
@@ -197,20 +212,14 @@ describe('proxies', function(){
         runCount2 += 1;
       });
       alice.bound('set', 'name', 'al');
-      Clock.tick();
+      Clock.tick(0);
       expect([runCount1, runCount2]).toEqual([1, 2]);
     });
 
     it('errors when passed an invalid command name', function(){
-      var object = {};
-      bound.proxy(object);
-      var proxy = object.bound('proxy');
-      var invalidCommands = ['delete', 1, true, false, ['hello','goodbye'], {thing1:"foo", thing2:"bar"}];
-      for(var i = 0; i < invalidCommands.length; i++){
-        var command = invalidCommands[i];
-        expect(proxy[command]).not.toEqual(any(Function));
-      }
-
+      expect(function(){
+        bound.proxy({}).bound('invalidCommand');
+      }).toThrow();
     });
 
   });
