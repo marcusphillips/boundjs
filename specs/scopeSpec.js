@@ -9,11 +9,11 @@ describe('scopes', function(){
 
   describe('basics', function(){
 
-    xit('introduces a top level scope', function(){
+    it('introduces a top level scope', function(){
       expect(bound.scope).toEqual(any(Object));
     });
 
-    xit('can create subscopes', function(){
+    it('can create subscopes', function(){
       expect(bound.scope.extend).toEqual(any(Function));
     });
 
@@ -21,37 +21,52 @@ describe('scopes', function(){
 
   describe('lookups', function(){
 
-    xit('allows lookups in the global scope from the top level scope', function(){
+    it('allows lookups in the global scope from the top level scope', function(){
       global.present = 3;
-      expect(bound.scope.get('present')).toEqual(3);
-      expect(bound.scope.get('absent')).toEqual(undefined);
+      expect(bound.scope.lookup('present')).toEqual(3);
+      expect(bound.scope.lookup('absent')).toEqual(undefined);
       delete global.present;
     });
 
-    xit('lookups in a child scope fall through to the parent scope', function(){
-      expect(childScope.get('text')).toEqual('hi');
+    it('lookups in a child scope fall through to the parent scope', function(){
+      expect(childScope.lookup('text')).toEqual('hi');
     });
 
   });
 
   describe('literals', function(){
 
-    xit('should allow lookups of literal objects, arrays, and strings with double and single quotes', function(){
+    it('should allow lookups of literal objects, arrays, and strings with double and single quotes', function(){
       _.each({
         '3': 3,
+        '32223': 32223,
+        '0032223': 32223,
+        '010023': 10023,
         '"in doubles"': 'in doubles',
         "'in singles'": 'in singles',
         "[]": [],
-        "{}": {},
-        "false": false,
-        "true": true,
-        "null": null,
-        "undefined": undefined,
+        '[  ]': [],
+        '["a", 3, false]': ['a', 3, false],
+        '[[1], [2], [3]]': [[1], [2], [3]],
+        '{}': {},
+        '{key: [1,2,3,4]}': {key: [1,2,3,4]},
+        '{key: {key4: "value"}}': {key: {key4: 'value'}},
+        'false': false,
+        'true': true,
+        'null': null,
+        'undefined': undefined,
         'absent': undefined,
-        '{key: text}': {key: 'hi'},
-        'bob.name': 'bob'
-      }, function(key, value){
-        expect(childScope.lookup(key)).toEqual(value);
+        '"   whitespace"': 'whitespace',
+        //' " this string starts with 3 spaces" ': ' this string starts with 3 spaces',
+        //' "this string has the escaped delimiter symbol \" in it" ': 'this string has the escaped delimiter symbol " in it', 
+        //'truealy': undefined,
+        //'-1' : -1,
+        //'0.14': 0.14,
+        //'{key: text}': {key: 'hi'},
+        //'bob.name': 'bob'
+      }, function(value, key){
+        var controller = bound.scope.extend(message);
+        expect(controller.lookup(key)).toEqual(value);
       });
     });
 

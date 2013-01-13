@@ -1,0 +1,44 @@
+{
+  "name": "boundjs",
+  "description": "Hyper-compatible view bindings",
+  "version": "0.0.1",
+  "homepage": "https://github.com/gruntjs/grunt-contrib-jasmine",
+  "author": {
+    "name": "Marcus Phillips",
+    "email": "mracus@marcusphillips.com",
+    "url": "https://github.com/marcusphillips/boundjs"
+  },
+  "contributors": [
+    "Paul Bacchus <paulsbacchus@gmail.com>",
+    "Nathan Houle <nathan@nathanhoule.com>",
+    "June Jung <jeongjueun@gmail.com>",
+    "Mark Reveley <mreveley@gmail.com>",
+    "Mark Rossetti <mark.a.rossetti@gmail.com>",
+    "Sherah Smith <sherah@sherahsmith.com>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/marcusphillips/boundjs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/marcusphillips/boundjs/issues"
+  },
+  "scripts": {
+    "test": "grunt test",
+    "dist": "grunt dist"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.0a",
+    "grunt-contrib-concat": "~0.1.1",
+    "grunt-contrib-jasmine": "latest",
+    "grunt-contrib-jshint": "~0.1.0",
+    "grunt-contrib-uglify": "~0.1.0",
+    "grunt-contrib-watch": "~0.1.4"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/marcusphillips/boundjs/blob/master/LICENSE-MIT"
+    }
+  ]
+}
