@@ -109,8 +109,8 @@ describe('rendering', function(){
   describe('scopes and multiple namespace inputs', function(){
 
     it('falls back onto the global namespace for keys that are not found on the input namespace', function(){
-      global.food = "sausage";
-      expect($('<div contents="food"></div>').render(alice).html()).toEqual('sausage');
+      global.food = 'sausage';
+      expect($('<div bound-contents="food"></div>').render(alice).html()).toEqual('sausage');
       delete global.food;
     });
 
