@@ -110,9 +110,9 @@ describe('proxies', function(){
 
     it('should change contexts to the child when augmenting that child with its own .bound() property', function(){
       bound.proxy(parent);
-      child.bound('set', 'setThing', 2); // delegates to parent.bound()
-      expect(child.bound('get', 'setThing')).toEqual(2);
-      expect(parent.bound('get', 'setThing')).not.toEqual(2);
+      child.bound('set', 'prop', 2); // delegates to parent.bound()
+      expect(child.bound('owns', 'prop')).toEqual(true);
+      expect(parent.bound('owns', 'prop')).toEqual(false);
     });
 
   });
