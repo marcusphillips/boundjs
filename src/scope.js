@@ -2,9 +2,9 @@
   var parse = function(json){
     var i = 0;
 
-    var consume = function(expVal){
+    var consume = function(expected){
       var char = peek();
-      _.raiseIf(expVal && char !== expVal, "Expected " + char + " to be " + expVal);
+      _.raiseIf(expected && char !== expected, "Expected " + char + " to be " + expected);
       i++;
       return char;
     };
@@ -97,15 +97,11 @@
       return result;
     };
 
-    var consumeKey = function(){
-    };
-
     //TODO white space end of word
     var consumeString = function(){
       var result = '';
       var delimiter = consume();
       _.raiseIf('\'"'.indexOf(delimiter) === -1, 'bad string');
-      consumeSpace();
       while(peek()){
         result += consume();
         if(peek() === delimiter){
@@ -164,7 +160,6 @@
     lookup: function(key){
       // todo: write a test to see what happens when we lookup a property with a falsey value
       return this._context[key] ? this._context[key] : this._parent.lookup(key);
-      //return this._context[arg] ? this._context[arg] : parse(arg);
     }
   };
 
