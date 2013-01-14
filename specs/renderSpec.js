@@ -94,13 +94,12 @@ describe('rendering', function(){
       expect($name.html()).toEqual('alice');
     });
 
-    it('it should insert contents that are text as text and not dom nodes', function(){
-      expect($message.render({text: '<script>alert("xss");</script>'}).html()).toEqual($('<div>').text('<script>alert("xss");</script>').html());
+    it('it should insert contents that are text as text and not as dom nodes', function(){
       expect($message.render({text: '<script>alert("xss");</script>'}).text()).toEqual('<script>alert("xss");</script>');
     });
     
-    it('it should insert contents that are dom nodes as dom nodes and not text', function(){
-      expect($message.render({text: $name}).children()[0]).toEqual($name[0]);
+    it('it should insert contents that are dom nodes as dom nodes and not as text', function(){
+      expect($message.render({text: $name}).children()[0]).toBe($name[0]);
       expect(typeof $message.render({text: $name}).children()[0]).toEqual("object");
     });
 
