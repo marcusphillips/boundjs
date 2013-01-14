@@ -101,9 +101,9 @@ describe('rendering', function(){
 
   describe('debug directive', function(){
     it('detects a debug directive', function(){
-      var debugSpy = spyOn( _ , "debug");
+      spyOn( _ , "debug");
       $('<div debug/>').render({});
-      expect(debugSpy).toHaveBeenCalled();
+      expect(_.debug).toHaveBeenCalled();
     });
   });
 

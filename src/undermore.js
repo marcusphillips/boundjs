@@ -14,8 +14,8 @@
       return new F();
     },
 
-    debug: function () {
-      debugger;
+    debug: function (condition) {
+      if(condition){ debugger; }
     }
   });
 

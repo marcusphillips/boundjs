@@ -45,7 +45,7 @@
     },
 
     debug: function($node, scope) {
-      if($node.attr("debug") !== undefined) { _.debug();}
+      _.debug( $node.attr('debug') !== undefined );
     }
   };
 
