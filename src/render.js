@@ -10,9 +10,14 @@
       directiveRenderCount++;
       // todo: all directive computations will share a context
       _.each(directiveProcessors, function(processor){
-        processor($that, scope);
+        var result = processor($that, scope);
+        if(processor === directiveProcessors['with']){
+          scope = result.scope;
+        }
       });
-      renderChildren($that, scope); // handles 'bound-with' directives
+      _.each($that.children(), function(child){
+        $(child).render(scope);
+      });
     });
     return this;
   };
@@ -24,13 +29,6 @@
 
   bound.getDirectiveRenderCount = function(){
     return directiveRenderCount;
-  };
-
-  var renderChildren = function($node, scope) {
-    var childrenScope = $node.attr("bound-with") ? $node.attr("bound-with") : scope;
-    _.each($node.children(), function(child){
-      $(child).render(childrenScope);
-    });
   };
 
   var directiveProcessors = {
@@ -47,6 +45,11 @@
           $node.attr((attribute.name).slice("attr-".length), scope[attribute.value]);
         }
       });
+    },
+    'with': function($node, scope) {
+      return {
+        scope: $node.attr("bound-with") ? scope[$node.attr("bound-with")] : scope
+      };
     }
   };
 

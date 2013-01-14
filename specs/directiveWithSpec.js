@@ -1,24 +1,38 @@
   // todo: check that .scope() works correctly after a with directive
 
-var $email = $('<div bound-with="sender"> \
-  <div class="name" bound-contents="name"></div> \
-  </div>');
+describe('with', function() {
 
-expect($email.render({
-  sender: {
-    name: 'alice'
-  }
-}).find('.name').html()).toEqual('alice');
+  var $email;
 
-expect($email.render({
-  name: 'hello',
-  sender: {
-  }
-}).find('.name').html()).toEqual('hello');
+  beforeEach(function() {
+    $email = $('<div bound-with="sender"> \
+      <div class="name" contents="name"></div> \
+    </div>');
+  });
 
-expect($email.render({
-  name: 'hello',
-  sender: {
-    name: 'alice'
-  }
-}).find('.name').html()).toEqual('alice');
+  it('should use the specified namespace to render the template', function() {
+    expect($email.render({
+      sender: {
+        name: 'alice'
+      }
+    }).find('.name').html()).toEqual('alice');
+  });
+
+  xit('should fall back to other namespaces', function() {
+    expect($email.render({
+      name: 'hello',
+      sender: {
+      }
+    }).find('.name').html()).toEqual('hello');
+  });
+
+  it('should ignore fallback namespaces when the value is present in the specified namespace', function() {
+    expect($email.render({
+      name: 'hello',
+      sender: {
+        name: 'alice'
+      }
+    }).find('.name').html()).toEqual('alice');
+  });
+
+});
