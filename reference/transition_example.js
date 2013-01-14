@@ -30,5 +30,9 @@ $node.defineTransition('style:height', {
 });
 
 // now, your transition will use the above functions to arrive at the desired result
-$node.transition('style:height', 30);
-$node.transition('style:height', 0);
+$node.transition('style:width_and_height', 30);
+// interestingly, this delayed call will interrupt the above transition. if we are easing, or if an interruption flash (for example) is desired,
+// thhen the interruped flag (passed to .end()) becomes relevant
+setTimeout(function(){
+  $node.transition('style:height', 0);
+}, 150);
