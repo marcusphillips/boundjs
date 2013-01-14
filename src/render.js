@@ -42,6 +42,10 @@
           $node.attr((attribute.name).slice("attr-".length), scope[attribute.value]);
         }
       });
+    },
+
+    debug: function($node, scope) {
+      if($node.attr("debug")) { _.debug();}
     }
   };
 

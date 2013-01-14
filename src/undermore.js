@@ -12,6 +12,10 @@
       function F() {}
       F.prototype = o;
       return new F();
+    },
+
+    debug: function () {
+      debugger;
     }
   });
 
