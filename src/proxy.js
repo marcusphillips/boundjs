@@ -1,5 +1,7 @@
 (function(){
 
+  // TODO: test that passing in non-objects throws an informative error
+
   var global = this;
 
   var boundMethodFlag = {};
@@ -15,6 +17,7 @@
       _dependentContextSets: {},
       bound: function(commandName) {
         _.raiseIf(this !== target, "cannot call bound on foreign objects.");
+        _.raiseIf(target.bound === undefined, "cannot call bound on objects that lack a bound method.");
         return proxy[commandName].apply(proxy, _.toArray(arguments).slice(1));
       }
     });
