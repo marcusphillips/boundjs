@@ -102,7 +102,7 @@ describe('rendering', function(){
   describe('debug directive', function(){
     it('detects a debug directive', function(){
       var debugSpy = spyOn( _ , "debug");
-      $('<div debug="name"/>').render({name: "alice", devour:"true"});
+      $('<div debug/>').render({});
       expect(debugSpy).toHaveBeenCalled();
     });
   });
