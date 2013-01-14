@@ -99,6 +99,14 @@ describe('rendering', function(){
 
   });
 
+  describe('debug directive', function(){
+    it('detects a debug directive', function(){
+      var debugSpy = spyOn( _ , "debug");
+      $('<div debug="name"/>').render({name: "alice", devour:"true"});
+      expect(debugSpy).toHaveBeenCalled();
+    });
+  });
+
   describe('scopes and multiple namespace inputs', function(){
 
     it('falls back onto the global namespace for keys that are not found on the input namespace', function(){
