@@ -48,18 +48,15 @@ describe('scopes', function(){
         '[[1], [2], [3]]': [[1], [2], [3]],
         '{}': {},
         '{key: [1,2,3,4]}': {key: [1,2,3,4]},
+        '{key : "value"}': {key:'value'},
         '{key: {key4: "value"}}': {key: {key4: 'value'}},
         '{key: text}': {key: 'hi'},
-        'zero': 0,
-        'masking': undefined
+        '{"key" : "value"}': {key : "value"}
       }, function(value, key){
-        expect(bound.scope.extend({
-          text: 'hi',
-          zero: 0,
-          masking: 'masked'
-        }).extend({
-          masking: undefined
-        }).lookup(key)).toEqual(value);
+        if(key === '{key: {key4: "value"}}'){
+          debugger;
+        }
+        expect(bound.scope.extend(message).lookup(key)).toEqual(value);
       });
     });
 
@@ -81,9 +78,16 @@ describe('scopes', function(){
         ' "this string has the escaped delimiter symbol \\" in it" ': 'this string has the escaped delimiter symbol " in it',
         '-1' : -1,
         '0.14': 0.14,
+        'zero': 0,
+        'masking': undefined
         // 'bob.name': 'bob'
       }, function(value, key){
-        expect(bound.scope.extend(message).lookup(key)).toBe(value);
+        expect(bound.scope.extend({
+          zero: 0,
+          masking: 'masked'
+        }).extend({
+          masking: undefined
+        }).lookup(key)).toBe(value);
       });
     });
 
