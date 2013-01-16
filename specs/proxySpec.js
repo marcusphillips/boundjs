@@ -94,20 +94,25 @@ describe('proxies', function(){
       expect(function(){
         removedMethod.apply(alice);
       }).toThrow();
+
+      alice.wrongkey = removedMethod;
+      expect(function(){
+        alice.wrongKey();
+      }).toThrow();
     });
 
     it('should augment child objects with their own .bound() property when a call to .bound() delegates through to the prototype object', function(){
       bound.proxy(parent);
       expect(parent.bound).toEqual(child.bound);
       child.bound(); // delegates to parent.bound()
-      expect(child.bound).not.toEqual(parent.bound);
+      expect(parent.bound).not.toEqual(child.bound);
     });
 
     it('should change contexts to the child when augmenting that child with its own .bound() property', function(){
       bound.proxy(parent);
-      child.bound('set', 'setThing', 2); // delegates to parent.bound()
-      expect(child.bound('get', 'setThing')).toEqual(2);
-      expect(parent.bound('get', 'setThing')).not.toEqual(2);
+      child.bound('set', 'prop', 2); // delegates to parent.bound()
+      expect(child.bound('owns', 'prop')).toEqual(true);
+      expect(parent.bound('owns', 'prop')).toEqual(false);
     });
 
   });
@@ -155,7 +160,12 @@ describe('proxies', function(){
       expect(message.bound('has', 'unicorns')).toBe(false);
     });
 
-    xit('should return the immediate presence or absence of a property (not prototype-inherited) on the target object when you run the owns command');
+    it('should return the immediate presence or absence of a property (not prototype-inherited) on the target object when you run the owns command', function(){
+      bound.proxy(parent).bound('set', 'prop', 2);
+      expect(child.bound('owns', 'prop')).toBe(false);
+      child.bound('set', 'prop', 2);
+      expect(child.bound('owns', 'prop')).toBe(true);
+    });
 
     xit('todo: need to provide a way for users to run a function or a method in an arbitrary context');
 
