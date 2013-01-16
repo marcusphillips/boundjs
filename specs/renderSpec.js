@@ -90,8 +90,9 @@ describe('rendering', function(){
     xit('errors when passed an invalid directive name');
 
     it('updates nodes nested within the top level node', function(){
-      $('<div>').append($name).render(alice);
-      expect($name.html()).toEqual('alice');
+      var div = $('<div>').append($name);
+      div.render(alice);
+      expect(div.children().html()).toEqual('alice');
     });
 
     it('it should insert contents that are text as text and not as dom nodes', function(){
@@ -100,7 +101,7 @@ describe('rendering', function(){
     
     it('it should insert contents that are dom nodes as dom nodes and not as text', function(){
       expect($message.render({text: $name}).children()[0]).toBe($name[0]);
-      expect(typeof $message.render({text: $name}).children()[0]).toEqual("object");
+      expect(typeof $message.render({text: $name}).children()[0]).toEqual('object');
     });
 
   });
@@ -114,10 +115,6 @@ describe('rendering', function(){
     });
 
     xit('passing two namespaces to .render() adds them both to the scope chain for that node', function(){      
-      expect($name.render(alice, bob).html()).toEqual('bob');
-      expect($name.render(alice, {}).html()).toEqual('alice');
-      expect($name.render({}, alice).html()).toEqual('alice');
-      expect($name.render(alice, bob).html()).toEqual('bob');
     });
 
     xit('calling .render() on an object that was already rendered against a namespace results in pushing the new namespace onto the scope chain for that node', function(){

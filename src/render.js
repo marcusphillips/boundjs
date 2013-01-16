@@ -2,6 +2,7 @@
   var global = this;
 
   $.fn.render = function(namespace){
+    if (!namespace) throw true;
     bound.proxy(namespace);
     var $that = this;
     bound.autorun(function(){
@@ -49,7 +50,7 @@
 
     'class': function($node, namespace) {
       var boundClasses = $node.attr("bound-classes");
-      $node.removeClass();  // TODO: Will remove ALL classes; need test to ensure it doesn't
+      $node.removeClass();
       $node.addClass(namespace[boundClasses]);
       // directiveRenderCount++;
     }
