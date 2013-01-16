@@ -40,6 +40,18 @@ describe('scopes', function(){
 
   describe('literals', function(){
 
+    var scope;
+
+    beforeEach(function(){
+      scope = bound.scope.extend({
+        zero: 0,
+        masking: 'masked',
+        text: 'hi'
+      }).extend({
+        masking: undefined
+      });
+    })
+
     it('should allow lookups of literal objects and arrays strings with double and single quotes', function(){
       _.each({
         "[]": [],
@@ -53,10 +65,7 @@ describe('scopes', function(){
         '{key: text}': {key: 'hi'},
         '{"key" : "value"}': {key : "value"}
       }, function(value, key){
-        if(key === '{key: {key4: "value"}}'){
-          debugger;
-        }
-        expect(bound.scope.extend(message).lookup(key)).toEqual(value);
+        expect(scope.lookup(key)).toEqual(value);
       });
     });
 
@@ -82,12 +91,7 @@ describe('scopes', function(){
         'masking': undefined
         // 'bob.name': 'bob'
       }, function(value, key){
-        expect(bound.scope.extend({
-          zero: 0,
-          masking: 'masked'
-        }).extend({
-          masking: undefined
-        }).lookup(key)).toBe(value);
+        expect(scope.lookup(key)).toBe(value);
       });
     });
 

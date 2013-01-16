@@ -48,16 +48,11 @@
       };
 
       var consumeNumber = function(){
-        var result = 0;
-        var sign = 1;
-        if (peek() === '-' ) {
-          consume('-')
-          sign = -1;
-        }
-        while(/\d|\./.test(peek())){
+        var result = '';
+        while(/\d|\.|\-/.test(peek())){
           result += consume();
         }
-        return result * sign;
+        return +result;
       };
 
       var keywords = {
@@ -90,7 +85,7 @@
           return result;
         }
         while(peek()){
-          key = parseName();
+          key = /\"|\'/.test(peek()) ? consumeString() : parseName();
           consumeSpace();
           consume(':');
           consumeSpace();
@@ -121,6 +116,7 @@
           }
           if(peek() === delimiter){
             consume();
+            consumeSpace();
             return result;
           }
         }
