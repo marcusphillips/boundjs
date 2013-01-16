@@ -15,9 +15,6 @@ describe('undermore', function(){
     });
 
     it('should return true when testing grandparent relationships', function(){
-      var grandparent = {};
-      var parent = _.create(grandparent);
-      var child = _.create(parent);
       expect(_.isAncestor(grandparent, child)).toEqual(true);
     });
 
