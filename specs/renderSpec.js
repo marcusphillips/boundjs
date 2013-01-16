@@ -90,9 +90,8 @@ describe('rendering', function(){
     xit('errors when passed an invalid directive name');
 
     it('updates nodes nested within the top level node', function(){
-      var div = $('<div>').append($name);
-      div.render(alice);
-      expect(div.children().html()).toEqual('alice');
+      $('<div>').append($name).render(alice);
+      expect($name.html()).toEqual('alice');
     });
 
     it('it should insert contents that are text as text and not as dom nodes', function(){
