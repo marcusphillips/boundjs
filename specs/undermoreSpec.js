@@ -40,6 +40,11 @@ describe('undermore', function(){
       expect(child.ancestryFlag).toEqual('haz');
     });
 
+    it('should not overwrite a pre-existing property on objects', function(){
+      child.ancestryFlag = 'mask';
+      expect(_.isAncestor(parent, child)).toEqual(true);
+    });
+
   });
 
 });
