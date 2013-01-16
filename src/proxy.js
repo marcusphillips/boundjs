@@ -1,5 +1,7 @@
 (function(){
 
+  // TODO: test that passing in non-objects throws an informative error
+
   var global = this;
   var boundMethodFlag = {};
   var Proxy = function(target){
