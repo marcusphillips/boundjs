@@ -1,10 +1,161 @@
 (function(){
 
-  bound.scope = {};
+  bound.scope = {
+    _context: window,
 
-  bound.scope.extend = function(){};
+    extend: function(obj){
+      var newScope = {
+        _context: obj,
+        _parent: this
+      };
+      return _.defaults(newScope, bound.scope);
+    },
 
-  bound.scope.get = function(arg){
+    _findInScope: function(key){
+      return key in this._context ? this._context[key] : this._parent && this._parent._findInScope(key);
+    },
+
+    lookup: function(json){
+      var i = 0;
+      var that = this;
+
+      var consume = function(expected){
+        var char = peek();
+        _.raiseIf(expected && char !== expected, "Expected " + char + " to be " + expected);
+        i++;
+        return char;
+      };
+
+      var peek = function(){
+        return json[i];
+      };
+
+      var consumeValue = function(){
+        consumeSpace();
+        return (
+          parsers[peek()] ? parsers[peek()]() :
+          /\d|\-/.test(peek()) ? consumeNumber() :
+          /\w|\_|\$/.test(peek()) ? consumeName() :
+          _.raise('Bad Value')
+        );
+      };
+
+      var consumeSpace = function(){
+        while(peek() === ' '){
+          consume(' ');
+        }
+      };
+
+      //TODO decimal point
+      var consumeNumber = function(){
+        var result = 0;
+        var overline = 0;
+        if (peek() === '-' ) {
+          consume('-')
+          overline = 1;
+        }
+        while(/\d|\./.test(peek())){
+          result += consume();
+        }
+        return [+result, -result][overline]
+      };
+
+      var keywords = {
+        'null': null,
+        'true': true,
+        'false': false,
+        'undefined': undefined
+      };
+
+      var consumeName = function(){
+        var key = parseName();
+        return key in keywords ? keywords[key] : that._findInScope(key);
+      };
+
+      var parseName = function(){
+        var result = '';
+        while(/\w|\d|\_|\$/.test(peek()) && peek()){
+          result += consume();
+        }
+        return result;
+      };
+
+      var consumeHash = function(){
+        var result = {};
+        var key;
+        consume('{');
+        consumeSpace();
+        if(peek() === '}'){
+          consume('}');
+          return result;
+        }
+        while(peek()){
+          key = parseName();
+          consumeSpace();
+          consume(':');
+          consumeSpace();
+          result[key] = consumeValue();
+          if(peek() === ','){
+            consumeSpace();
+            consume(',');
+            consumeSpace();
+          }
+          if(peek() === '}'){
+            consume('}');
+            break;
+          }
+        }
+        return result;
+      };
+
+      //TODO white space end of word
+      var consumeString = function(){
+        var result = '';
+        var delimiter = consume();
+        _.raiseIf('\'"'.indexOf(delimiter) === -1, 'bad string');
+        while(peek()){
+          result += consume();
+          if(peek() === '\\'){
+            consume('\\');
+            result += consume();
+          }
+          if(peek() === delimiter){
+            consume();
+            return result;
+          }
+        }
+        throw new Error("Bad string");
+      };
+
+      var consumeArray = function(){
+        var result = [];
+        consume('[');
+        consumeSpace();
+        if(peek() === ']'){
+          consume(']');
+          return result;
+        }
+        while(peek()){
+          result.push(consumeValue());
+          if(peek() === ']'){
+            consume(']');
+            return result;
+          }
+          consume(',');
+          consumeSpace();
+        }
+        throw new Error("Bad array");
+      };
+
+      var parsers = {
+        '[': consumeArray,
+        '{': consumeHash,
+        '"': consumeString,
+        "'": consumeString,
+        ' ': consumeSpace
+      };
+      return consumeValue();
+    }
   };
 
 }());
