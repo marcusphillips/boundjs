@@ -115,6 +115,10 @@
         _.raiseIf('\'"'.indexOf(delimiter) === -1, 'bad string');
         while(peek()){
           result += consume();
+          if(peek() === '\\'){
+            consume('\\');
+            result += consume();
+          }
           if(peek() === delimiter){
             consume();
             return result;
