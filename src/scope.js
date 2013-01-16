@@ -40,24 +40,19 @@
         );
       };
 
+      //TODO : DIFFERENT KIND OF WITHE SPACE(/n)
       var consumeSpace = function(){
         while(peek() === ' '){
           consume(' ');
         }
       };
 
-      //TODO decimal point
       var consumeNumber = function(){
-        var result = 0;
-        var overline = 0;
-        if (peek() === '-' ) {
-          consume('-')
-          overline = 1;
-        }
-        while(/\d|\./.test(peek())){
+        var result = '';
+        while(/\d|\.|\-/.test(peek())){
           result += consume();
         }
-        return [+result, -result][overline]
+        return +result;
       };
 
       var keywords = {
@@ -90,7 +85,7 @@
           return result;
         }
         while(peek()){
-          key = parseName();
+          key = /\"|\'/.test(peek()) ? consumeString() : parseName();
           consumeSpace();
           consume(':');
           consumeSpace();
@@ -116,11 +111,12 @@
         while(peek()){
           result += consume();
           if(peek() === '\\'){
-            consume('\\');
+            consume();
             result += consume();
           }
           if(peek() === delimiter){
             consume();
+            consumeSpace();
             return result;
           }
         }
