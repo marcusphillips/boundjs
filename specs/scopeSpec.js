@@ -49,15 +49,14 @@ describe('scopes', function(){
         '{}': {},
         '{key: [1,2,3,4]}': {key: [1,2,3,4]},
         '{key: {key4: "value"}}': {key: {key4: 'value'}},
-        //'{key: text}': {key: 'hi'},
+        '{key: text}': {key: 'hi'}
         //'bob.name': 'bob'
       }, function(value, key){
-        var controller = bound.scope.extend(message);
-        expect(controller.lookup(key)).toEqual(value);
+        expect(bound.scope.extend(message).lookup(key)).toEqual(value);
       });
     });
 
-    it('should allow lookups of literal booleans, numbers and string with double and single quotes', function(){
+    it('should allow lookups of literal booleans, numbers and strings with double and single quotes', function(){
       _.each({
         '3': 3,
         '100': 100,
@@ -67,18 +66,17 @@ describe('scopes', function(){
         'false': false,
         'true': true,
         'null': null,
-        'nully': undefined,
         'undefined': undefined,
         'absent': undefined,
         ' " this string starts with 3 spaces" ': ' this string starts with 3 spaces',
-        //' "this string has the escaped delimiter symbol \" in it" ': 'this string has the escaped delimiter symbol " in it', 
+        ' "this string has the escaped delimiter symbol \" in it" ': 'this string has the escaped delimiter symbol " in it'
         //'trueish': undefined,
+        //'nully': undefined,
         //'-1' : -1,
         //'0.14': 0.14,
         //'bob.name': 'bob'
       }, function(value, key){
-        var controller = bound.scope.extend(message);
-        expect(controller.lookup(key)).toBe(value);
+        expect(bound.scope.extend(message).lookup(key)).toBe(value);
       });
     });
 

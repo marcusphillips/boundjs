@@ -18,7 +18,7 @@
       return (
         parsers[peek()] ? parsers[peek()]() :
         /\d/.test(peek()) ? consumeNumber() :
-        /\w/.test(peek()) ? consumeToken() :
+        /\w|\_|\$/.test(peek()) ? consumeName() :
         _.raise('Bad Value')
       );
     };
@@ -39,53 +39,43 @@
       return +result;
     };
 
-    var consumeToken = function(){
-      if(peek() === '{'){
-        var result = '';
-        consume('{');
-        consumeSpace();
-        while(peek()){
-          result += consume();
-          if(peek() === ':'){
-            consume(':');
-            return result;
-          }
-        }
-      }else{
-        switch (peek()) {
-          case "t":
-            consume("t");
-            consume("r");
-            consume("u");
-            consume("e");
-            return true;
-          case "f":
-            consume("f");
-            consume("a");
-            consume("l");
-            consume("s");
-            consume("e");
-            return false;
-          case "n":
-            consume("n");
-            consume("u");
-            consume("l");
-            consume("l");
-            return null;
-          default:
-            return undefined;
-        }
+    var consumeName = function(){
+      return resolveName(parseName());
+    };
+
+    var parseName = function(){
+      var result = '';
+      while(/\w|\d|\_|\$/.test(peek()) && peek()){
+        result += consume();
       }
+      return result;
+    };
+
+    var resolveName = function(result){
+      return {
+        'null': null,
+        'true': true,
+        'false': false
+      }[result];
     }
 
     var consumeHash = function(){
       var result = {};
       var key;
+      consume('{');
+      consumeSpace();
+      if(peek() === '}'){
+        consume('}');
+        return result;
+      }
       while(peek()){
-        key = consumeToken();
+        key = parseName();
+        consumeSpace();
+        consume(':');
         consumeSpace();
         result[key] = consumeValue();
         if(peek() === ','){
+          consumeSpace();
           consume(',');
           consumeSpace();
         }
@@ -139,7 +129,6 @@
       "'": consumeString,
       ' ': consumeSpace
     };
-
     return consumeValue();
   };
 
