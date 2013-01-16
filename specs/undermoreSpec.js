@@ -20,13 +20,11 @@ describe('undermore', function(){
 
     it('should not imbue an object with a property it did not previously have', function(){
       var parentPreKeys = _.keys(parent);
-      var childPreKeys = _.keys(parent);
+      var childPreKeys = _.keys(child);
       _.isAncestor(parent, child);
-      var parentPostKeys = _.keys(parent);
-      var childPostKeys = _.keys(parent);
 
-      expect(parentPreKeys).toEqual(parentPostKeys);
-      expect(childPreKeys).toEqual(childPostKeys);
+      expect(parentPreKeys).toEqual(_.keys(parent));
+      expect(childPreKeys).toEqual(_.keys(child));
     });
 
     it('should not overwrite a pre-existing property on objects', function(){
