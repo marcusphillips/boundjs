@@ -34,7 +34,7 @@
         consumeSpace();
         return (
           parsers[peek()] ? parsers[peek()]() :
-          /\d/.test(peek()) ? consumeNumber() :
+          /\d|\-/.test(peek()) ? consumeNumber() :
           /\w|\_|\$/.test(peek()) ? consumeName() :
           _.raise('Bad Value')
         );
@@ -46,14 +46,18 @@
         }
       };
 
-      //TODO deal with -(neg)
       //TODO decimal point
       var consumeNumber = function(){
         var result = 0;
-        while(/\d/.test(peek())){
-          result = result + consume();
+        var overline = 0;
+        if (peek() === '-' ) {
+          consume('-')
+          overline = 1;
         }
-        return +result;
+        while(/\d|\./.test(peek())){
+          result += consume();
+        }
+        return [+result, -result][overline]
       };
 
       var keywords = {
