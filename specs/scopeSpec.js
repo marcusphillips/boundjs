@@ -49,10 +49,18 @@ describe('scopes', function(){
         '{}': {},
         '{key: [1,2,3,4]}': {key: [1,2,3,4]},
         '{key: {key4: "value"}}': {key: {key4: 'value'}},
-        '{key: text}': {key: 'hi'}
+        '{key: text}': {key: 'hi'},
+        'zero': 0,
+        'masking': undefined
         //'bob.name': 'bob'
       }, function(value, key){
-        expect(bound.scope.extend(message).lookup(key)).toEqual(value);
+        expect(bound.scope.extend({
+          text: 'hi',
+          zero: 0,
+          masking: 'masked'
+        }).extend({
+          masking: undefined
+        }).lookup(key)).toEqual(value);
       });
     });
 
@@ -69,7 +77,7 @@ describe('scopes', function(){
         'undefined': undefined,
         'absent': undefined,
         ' " this string starts with 3 spaces" ': ' this string starts with 3 spaces',
-        ' "this string has the escaped delimiter symbol \" in it" ': 'this string has the escaped delimiter symbol " in it'
+        //' "this string has the escaped delimiter symbol \" in it" ': 'this string has the escaped delimiter symbol " in it'
         //'trueish': undefined,
         //'nully': undefined,
         //'-1' : -1,
