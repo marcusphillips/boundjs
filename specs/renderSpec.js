@@ -7,13 +7,7 @@ describe('rendering', function(){
     });
 
     it('returns the original jquery object from jquery\'s .render()', function(){
-      expect($empty.render({})).toEqual(any(jQuery));
-    });
-
-    it('throws an error if no namespace is passed', function() {
-      expect(function(){
-        $empty.render();
-      }).toThrow();
+      expect($empty.render({})).toEqual($empty);
     });
 
     xit('proxies an object that has been rendered against', function(){
