@@ -7,7 +7,10 @@ testEnv.defineFixtureObjectMaker(function(){
 
     message: {
       text: 'hi',
-      readState: 'unread'
+      readState: 'unread',
+      sender: {
+        name: 'alice'
+      }
     },
 
     navItems: [

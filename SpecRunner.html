@@ -31,6 +31,7 @@
   <script src="specs/directiveContentsSpec.js"></script>
   <script src="specs/directiveAttrSpec.js"></script>
   <script src="specs/directiveLoopSpec.js"></script>
+  <script src="specs/directiveWithSpec.js"></script>
 
   <script>
     (function() {
@@ -83,6 +84,10 @@
 
     <div fixture="friends" loop="friends">
       <div contents="name"></div>
+    </div>
+
+    <div fixture="email" bound-with="sender">
+      <div class="name" contents="name"></div>
     </div>
 
   </div>
