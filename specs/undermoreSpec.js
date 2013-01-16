@@ -35,7 +35,7 @@ describe('undermore', function(){
       expect(child.ancestryFlag).toEqual('haz');
     });
 
-    it('should not overwrite a pre-existing property on objects', function(){
+    it('should work if the child already has a value at the ancestryFlag key', function(){
       child.ancestryFlag = 'mask';
       expect(_.isAncestor(parent, child)).toEqual(true);
     });
