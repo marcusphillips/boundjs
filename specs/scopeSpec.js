@@ -17,9 +17,13 @@ describe('scopes', function(){
       expect(bound.scope.extend).toEqual(any(Function));
     });
 
+    xit('can provide the parent scope', function(){
+      expect(childScope.parent()).toEqual(parentScope);
+    });
+
     it('extend function returns object', function(){
       expect(bound.scope.extend({})).toEqual(any(Object));
-    })
+    });
 
   });
 
