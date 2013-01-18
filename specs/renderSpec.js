@@ -16,6 +16,18 @@ describe('rendering', function(){
       expect(bound.isProxied(object)).toEqual(true);
     });
 
+    xit('adds a bound-widget attribute to the target node', function(){
+      expect($empty.render({}).attr('bound-widget') === undefined).toBe(false);
+    });
+
+    xit('doesn\'t recurse onto descendant bound widgets', function(){
+      $name.render({}).appendTo($empty);
+      expect(bound.getBoundDirectiveRenderCount()).toEqual(1);
+      $empty.render(alice);
+      expect(bound.getBoundDirectiveRenderCount()).toEqual(1);
+      expect($name.html()).toEqual('');
+    });
+
   });
 
   describe('directive render operation counting', function(){
@@ -49,35 +61,6 @@ describe('rendering', function(){
 
   });
 
-  describe('.namespace()', function(){
-
-    xit('returns the lowest-level rendered-against namespace', function(){
-      expect($name.namespace()).toEqual(global);
-      expect($name.render(alice).namespace()).toEqual(alice);
-    });
-
-    xit('returns the namespace inherited from an ancestor when the focal node has no namespace', function(){
-      var $child = $('<div/>');
-      var $parent = $('<div/>').append($child);
-      $parent.render(alice);
-      expect($child.namespace()).toEqual(alice);
-    });
-
-  });
-
-  describe('.namespaces()', function(){
-
-    xit('returns an array of all the namespaces in the scope chain', function(){
-      expect($node.render(alice).scopes()).toEqual([global, alice]);
-    });
-
-  });
-
-  describe('.section()', function(){
-    // todo: define a mechanism that retrieves descendant widgets with a given name
-    //   when nodes are rendered that have a section attribute, they register with their ancestor chain
-  });
-
   describe('following directives', function(){
 
     it('does not remove a directive attribute after following it', function(){
@@ -87,7 +70,7 @@ describe('rendering', function(){
     xit('errors when passed an invalid directive name');
 
     it('updates nodes nested within the top level node', function(){
-      $('<div>').append($name).render(alice);
+      $empty.append($name).render(alice);
       expect($name.html()).toEqual('alice');
     });
 
