@@ -44,6 +44,18 @@ describe('scopes', function(){
 
   describe('literals', function(){
 
+    var scope;
+
+    beforeEach(function(){
+      scope = bound.scope.extend({
+        zero: 0,
+        masking: 'masked',
+        text: 'hi'
+      }).extend({
+        masking: undefined
+      });
+    })
+
     it('should allow lookups of literal objects and arrays strings with double and single quotes', function(){
       _.each({
         "[]": [],
@@ -52,18 +64,12 @@ describe('scopes', function(){
         '[[1], [2], [3]]': [[1], [2], [3]],
         '{}': {},
         '{key: [1,2,3,4]}': {key: [1,2,3,4]},
+        '{key : "value"}': {key:'value'},
         '{key: {key4: "value"}}': {key: {key4: 'value'}},
         '{key: text}': {key: 'hi'},
-        'zero': 0,
-        'masking': undefined
+        '{"key" : "value"}': {key : "value"}
       }, function(value, key){
-        expect(bound.scope.extend({
-          text: 'hi',
-          zero: 0,
-          masking: 'masked'
-        }).extend({
-          masking: undefined
-        }).lookup(key)).toEqual(value);
+        expect(scope.lookup(key)).toEqual(value);
       });
     });
 
@@ -85,9 +91,11 @@ describe('scopes', function(){
         ' "this string has the escaped delimiter symbol \\" in it" ': 'this string has the escaped delimiter symbol " in it',
         '-1' : -1,
         '0.14': 0.14,
+        'zero': 0,
+        'masking': undefined
         // 'bob.name': 'bob'
       }, function(value, key){
-        expect(bound.scope.extend(message).lookup(key)).toBe(value);
+        expect(scope.lookup(key)).toBe(value);
       });
     });
 
