@@ -32,6 +32,7 @@
   <script src="specs/directiveAttrSpec.js"></script>
   <script src="specs/directiveLoopSpec.js"></script>
   <script src="specs/directiveWithSpec.js"></script>
+  <script src="specs/directiveClassessSpec.js"></script>
 
   <script>
     (function() {
@@ -76,10 +77,10 @@
 
     <div fixture="empty"></div>
 
-    <div fixture="name" contents="name"></div>
+    <div fixture="name" bound-contents="name"></div>
 
     <div fixture="email" bound-with="sender">
-      <div class="name" contents="name"></div>
+      <div class="name" bound-contents="name"></div>
     </div>
 
     <div fixture="grandparent">
@@ -95,12 +96,12 @@
       </div>
     </div>
 
-    <div fixture="age" contents="age"></div>
+    <div fixture="age" bound-contents="age"></div>
 
-    <div fixture="message" bound-classes="readState" contents="text"></div>
+    <div fixture="message" bound-classes="readState" bound-contents="text"></div>
 
-    <div fixture="friends" loop="friends">
-      <div contents="name"></div>
+    <div fixture="friends" bound-loop="friends">
+      <div bound-contents="name"></div>
     </div>
 
   </div>

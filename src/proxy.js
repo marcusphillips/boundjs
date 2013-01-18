@@ -55,6 +55,7 @@
     set: function(key, value){
       // todo: keep track of the current state to compare to future states, here and in del
       this.target[key] = value;
+      // todo: only invalidate the keys that were set -- do this for other mutator methods as well. first though, write tests to ensure that we keep track of how many keys get visited in the process
       this._ensuredContextSet(key).invalidateAll();
     },
     del: function(key){

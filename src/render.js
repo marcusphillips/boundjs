@@ -1,22 +1,22 @@
 (function(){
   var global = this;
 
-  $.fn.render = function(scope){
-    // todo: should be able to render multiple dom nodes contained in this jquery object
-    if(!arguments.length){ throw new Error('render requires a scope'); }
-    bound.proxy(scope);
+  $.fn.render = function(namespace){
+    bound.proxy(namespace);
     var $that = this;
     bound.autorun(function(){
-      directiveRenderCount++;
-      // todo: all directive computations will share a context
-      _.each(directiveProcessors, function(processor){
-        var result = processor($that, scope);
-        if(processor === directiveProcessors['with']){
-          scope = result.scope;
-        }
-      });
-      _.each($that.children(), function(child){
-        $(child).render(scope);
+      $that.each(function(){
+        var $node = $(this);
+        // todo: all directive computations will share a context
+        _.each(directiveProcessors, function(processor){
+          var result = processor($node, namespace);
+          if(processor === directiveProcessors['with']){
+            namespace = result.scope;
+          }
+        });
+        $node.children().each(function(){
+          $(this).render(namespace);
+        });
       });
     });
     return this;
@@ -32,20 +32,24 @@
   };
 
   var directiveProcessors = {
-    contents: function($node, scope) {
-      var directive = $node.attr("contents");
-      if(directive){
-        $node.html(bound.proxy(scope).bound('has', directive) ? scope.bound('get', directive) : bound('get', directive));
+    contents: function($node, namespace) {
+      var key = $node.attr("bound-contents");
+      if(key){
+        var contents = bound.proxy(namespace).bound('has', key) ? namespace.bound('get', key) : bound('get', key);
+        typeof contents === "string" ? $node.text(contents) : $node.html(contents);
+        directiveRenderCount++;
       }
-
     },
-    attr: function($node, scope) {
+
+    attr: function($node, namespace) {
       _.each($node[0].attributes, function(attribute){
-        if((/^attr/).test(attribute.name)) {
-          $node.attr((attribute.name).slice("attr-".length), scope[attribute.value]);
+        if((/^bound-attr-.+/).test(attribute.name)) {
+          $node.attr((attribute.name).slice("bound-attr-".length), namespace[attribute.value]);
+          directiveRenderCount++;
         }
       });
     },
+
     'with': function($node, scope) {
       return {
         scope: $node.attr("bound-with") ? scope[$node.attr("bound-with")] : scope
