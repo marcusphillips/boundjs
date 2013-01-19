@@ -16,7 +16,7 @@
     },
 
     debug: function (condition) {
-      if(condition){ debugger; }
+      if(!argument.length || condition){ debugger; }
     },
 
     // TODO: write tests for this function
