@@ -12,8 +12,8 @@
       $that.each(function(){
         var $node = $(this);
         _.each(directiveProcessors, function(processor){
-          var result = processor($node, scope);
-          if(processor === directiveProcessors['with']){
+          var result = processor($node, scope) || {};
+          if(result.scope){
             scope = result.scope;
           }
         });
@@ -22,6 +22,7 @@
         });
       });
     });
+    return this;
   };
 
   var directiveRenderCount = 0;
@@ -53,9 +54,12 @@
     },
 
     'with': function($node, scope) {
-      return {
-        scope: $node.attr("bound-with") ? scope.extend(scope.lookup($node.attr("bound-with"))) : scope
-      };
+      if($node.attr("bound-with")){
+        directiveRenderCount++;
+        return {
+          scope: scope.extend(scope.lookup($node.attr("bound-with")))
+        };
+      }
     }
   };
 
