@@ -3,9 +3,8 @@
 
   $.fn.render = function(namespace){
     bound.proxy(namespace);
-    var $that = this;
     bound.autorun(function(){
-      $that.each(function(){
+      this.each(function(){
         var $node = $(this);
         // todo: all directive computations will share a context
         _.each(directiveProcessors, function(processor){
@@ -18,7 +17,7 @@
           $(this).render(namespace);
         });
       });
-    });
+    }, this);
     return this;
   };
 

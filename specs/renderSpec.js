@@ -127,6 +127,23 @@ describe('rendering', function(){
       expect($name2.html()).toEqual('bob');
     });
 
+    xit('should only update the directives of nodes that were rendered against the object that has .bound() called on it', function(){
+      var $node = $('<div>\
+        <div bound-with="alice" bound-contents="name"></div>\
+        <div bound-with="bob" bound-contents="name"></div>\
+      </div>');
+      $node.render({
+        alice: alice,
+        bob: bob
+      });
+      expect(bound.getDirectiveRenderCount()).toEqual(4);
+
+      bob.name = 'billy-bob';
+      alice.bound('set', 'name', 'al');
+      expect($node.find('[bound-with=bob]').html()).toEqual('bob');
+      expect(bound.getDirectiveRenderCount()).toEqual(5);
+    });
+
   });
 
 });
