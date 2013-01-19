@@ -2,11 +2,11 @@ describe('rendering', function(){
 
   describe('.render() fundamentals', function(){
 
-    xit('adds a .render() method to jQuery objects', function(){
+    it('adds a .render() method to jQuery objects', function(){
       expect($empty.render).toEqual(any(Function));
     });
 
-    xit('returns the original jquery object from jquery\'s .render()', function(){
+    it('returns the original jquery object from jquery\'s .render()', function(){
       expect($empty.render({})).toEqual($empty);
     });
 
@@ -32,7 +32,7 @@ describe('rendering', function(){
 
   describe('directive render operation counting', function(){
 
-    xit('counts the number of directives processed', function(){
+    it('counts the number of directives processed', function(){
       expect(bound.getDirectiveRenderCount()).toEqual(0);
       $name.render(alice);
       expect(bound.getDirectiveRenderCount()).toEqual(1);
@@ -44,12 +44,12 @@ describe('rendering', function(){
 
   describe('affected nodes', function(){
 
-    xit('does not operate on nodes that have no directives', function(){
+    it('does not operate on nodes that have no directives', function(){
       $empty.render({});
       expect(bound.getDirectiveRenderCount()).toEqual(0);
     });
 
-    xit('operates on all nodes in a single jQuery collection', function(){
+    it('operates on all nodes in a single jQuery collection', function(){
       $name.add($age).render(alice);
       expect(bound.getDirectiveRenderCount()).toEqual(2);
       expect($name.html()).toEqual('alice');
@@ -60,22 +60,22 @@ describe('rendering', function(){
 
   describe('following directives', function(){
 
-    xit('does not remove a directive attribute after following it', function(){
+    it('does not remove a directive attribute after following it', function(){
       expect($name.render(alice).attr('bound-contents')).toEqual('name');
     });
 
     xit('errors when passed an invalid directive name');
 
-    xit('updates nodes nested within the top level node', function(){
+    it('updates nodes nested within the top level node', function(){
       $empty.append($name).render(alice);
       expect($name.html()).toEqual('alice');
     });
 
-    xit('it should insert contents that are text as text and not as dom nodes', function(){
+    it('it should insert contents that are text as text and not as dom nodes', function(){
       expect($message.render({text: '<script>alert("xss");</script>'}).text()).toEqual('<script>alert("xss");</script>');
     });
 
-    xit('it should insert contents that are dom nodes as dom nodes and not as text', function(){
+    it('it should insert contents that are dom nodes as dom nodes and not as text', function(){
       expect($message.render({text: $name}).children()[0]).toBe($name[0]);
       expect(typeof $message.render({text: $name}).children()[0]).toEqual('object');
     });
@@ -96,7 +96,7 @@ describe('rendering', function(){
       delete global.age;
     });
 
-    xit('falls back onto the global namespace for keys that are not found on the input namespace', function(){
+    it('falls back onto the global namespace for keys that are not found on the input namespace', function(){
       global.age = 10;
       expect($age.render({}).html()).toEqual('10');
     });
@@ -105,7 +105,7 @@ describe('rendering', function(){
 
   describe('reactive updates', function(){
 
-    xit('refollows the directives of all rendered nodes when .bound() is called on a rendered-against namespace that has changed', function(){
+    it('refollows the directives of all rendered nodes when .bound() is called on a rendered-against namespace that has changed', function(){
       $name.render(alice);
       $age.render(alice);
       _.extend(alice, {name: 'al', age: 24});
@@ -124,7 +124,7 @@ describe('rendering', function(){
       expect(bound.getDirectiveRenderCount()).toBe(1);
     });
 
-    xit('should only update the directives of nodes that were rendered against the object that has .bound() called on it', function(){
+    it('should only update the directives of nodes that were rendered against the object that has .bound() called on it', function(){
       $name.render(alice);
       $name2.render(bob);
       alice.name = 'al';
@@ -135,7 +135,7 @@ describe('rendering', function(){
       expect($name2.html()).toEqual('bob');
     });
 
-    it('should only update the directives of nodes that were rendered against the object that has .bound() called on it', function(){
+    xit('should only update the directives of nodes that were rendered against the object that has .bound() called on it', function(){
       var $node = $('<div>\
         <div bound-with="alice" bound-contents="name"></div>\
         <div bound-with="bob" bound-contents="name"></div>\
