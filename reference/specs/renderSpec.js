@@ -33,7 +33,6 @@ describe('rendering', function(){
   describe('directive render operation counting', function(){
 
     it('counts the number of directives processed', function(){
-      debugger;
       expect(bound.getDirectiveRenderCount()).toEqual(0);
       $name.render(alice);
       expect(bound.getDirectiveRenderCount()).toEqual(1);
@@ -52,7 +51,6 @@ describe('rendering', function(){
 
     it('operates on all nodes in a single jQuery collection', function(){
       $name.add($age).render(alice);
-      debugger;
       expect(bound.getDirectiveRenderCount()).toEqual(2);
       expect($name.html()).toEqual('alice');
       expect($age.html()).toEqual('20');
