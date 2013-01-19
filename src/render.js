@@ -8,13 +8,13 @@
         var $node = $(this);
         var suppressRecursion;
         // todo: all directive computations will share a context
-        _.each(directiveProcessors, function(processor){
-          var result = processor($node, namespace);
-          if(processor === directiveProcessors['with']){
+        _.each(directiveProcessors, function(processor, key){
+          var result = processor($node, namespace) || {};
+          if(result.scope){
             namespace = result.scope;
           }
-          if(processor === directiveProcessors['contents'] ){
-            suppressRecursion = result;
+          if(result.suppressRecursion){
+            suppressRecursion = result.suppressRecursion;
           }
         });
         suppressRecursion || $node.children().each(function(){
@@ -41,7 +41,7 @@
         var contents = bound.proxy(namespace).bound('has', key) ? namespace.bound('get', key) : bound('get', key);
         typeof contents === "string" ? $node.text(contents) : $node.html(contents);
         directiveRenderCount++;
-        return true;
+        return {suppressRecursion: true};
       }
     },
 
