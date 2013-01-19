@@ -14,6 +14,11 @@
       F.prototype = o;
       return new F();
     },
+
+    debug: function (condition) {
+      if(!arguments.length || condition){ debugger; }
+    },
+
     // TODO: write tests for this function
     isAncestor: function(parent, child){
       var childHadProp = 'ancestryFlag' in parent;
