@@ -189,11 +189,11 @@ describe('proxies', function(){
       expect(runCount).toEqual(1);
       alice.name = 'al';
       alice.bound('changed', 'name');
-      Clock.tick(0);
+      clock.tick(0);
       expect(runCount).toEqual(2);
       alice.age = 21;
       alice.bound('changed', 'age');
-      Clock.tick(0);
+      clock.tick(0);
       expect(runCount).toEqual(2);
     });
 
@@ -222,7 +222,7 @@ describe('proxies', function(){
         runCount2 += 1;
       });
       alice.bound('set', 'name', 'al');
-      Clock.tick(0);
+      clock.tick(0);
       expect([runCount1, runCount2]).toEqual([1, 2]);
     });
 

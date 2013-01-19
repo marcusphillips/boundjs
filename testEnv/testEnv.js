@@ -55,18 +55,27 @@
     this.makeObjects = fixtureObjectMaker;
   };
 
-  testEnv.integrateJasmine = function(){
+  testEnv._integrate = function(){
     beforeEach(testEnv.beforeAll);
     afterEach(testEnv.afterAll);
+    global.global = global;
+  };
+
+  testEnv.integrateJasmine = function(){
+    testEnv._integrate();
     global.any = jasmine.any;
-    global.Clock = jasmine.Clock;
+    global.clock = jasmine.Clock;
     global.makeSpied = function(func){
       func = func || function(){};
       var container = {func: func};
       spyOn(container, 'func');
       return container.func;
     };
-    global.global = global;
+  };
+
+  testEnv.integrateMocha = function(){
+    testEnv._integrate();
+    global.clock = sinon.clock;
   };
 
   // todo: wipe out all new global variables once per test

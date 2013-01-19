@@ -33,6 +33,7 @@ describe('rendering', function(){
   describe('directive render operation counting', function(){
 
     it('counts the number of directives processed', function(){
+      debugger;
       expect(bound.getDirectiveRenderCount()).toEqual(0);
       $name.render(alice);
       expect(bound.getDirectiveRenderCount()).toEqual(1);
@@ -51,6 +52,7 @@ describe('rendering', function(){
 
     it('operates on all nodes in a single jQuery collection', function(){
       $name.add($age).render(alice);
+      debugger;
       expect(bound.getDirectiveRenderCount()).toEqual(2);
       expect($name.html()).toEqual('alice');
       expect($age.html()).toEqual('20');
@@ -102,7 +104,7 @@ describe('rendering', function(){
       $age.render(alice);
       _.extend(alice, {name: 'al', age: 24});
       alice.bound();
-      Clock.tick(0);
+      clock.tick(0);
       expect($name.html()).toEqual('al');
       expect($age.html()).toEqual('24');
     });
@@ -112,7 +114,7 @@ describe('rendering', function(){
       expect(bound.getDirectiveRenderCount()).toBe(1);
       // called after no changes, so no directives should be re-run
       alice.bound();
-      Clock.tick(0);
+      clock.tick(0);
       expect(bound.getDirectiveRenderCount()).toBe(1);
     });
 
@@ -122,7 +124,7 @@ describe('rendering', function(){
       alice.name = 'al';
       bob.name = 'robert';
       alice.bound(); // TODO: Refactor to use the bound 'set' method
-      Clock.tick(0);
+      clock.tick(0);
       expect($name.html()).toEqual('al');
       expect($name2.html()).toEqual('bob');
     });
