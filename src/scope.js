@@ -1,18 +1,18 @@
 (function(){
 
   bound.scope = {
-    _context: window,
+    _namespace: window,
 
     extend: function(obj){
       var newScope = {
-        _context: obj,
+        _namespace: obj,
         _parent: this
       };
       return _.defaults(newScope, bound.scope);
     },
 
     _findInScope: function(key){
-      return key in this._context ? this._context[key] : this._parent && this._parent._findInScope(key);
+      return bound.proxy(this._namespace).bound('has', key) ? this._namespace.bound('get', key) : this._parent && this._parent._findInScope(key);
     },
 
     lookup: function(json){
@@ -150,6 +150,7 @@
         "'": consumeString,
         ' ': consumeSpace
       };
+
       return consumeValue();
     }
   };

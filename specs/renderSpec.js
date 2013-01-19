@@ -85,12 +85,12 @@ describe('rendering', function(){
   describe('scopes and multiple namespace inputs', function(){
 
     afterEach(function(){
-      delete global.name;
+      delete global.age;
     });
 
     it('falls back onto the global namespace for keys that are not found on the input namespace', function(){
-      global.name = 'globalname';
-      expect($name.render({}).html()).toEqual('globalname');
+      global.age = 10;
+      expect($age.render({}).html()).toEqual('10');
     });
 
   });
