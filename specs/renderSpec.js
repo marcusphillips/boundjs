@@ -82,6 +82,14 @@ describe('rendering', function(){
 
   });
 
+  describe('debug directive', function(){
+    it('detects a debug directive', function(){
+      spyOn(_, 'debug');
+      $('<div debug/>').render({});
+      expect(_.debug).toHaveBeenCalled();
+    });
+  });
+
   describe('scopes and multiple namespace inputs', function(){
 
     afterEach(function(){

@@ -53,6 +53,10 @@
       });
     },
 
+    debug: function($node, scope) {
+      _.debug( $node.attr('debug') !== undefined );
+    },
+
     'with': function($node, scope) {
       if($node.attr("bound-with")){
         directiveRenderCount++;
