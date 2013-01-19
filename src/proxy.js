@@ -1,24 +1,33 @@
 (function(){
 
-  var global = this;
+  // TODO: test that passing in non-objects throws an informative error
 
+  var global = this;
   var boundMethodFlag = {};
   var Proxy = function(target){
+    this._dependentContextSets = {};
+
     _.raiseIf(window.jQuery && target instanceof window.jQuery || target.nodeType === 1, 'bound() cannot yet proxy node-like objects');
     _.raiseIf(target instanceof Proxy, "can't bind a proxy to another proxy");
     if(target.hasOwnProperty('bound')){
       return isBoundMethod(target.bound) ? target.bound('proxy') : _.raise("'bound' key already on object");
     }
+
     this.target = target;
     var proxy = this;
-    _.extend(target, {
-      _dependentContextSets: {},
-      bound: function(commandName) {
-        _.raiseIf(this !== target, "cannot call bound on foreign objects.");
-        return proxy[commandName].apply(proxy, _.toArray(arguments).slice(1));
+
+    var boundMethod = function(commandName){
+      _.raiseIf(target.bound !== boundMethod, "cannot call bound on objects that lack a bound method.");
+      if (this !== target) {
+        _.raiseIf(!_.isAncestor(target, this), "cannot call bound on foreign objects.");
+        bound.proxy(this);
+        return this.bound.apply(this, arguments);
       }
-    });
-    target.bound.prototype = boundMethodFlag;
+      _.raiseIf(typeof proxy[commandName] !== 'function', 'invalid command name.');
+      return proxy[commandName].apply(proxy, _.toArray(arguments).slice(1));
+    };
+    boundMethod.prototype = boundMethodFlag;
+    target.bound = boundMethod;
   };
 
   Proxy.prototype = {
@@ -31,7 +40,7 @@
     // when no command is passed at all
     'undefined': function(){
       //todo: this probably never deletes context sets stored at keys that are entirely cleared from contexts
-      _.invoke(this.target._dependentContextSets, 'invalidateAll');
+      _.invoke(this._dependentContextSets, 'invalidateAll');
       return this;
     },
 
@@ -46,6 +55,7 @@
     set: function(key, value){
       // todo: keep track of the current state to compare to future states, here and in del
       this.target[key] = value;
+      // todo: only invalidate the keys that were set -- do this for other mutator methods as well. first though, write tests to ensure that we keep track of how many keys get visited in the process
       this._ensuredContextSet(key).invalidateAll();
     },
     del: function(key){
@@ -54,7 +64,7 @@
     },
     owns: function(key){
       this._addKeyDependency(key);
-      return this.hasOwnProperty(key);
+      return this.target.hasOwnProperty(key);
     },
     run: function(){
     },
@@ -72,7 +82,7 @@
     },
 
     _ensuredContextSet: function(key){
-      return (this.target._dependentContextSets[key] = this.target._dependentContextSets[key] || new bound._ContextSet());
+      return (this._dependentContextSets[key] = this._dependentContextSets[key] || new bound._ContextSet());
     }
 
   };
@@ -82,6 +92,7 @@
   };
 
   new Proxy(global);
+  // todo: rename to .ify()
   global.bound.proxy = function(target){
     return new Proxy(target).target;
   };
@@ -91,7 +102,8 @@
   global.bound.each = function(collection, block, context){
     var args = _.extend([], arguments);
     args[1] = function(item, key){
-      if(key !== bound || !bound.isBoundMethod(item)){
+      //todo: write tests for bound.each
+      if(key !== 'bound' || !bound.isBoundMethod(item)){
         block.apply(this, arguments);
       }
     };
