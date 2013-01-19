@@ -4,6 +4,7 @@
   $.fn.render = function(namespace){
     bound.proxy(namespace);
     bound.autorun(function(){
+      var suppressRecursion;
       this.each(function(){
         var $node = $(this);
         // todo: all directive computations will share a context
@@ -12,8 +13,11 @@
           if(processor === directiveProcessors['with']){
             namespace = result.scope;
           }
+          if(name === 'bound-contents'){
+            suppressRecursion = result;
+          }
         });
-        $node.children().each(function(){
+        !suppressRecursion || $node.children().each(function(){
           $(this).render(namespace);
         });
       });
@@ -37,6 +41,7 @@
         var contents = bound.proxy(namespace).bound('has', key) ? namespace.bound('get', key) : bound('get', key);
         typeof contents === "string" ? $node.text(contents) : $node.html(contents);
         directiveRenderCount++;
+        return true;
       }
     },
 
@@ -47,6 +52,10 @@
           directiveRenderCount++;
         }
       });
+    },
+
+    debug: function($node, scope) {
+      _.debug( $node.attr('debug') !== undefined );
     },
 
     'with': function($node, scope) {
