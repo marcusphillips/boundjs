@@ -4,20 +4,20 @@
   $.fn.render = function(namespace){
     bound.proxy(namespace);
     bound.autorun(function(){
-      var suppressRecursion;
       this.each(function(){
         var $node = $(this);
+        var suppressRecursion;
         // todo: all directive computations will share a context
         _.each(directiveProcessors, function(processor){
           var result = processor($node, namespace);
           if(processor === directiveProcessors['with']){
             namespace = result.scope;
           }
-          if(name === 'bound-contents'){
+          if(processor === directiveProcessors['contents'] ){
             suppressRecursion = result;
           }
         });
-        !suppressRecursion || $node.children().each(function(){
+        suppressRecursion || $node.children().each(function(){
           $(this).render(namespace);
         });
       });

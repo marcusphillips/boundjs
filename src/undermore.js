@@ -31,6 +31,9 @@
         child.ancestryFlag = childOldAncestryFlag;
       }
       return result;
+    },
+    debug:function(){
+      debugger;
     }
   });
 
