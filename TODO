@@ -1,0 +1,31 @@
+--- Projects ---
+- Documentation (!)
+- Build process (nathan)
+- bound-contents (DONE)
+  - subviews
+    - do not recurse onto them during render
+    - events do not bubble up past them
+    - css selector scoping
+- Proxy (DONE)
+  - Array dependencies (mark rev)
+    - directive: bound-loop (mark rosetti)
+  - helper function augmentation
+- directive: bound-classes (paul)
+- directive: bound-attr (mark rosetti)
+- Parser (DONE)
+  - Scopes (DONE)
+    - directive: bound-with (DONE)
+  - 'if' clauses
+- directive: log
+- directive: debug (oleg)
+- directive: bound-partial & bound-include
+- directive: bound-if
+- Widgets
+  - scope chain collapsing (merging values onto 'this')
+  - widget expression and widget class expression strategy
+  - UI input events
+  - Render-time view methods
+- Events
+- Animation
+- Render (DONE)
+- Dependencies (DONE)

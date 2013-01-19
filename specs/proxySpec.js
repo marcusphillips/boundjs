@@ -6,8 +6,8 @@ describe('proxies', function(){
       expect(bound).toEqual(any(Function));
     });
 
-    xit('provides a helper to identify bound methods', function(){
-      expect(bound.isBoundMethod(function(){}).toBe(false));
+    it('provides a helper to identify bound methods', function(){
+      expect(bound.isBoundMethod(function(){})).toBe(false);
       expect(bound.isBoundMethod(bound.proxy({}).bound)).toBe(true);
     });
 
@@ -51,7 +51,7 @@ describe('proxies', function(){
       expect(bound.proxy(child).bound).not.toEqual(bound.proxy(parent).bound);
     });
 
-    xit('should not add any properties to a object other than .bound()', function(){
+    it('should not add any properties to a object other than .bound()', function(){
       expect(_.keys(bound.proxy({}))).toEqual(['bound']);
     });
 
@@ -83,18 +83,36 @@ describe('proxies', function(){
       }).toThrow();
     });
 
-    xit('throws an error when a .bound() method is called on its associated object, but the method is not found on the target at the key \'bound\'', function(){
+    it('throws an error when a .bound() method is called on its associated object, but the method is not found on the target at the key \'bound\'', function(){
       var removedMethod = bound.proxy(alice).bound;
       delete alice.bound;
       expect(function(){
         removedMethod.apply(alice);
       }).toThrow();
+
+      alice.bound = function(){};
+      expect(function(){
+        removedMethod.apply(alice);
+      }).toThrow();
+
+      alice.wrongkey = removedMethod;
+      expect(function(){
+        alice.wrongKey();
+      }).toThrow();
     });
 
-    xit('should augment child objects with their own .bound() property when a call to .bound() delegates through to the prototype object', function(){
-      expect(child.bound).toEqual(bound.proxy(parent).bound);
+    it('should augment child objects with their own .bound() property when a call to .bound() delegates through to the prototype object', function(){
+      bound.proxy(parent);
+      expect(parent.bound).toEqual(child.bound);
       child.bound(); // delegates to parent.bound()
-      expect(child.bound).not.toEqual(parent.bound);
+      expect(parent.bound).not.toEqual(child.bound);
+    });
+
+    it('should change contexts to the child when augmenting that child with its own .bound() property', function(){
+      bound.proxy(parent);
+      child.bound('set', 'prop', 2); // delegates to parent.bound()
+      expect(child.bound('owns', 'prop')).toEqual(true);
+      expect(parent.bound('owns', 'prop')).toEqual(false);
     });
 
   });
@@ -102,46 +120,34 @@ describe('proxies', function(){
   describe('bound proxy object methods', function(){
 
     it('should allow access to a proxy object by calling the "proxy" command', function(){
-      // todo: tursify
-      var object = {};
-      bound.proxy(object);
-      var proxy = object.bound('proxy');
+      var proxy = bound.proxy({}).bound('proxy');
       var proxyMethods = 'get set del has owns run exec pub sub proxy meta'.split(' ');
-      for(var i = 0; i < proxyMethods.length; i++){
-        var methodName = proxyMethods[i];
-        expect(proxy[methodName]).toEqual(any(Function));
-        spyOn(proxy, methodName);
+      _.each(proxyMethods, function(element){
         var randomNumber = Math.random();
-        proxy[methodName](randomNumber);
-        expect(proxy[methodName]).toHaveBeenCalledWith(randomNumber);
-      }
+        spyOn(proxy, element);
+        proxy[element](randomNumber);
+        expect(proxy[element]).toEqual(any(Function));
+        expect(proxy[element]).toHaveBeenCalledWith(randomNumber);
+      });
     });
 
     it('should get the value of properties from the target object when you run the get command', function(){
-      // todo: tursify
-      var object = {thing:5};
-      bound.proxy(object);
+      var object = bound.proxy({thing:5});
       expect(object.bound('get','thing')).toEqual(5);
     });
 
     it('should set the value of properties from the target object when you run the set command', function(){
-      // todo: tursify
-      var object = {};
-      bound.proxy(object);
+      var object = bound.proxy({});
       object.bound('set', 'setThing', 2);
       expect(object.bound('get','setThing')).toEqual(2);
     });
 
     it('should delete properties from the target object when you run the del command', function(){
-      // todo: tursify
-      var object = {};
-      bound.proxy(object);
+      var object = bound.proxy({});
       object.bound('set', 'setThing', 4);
-      var trulySet = object.bound('get', 'setThing');
       object.bound('del', 'setThing');
-      var trulyDel = object.bound('get', 'setThing');
-      expect(trulyDel).not.toEqual(trulySet);
-      expect(!object.hasOwnProperty('setThing')).toBe(true);
+      expect(object.bound('get', 'setThing')).not.toEqual(4);
+      expect(object.hasOwnProperty('setThing')).not.toBe(true);
     });
 
     xit('should re-run work that was dependent on calls to "has" after deleting properties that used to exist');
@@ -154,7 +160,12 @@ describe('proxies', function(){
       expect(message.bound('has', 'unicorns')).toBe(false);
     });
 
-    xit('should return the immediate presence or absence of a property (not prototype-inherited) on the target object when you run the owns command');
+    it('should return the immediate presence or absence of a property (not prototype-inherited) on the target object when you run the owns command', function(){
+      bound.proxy(parent).bound('set', 'prop', 2);
+      expect(child.bound('owns', 'prop')).toBe(false);
+      child.bound('set', 'prop', 2);
+      expect(child.bound('owns', 'prop')).toBe(true);
+    });
 
     xit('todo: need to provide a way for users to run a function or a method in an arbitrary context');
 
@@ -178,11 +189,11 @@ describe('proxies', function(){
       expect(runCount).toEqual(1);
       alice.name = 'al';
       alice.bound('changed', 'name');
-      Clock.tick();
+      Clock.tick(0);
       expect(runCount).toEqual(2);
       alice.age = 21;
       alice.bound('changed', 'age');
-      Clock.tick();
+      Clock.tick(0);
       expect(runCount).toEqual(2);
     });
 
@@ -193,9 +204,11 @@ describe('proxies', function(){
     });
 
     xit('should not result in re-runs of dependent contexts for setting properties to the same value they already hold', function(){
+      
+      
     });
 
-    xit('should not re-run properties dependent on key inclusion when only the property value has changed, not its presence in the object', function(){
+    it('should not re-run properties dependent on key inclusion when only the property value has changed, not its presence in the object', function(){
       // todo: tursify
       bound.proxy(alice);
       var runCount1 = 0;
@@ -209,20 +222,14 @@ describe('proxies', function(){
         runCount2 += 1;
       });
       alice.bound('set', 'name', 'al');
-      Clock.tick();
+      Clock.tick(0);
       expect([runCount1, runCount2]).toEqual([1, 2]);
     });
 
     it('errors when passed an invalid command name', function(){
-      var object = {}
-      bound.proxy(object);
-      var proxy = object.bound('proxy');
-      var invalidCommands = ['delete', 1, true, false, ['hello','goodbye'], {thing1:"foo", thing2:"bar"}];
-      for(var i = 0; i < invalidCommands.length; i++){
-        var command = invalidCommands[i];
-        expect(proxy[command]).not.toEqual(any(Function));
-      }
-
+      expect(function(){
+        bound.proxy({}).bound('invalidCommand');
+      }).toThrow();
     });
 
   });

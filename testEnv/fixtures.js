@@ -7,7 +7,10 @@ testEnv.defineFixtureObjectMaker(function(){
 
     message: {
       text: 'hi',
-      readState: 'unread'
+      readState: 'unread',
+      sender: {
+        name: 'alice'
+      }
     },
 
     navItems: [
@@ -46,10 +49,11 @@ testEnv.defineFixtureObjectMaker(function(){
       name: 'hacker'
     }],
 
-    parent: {}
+    grandparent: {}
 
   };
 
+  objects.parent = _.create(objects.grandparent);
   objects.child = _.create(objects.parent);
 
   for(var i = 0; i < objects.people.length; i++){
