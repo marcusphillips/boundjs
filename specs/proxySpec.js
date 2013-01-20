@@ -84,24 +84,6 @@ describe('proxies', function(){
       }).to.throwException();
     });
 
-    it('throws an error when a .bound() method is called on its associated object, but the method is not found on the target at the key \'bound\'', function(){
-      var removedMethod = B(alice);
-      delete alice.bound;
-      expect(function(){
-        removedMethod.apply(alice);
-      }).to.throwException();
-
-      alice.bound = function(){};
-      expect(function(){
-        removedMethod.apply(alice);
-      }).to.throwException();
-
-      alice.wrongkey = removedMethod;
-      expect(function(){
-        alice.wrongKey();
-      }).to.throwException();
-    });
-
     it('should augment child objects with their own .bound() property when a call to .bound() delegates through to the prototype object', function(){
       B(parent);
       expect(parent.bound).to.equal(child.bound);
