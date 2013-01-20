@@ -9,7 +9,12 @@ describe('contents directive', function(){
   });
 
   it('does not add any text to the node if the contents key is not found in scope', function() {
-    expect($('<div contents="unicorns"></div>').render(alice).html()).toEqual('');
+    expect($('<div bound-contents="unicorns"></div>').render(alice).html()).toEqual('');
   });
+
+  it('nodes inserted by a contents directive are not changed in the render operation', function(){
+    alice.profile = $('<div bound-contents="email">original</div>');
+    expect($('<div bound-contents="profile"></div>').render(alice).find('[bound-contents=email]').html()).toEqual('original');
+  })
 
 });

@@ -6,14 +6,18 @@
     bound.autorun(function(){
       this.each(function(){
         var $node = $(this);
+        var suppressRecursion;
         // todo: all directive computations will share a context
-        _.each(directiveProcessors, function(processor){
-          var result = processor($node, namespace);
-          if(processor === directiveProcessors['with']){
+        _.each(directiveProcessors, function(processor, key){
+          var result = processor($node, namespace) || {};
+          if(result.scope){
             namespace = result.scope;
           }
+          if(result.suppressRecursion){
+            suppressRecursion = result.suppressRecursion;
+          }
         });
-        $node.children().each(function(){
+        suppressRecursion || $node.children().each(function(){
           $(this).render(namespace);
         });
       });
@@ -37,6 +41,7 @@
         var contents = bound.proxy(namespace).bound('has', key) ? namespace.bound('get', key) : bound('get', key);
         typeof contents === "string" ? $node.text(contents) : $node.html(contents);
         directiveRenderCount++;
+        return {suppressRecursion: true};
       }
     },
 
