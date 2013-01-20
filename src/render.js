@@ -1,9 +1,7 @@
 /*jshint expr:true*/
 
-(function(){
+(function(global){
   "use strict";
-
-  var global = this;
 
   $.fn.render = function(namespace){
     bound.proxy(namespace);
@@ -69,4 +67,4 @@
     }
   };
 
-}());
+}(this));
