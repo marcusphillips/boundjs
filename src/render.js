@@ -49,6 +49,10 @@
       });
     },
 
+    debug: function($node, scope) {
+      _.debug( $node.attr('debug') !== undefined );
+    },
+
     'with': function($node, scope) {
       return {
         scope: $node.attr("bound-with") ? scope[$node.attr("bound-with")] : scope
