@@ -28,7 +28,7 @@ describe('rendering', function(){
       expect($name.html()).toEqual('');
     });
 
-    it('center scope fallthrough', function(){
+    it('falls through to namespaces that is in middle of scope chain', function(){
       var $node = $('<div>\
         <div bound-with="child">\
           <div bound-with="grandchild" bound-contents="text"></div>\
