@@ -1,5 +1,5 @@
-(function(){
-  var global = this;
+(function(global){
+  "use strict";
 
   $.fn.render = function(namespace){
     bound.proxy(namespace);
@@ -38,7 +38,7 @@
     contents: function($node, namespace) {
       var key = $node.attr("bound-contents");
       if(key){
-        var contents = bound.proxy(namespace).bound('has', key) ? namespace.bound('get', key) : bound('get', key);
+        var contents = bound.proxy(namespace).bound('has', key) ? namespace.bound('get', key) : window.bound('get', key);
         typeof contents === "string" ? $node.text(contents) : $node.html(contents);
         directiveRenderCount++;
         return {suppressRecursion: true};
@@ -65,4 +65,4 @@
     }
   };
 
-}());
+}(this));

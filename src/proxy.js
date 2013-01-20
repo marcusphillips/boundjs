@@ -1,8 +1,7 @@
-(function(){
+(function(global){
+  "use strict";
 
   // TODO: test that passing in non-objects throws an informative error
-
-  var global = this;
 
   var boundify = function(target){
     _.raiseIf(window.jQuery && target instanceof window.jQuery || target.nodeType === 1, 'bound() cannot yet proxy node-like objects');
@@ -111,4 +110,4 @@
     _.each.apply(_, args);
   };
 
-}());
+}(this));
