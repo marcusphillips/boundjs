@@ -14,11 +14,6 @@
 
   <!-- Set up the mocha environment -->
   <script>mocha.setup('bdd')</script>
-  <script>
-    function assert(expr, msg) {
-      if (!expr) throw new Error(msg || 'failed');
-    }
-  </script>
 
   <!-- Load some global fixtures -->
   <script src="testEnv/testEnv.js"></script>
@@ -44,25 +39,26 @@
   <script src="specs/directiveWithSpec.js"></script>
   <script src="specs/directiveClassessSpec.js"></script>
 
-    <script>
-      before(function () {
-        clock = sinon.useFakeTimers();
-      });
-      after(function () {
-        clock.restore();
-      });
-      beforeEach(function(){
-        bound.resetDirectiveRenderCount();
-      });
-      onload = function(){
-        testEnv.integrateMocha();
+  <script>
+    before(function () {
+      clock = sinon.useFakeTimers();
+    });
+    after(function () {
+      clock.restore();
+    });
+    beforeEach(function(){
+      bound.resetDirectiveRenderCount();
+    });
+    onload = function(){
+      testEnv.integrateMocha();
 
-        var runner = mocha
-                      .globals(['$email', '$empty', '$name', '$grandparent',
-											'$parent', '$child', '$superwidget', '$widget', '$subwidgetA', '$subwidgetB', 'age', '$age', '$message', '$friends', '$empty2', '$name2', '$email2', '$grandparent2', '$parent2', '$child2', '$superwidget2', '$widget2', '$subwidgetA2', '$subwidgetB2', '$age2', '$message2', '$friends2', '$empty3', '$name3', '$email3', '$grandparent3', '$parent3', '$child3', '$superwidget3', '$widget3', '$subwidgetA3', '$subwidgetB3', '$age3', '$message3', '$friends3', '$empty4', '$name4', '$email4', '$grandparent4', '$parent4', '$child4', '$superwidget4', '$widget4', '$subwidgetA4', '$subwidgetB4', '$age4', '$message4', '$friends4', '$empty5', '$name5', '$email5', '$grandparent5', '$parent5', '$child5', '$superwidget5', '$widget5', '$subwidgetA5', '$subwidgetB5', '$age5', '$message5', '$friends5', 'empty', 'shopping', 'message', 'navItems', 'ticTacToe', 'people', 'grandparent', 'parent', 'child', 'alice', 'bob', 'charlie', 'david', 'ellen', 'hacker'])
-                      .run();
-      };
-    </script>
+      var runner = mocha
+                    //TODO: Factor this into fixtures helper, add a post-test cleanup step
+                    .globals(['$email', '$empty', '$name', '$grandparent',
+                    '$parent', '$child', '$superwidget', '$widget', '$subwidgetA', '$subwidgetB', 'age', '$age', '$message', '$friends', '$empty2', '$name2', '$email2', '$grandparent2', '$parent2', '$child2', '$superwidget2', '$widget2', '$subwidgetA2', '$subwidgetB2', '$age2', '$message2', '$friends2', '$empty3', '$name3', '$email3', '$grandparent3', '$parent3', '$child3', '$superwidget3', '$widget3', '$subwidgetA3', '$subwidgetB3', '$age3', '$message3', '$friends3', '$empty4', '$name4', '$email4', '$grandparent4', '$parent4', '$child4', '$superwidget4', '$widget4', '$subwidgetA4', '$subwidgetB4', '$age4', '$message4', '$friends4', '$empty5', '$name5', '$email5', '$grandparent5', '$parent5', '$child5', '$superwidget5', '$widget5', '$subwidgetA5', '$subwidgetB5', '$age5', '$message5', '$friends5', 'empty', 'shopping', 'message', 'navItems', 'ticTacToe', 'people', 'grandparent', 'parent', 'child', 'alice', 'bob', 'charlie', 'david', 'ellen', 'hacker'])
+                    .run();
+    };
+  </script>
 
 </head>
 
