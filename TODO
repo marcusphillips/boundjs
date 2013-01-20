@@ -1,3 +1,18 @@
+--- Small items ---
+- Make render capable of accepting 0 arguments
+  - every namespace ever passed in to .render() should be added to a persistent list of namespaces that the node will render against going forward (a scope chain)
+    - the user will probably want .renderClean() and a .clean() methods, to allow clearing out of any previously added namespaces
+    - this will mean we need to change our recursive subrender operations such that they .clear() child nodes before recursing
+      - write tests that confirm this behavior
+  - make sure that the node is rendered against all its namespaces every time .render() is called, even in new namespaces are not provided in that call to render (assuming there were namespaces provided previously)
+- Refactor: Make the render operation build a list of all bound-* attributes at the beginning of the operation, rather than testing for each one individually in the different directive processor functions
+  - This prevents unnecessarily looping over the whole set for directives like bound-attr-*
+  - It also means we can enforce that all bound-* attributes are valid
+- move the .bound() method to ._bound()
+- delete the global bound object, and convert all calls to bound.proxy() into the B() interface
+- make a grunt task that builds a specrunner.html file by concatenating all the filenames within the specs folder
+- Search for the word "TODO" and move a clear description of the item into this list!
+
 --- Projects ---
 - Documentation (!)
 - Build process (nathan)
