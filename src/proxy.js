@@ -72,9 +72,6 @@
     },
     meta: function(){
     },
-    each: function(cb){_.each(this.target, cb)},
-    map: function(cb){return _.map(this.target, cb)},
-    reduce: function(cb){return _.reduce(this.target, cb)},
 
     _addKeyDependency: function(key){
       this._ensuredContextSet(key).addCurrentContext();
@@ -85,6 +82,15 @@
     }
 
   };
+
+  var underscoreProp = 'each map reduce find filter every some contains where reject pluck groupBy countBy max min shuffle toArray size initial first last rest compact flatten without union'.split(' ');
+
+  _.each(underscoreProp, function(methodName){
+    proxyMethods[methodName] = function(){
+      var args = [this.target].concat(_.toArray(arguments));
+      return _[methodName].apply(_, args);
+    };
+  });
 
   var isBoundMethod = function(item){
     return item && item.prototype === boundMethodFlag;
