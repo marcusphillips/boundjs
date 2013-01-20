@@ -160,6 +160,12 @@ describe('proxies', function(){
       expect(B(child).owns('prop')).to.be(true);
     });
 
+
+    it('should return the proxy target when you run the target() command', function(){
+      expect(B(parent).target()).to.be(parent);
+      expect(B(child).target()).to.be(child);
+    });
+
     xit('todo: need to provide a way for users to run a function or a method in an arbitrary context');
 
     xit('should run the specified method (in the context of the target object) when you run the run command, and should return the result');

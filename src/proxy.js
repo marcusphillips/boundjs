@@ -25,7 +25,7 @@
       }
     };
     _.extend(proxy, proxyMethods, {
-      target: target,
+      _target: target,
       _dependentContextSets: {},
       prototype: boundMethodFlag
     });
@@ -42,25 +42,28 @@
 
     has: function(key){
       this._addKeyDependency(key);
-      return key in this.target;
+      return key in this._target;
     },
     get: function(key){
       this._addKeyDependency(key);
-      return this.target[key];
+      return this._target[key];
     },
     set: function(key, value){
       // todo: keep track of the current state to compare to future states, here and in del
-      this.target[key] = value;
+      this._target[key] = value;
       // todo: only invalidate the keys that were set -- do this for other mutator methods as well. first though, write tests to ensure that we keep track of how many keys get visited in the process
       this._ensuredContextSet(key).invalidateAll();
     },
     del: function(key){
-      delete this.target[key];
+      delete this._target[key];
       this._ensuredContextSet(key).invalidateAll();
     },
     owns: function(key){
       this._addKeyDependency(key);
-      return this.target.hasOwnProperty(key);
+      return this._target.hasOwnProperty(key);
+    },
+    target: function(){
+      return this._target;
     },
     run: function(){
     },
