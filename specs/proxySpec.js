@@ -48,7 +48,7 @@ describe('proxies', function(){
     });
 
     it('should not provide the same bound method for a child as the one available on its prototype', function(){
-      expect(B(child)).not.to.equal(B(parent));
+      expect(B(parent)).not.to.equal(B(child));
     });
 
     it('should not add any properties to a object other than .bound()', function(){
@@ -82,13 +82,6 @@ describe('proxies', function(){
       expect(function(){
         B(alice).apply(bob);
       }).to.throwException();
-    });
-
-    it('should augment child objects with their own .bound() property when a call to .bound() delegates through to the prototype object', function(){
-      B(parent);
-      expect(parent.bound).to.equal(child.bound);
-      child.bound(); // delegates to parent.bound()
-      expect(parent.bound).not.to.equal(child.bound);
     });
 
   });
