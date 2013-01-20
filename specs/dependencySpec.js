@@ -9,10 +9,10 @@ describe('dependencies', function(){
     });
 
     alice.bound();
-    expect(runCount).toBe(1);
+    expect(runCount).to.be(1);
 
     alice.bound('set', 'name', 'alice');
-    expect(runCount).toBe(1);
+    expect(runCount).to.be(1);
   });
 
 });
