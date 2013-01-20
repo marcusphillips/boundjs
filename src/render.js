@@ -8,7 +8,7 @@
   };
 
   var renderForScope = function($that, scope){
-    bound.autorun(function(){
+    B.depend(function(){
       $that.each(function(){
         var $node = $(this);
         var suppressRecursion;
