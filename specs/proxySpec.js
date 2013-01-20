@@ -53,7 +53,7 @@ describe('proxies', function(){
 
     it('should not add any properties to a object other than .bound()', function(){
       B(empty);
-      expect(empty).to.only.have.keys(['bound']);
+      expect(B(empty).target()).to.only.have.keys(['bound']);
     });
 
     it('should not allow proxying proxy objects', function(){
