@@ -89,7 +89,7 @@ describe('proxies', function(){
   describe('bound proxy object methods', function(){
 
     it('should allow access to a proxy object by calling the "getProxy" command', function(){
-      var proxy = B({}).getProxy();
+      var proxy = B({});
       var proxyMethods = 'get set del has owns run exec pub sub getProxy meta'.split(' ');
       _.each(proxyMethods, function(methodName){
         var randomNumber = Math.random();
@@ -101,18 +101,15 @@ describe('proxies', function(){
     });
 
     it('should get the value of properties from the target object when you run the get command', function(){
-      var object = B(alice);
       expect(B(alice).get('name')).to.equal('alice');
     });
 
     it('should set the value of properties from the target object when you run the set command', function(){
-      B(alice);
       B(alice).set('name', 'al');
       expect(alice.name).to.equal('al');
     });
 
     it('should delete properties from the target object when you run the del command', function(){
-      B(alice);
       B(alice).del('name');
       expect(B(alice).get('name')).to.equal(undefined);
       expect(alice.hasOwnProperty('setThing')).not.to.be(true);
@@ -123,7 +120,6 @@ describe('proxies', function(){
     xit('should re-run work that was dependent on calls to "has" after setting properties that didnt\'t used to exist');
 
     it('should return the presence or absence of a property on the target object when you run the has command', function(){
-      B(message);
       expect(B(message).has('text')).to.be(true);
       expect(B(message).has('unicorns')).to.be(false);
     });
@@ -196,12 +192,6 @@ describe('proxies', function(){
       B(alice).set('name', 'al');
       clock.tick(0);
       expect([runCount1, runCount2]).to.eql([1, 2]);
-    });
-
-    it('errors when passed an invalid command name', function(){
-      expect(function(){
-        B({}).invalidCommand();
-      }).to.throwException();
     });
 
   });
