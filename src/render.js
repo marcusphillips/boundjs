@@ -1,5 +1,3 @@
-/*jshint expr:true*/
-
 (function(global){
   "use strict";
 
