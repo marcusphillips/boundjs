@@ -1,4 +1,4 @@
-/*jshint expr:true, supernew:true, loopfunc:true*/
+/*jshint expr:true, supernew:true, loopfunc:true, curly:false*/
 "use strict";
 
 /*
@@ -127,17 +127,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   // from the set as a consequence.
   _ContextSet.prototype.invalidateAll = function () {
     var self = this;
-    for (var id in self._contextsById) {
+    for (var id in self._contextsById)
       self._contextsById[id].invalidate();
-    }
   };
 
   // Returns true if there are no Contexts in this set.
   _ContextSet.prototype.isEmpty = function () {
     var self = this;
-    for(var id in self._contextsById) {
+    for(var id in self._contextsById)
       return false;
-    }
     return true;
   };
 
@@ -160,9 +158,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       }
     };
     var rerun = function () {
-      if (slain) {
+      if (slain)
         return;
-      }
       ctx = new bound.Context;
       ctx.run(function () { f.call(that || this, handle); });
       ctx.onInvalidate(rerun);
