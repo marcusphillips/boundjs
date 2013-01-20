@@ -1,3 +1,6 @@
+/*jshint expr:true, supernew:true, loopfunc:true, curly:false*/
+"use strict";
+
 /*
 ========================================
 Meteor is licensed under the MIT License

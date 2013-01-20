@@ -11,11 +11,13 @@
   "eqnull"  : true,
   "node"    : true,
   "es5"     : true,
+  "expr"    : true,
   "globals" : {
     "$"          : false,
     "jQuery"     : false,
     "_"          : false,
     "bound"      : false,
+    "B"          : false,
     "window"     : false,
     "it"         : false,
     "xit"        : false,

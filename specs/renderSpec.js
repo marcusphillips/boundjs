@@ -27,6 +27,22 @@ describe('rendering', function(){
       expect($name.html()).toEqual('');
     });
 
+    it('falls through to namespaces that is in middle of scope chain', function(){
+      var $node = $('<div>\
+        <div bound-with="child">\
+          <div bound-with="grandchild" bound-contents="text"></div>\
+        </div>\
+      </div>');
+      $node.render({
+        text: 'masked',
+        child: {
+          text: 'matched',
+          grandchild: {}
+        }
+      });
+      expect($node.find('[bound-with=grandchild]').html()).toEqual('matched');
+    });
+
   });
 
   describe('directive render operation counting', function(){
@@ -92,12 +108,12 @@ describe('rendering', function(){
   describe('scopes and multiple namespace inputs', function(){
 
     afterEach(function(){
-      delete global.name;
+      delete global.age;
     });
 
     it('falls back onto the global namespace for keys that are not found on the input namespace', function(){
-      global.name = 'globalname';
-      expect($name.render({}).html()).toEqual('globalname');
+      global.age = 10;
+      expect($age.render({}).html()).toEqual('10');
     });
 
   });
@@ -126,15 +142,14 @@ describe('rendering', function(){
     it('should only update the directives of nodes that were rendered against the object that has .bound() called on it', function(){
       $name.render(alice);
       $name2.render(bob);
-      alice.name = 'al';
       bob.name = 'robert';
-      alice.bound(); // TODO: Refactor to use the bound 'set' method
+      bound.proxy(alice).bound('set', 'name', 'al');
       Clock.tick(0);
       expect($name.html()).toEqual('al');
       expect($name2.html()).toEqual('bob');
     });
 
-    xit('should only update the directives of nodes that were rendered against the object that has .bound() called on it', function(){
+    xit('should rerender the object that bound("set") on it', function(){
       var $node = $('<div>\
         <div bound-with="alice" bound-contents="name"></div>\
         <div bound-with="bob" bound-contents="name"></div>\
@@ -146,8 +161,9 @@ describe('rendering', function(){
       expect(bound.getDirectiveRenderCount()).toEqual(4);
 
       bob.name = 'billy-bob';
-      alice.bound('set', 'name', 'al');
+      bound.proxy(alice).bound('set', 'name', 'al');
       expect($node.find('[bound-with=bob]').html()).toEqual('bob');
+      expect($node.find('[bound-with=alice]').html()).toEqual('al');
       expect(bound.getDirectiveRenderCount()).toEqual(5);
     });
 
