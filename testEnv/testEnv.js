@@ -75,7 +75,6 @@
 
   testEnv.integrateMocha = function(){
     testEnv._integrate();
-    global.clock = sinon.clock;
   };
 
   // todo: wipe out all new global variables once per test
