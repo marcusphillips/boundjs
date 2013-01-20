@@ -28,9 +28,22 @@ describe('rendering', function(){
       expect($name.html()).toEqual('');
     });
 
-    it('gets value from center scopes', function(){
-
+    it('center scope fallthrough', function(){
+      var $node = $('<div>\
+        <div bound-with="child">\
+          <div bound-with="grandchild" bound-contents="text"></div>\
+        </div>\
+      </div>');
+      $node.render({
+        text: 'masked',
+        child: {
+          text: 'matched',
+          grandchild: {}
+        }
+      });
+      expect($node.find('[bound-with=grandchild]').html()).toEqual('matched');
     });
+
   });
 
   describe('directive render operation counting', function(){
