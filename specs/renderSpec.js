@@ -11,9 +11,8 @@ describe('rendering', function(){
     });
 
     xit('proxies an object that has been rendered against', function(){
-      var object = {};
-      $empty.render(object);
-      expect(bound.isProxied(object)).toEqual(true);
+      $empty.render(empty);
+      expect(bound.isProxied(empty)).toEqual(true);
     });
 
     xit('adds a bound-widget attribute to the target node', function(){
