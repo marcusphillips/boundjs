@@ -1,6 +1,6 @@
   // todo: check that .scope() works correctly after a with directive
 
-describe('with', function() {
+describe('with directive', function() {
 
   it('should use the specified namespace to render the template', function() {
     expect($email.render(message).find('.name').html()).to.equal('alice');
