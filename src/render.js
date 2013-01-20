@@ -1,5 +1,5 @@
-(function(){
-  var global = this;
+(function(global){
+  "use strict";
 
   $.fn.render = function(namespace){
     bound.proxy(namespace);
@@ -68,4 +68,4 @@
     }
   };
 
-}());
+}(this));
