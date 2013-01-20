@@ -1,3 +1,6 @@
+/*jshint debug:true*/
+"use strict";
+
 (function(){
   var ancestryFlag = {};
 
