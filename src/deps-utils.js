@@ -1,4 +1,22 @@
+/*jshint expr:true, supernew:true, loopfunc:true, curly:false*/
+"use strict";
+
+/*
+========================================
+Meteor is licensed under the MIT License
+========================================
+
+Copyright (C) 2011--2012 Meteor Development Group
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
 (function () {
+  var Meteor = {deps: B._deps};
+
   // XXX Document, test, and remove the leading underscore from everything.
 
   ////////// Meteor.deps._ContextSet
@@ -62,7 +80,7 @@
   //
   // Returns an object with a stop() method. Call stop() to stop the
   // rerunning.  Also passes this object as an argument to f.
-  Meteor.autorun = function (f) {
+  Meteor.autorun = function (f, that) {
     var ctx;
     var slain = false;
     var handle = {
@@ -75,7 +93,7 @@
       if (slain)
         return;
       ctx = new Meteor.deps.Context;
-      ctx.run(function () { f.call(this, handle); });
+      ctx.run(function () { f.call(that || this, handle); });
       ctx.onInvalidate(rerun);
     };
     rerun();
@@ -115,4 +133,6 @@
     }
   };
 
+  B.depend = Meteor.autorun;
+  B.depend._ContextSet = Meteor.deps._ContextSet;
 })();
