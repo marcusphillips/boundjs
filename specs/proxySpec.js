@@ -12,7 +12,7 @@ describe('proxies', function(){
     });
 
     it('should return the input object as a result of calling bound()', function(){
-      expect(B(alice)).to.equal(alice);
+      expect(B(alice)).to.equal(alice.bound);
     });
 
     it('should augment objects passed into B() with a .bound() method', function(){
