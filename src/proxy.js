@@ -78,7 +78,7 @@
     },
 
     _ensuredContextSet: function(key){
-      return (this._dependentContextSets[key] = this._dependentContextSets[key] || new B._ContextSet());
+      return (this._dependentContextSets[key] = this._dependentContextSets[key] || new B.depend._ContextSet());
     }
 
   };

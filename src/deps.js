@@ -14,6 +14,9 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+(function(){
+var Meteor = {};
+
 (function () {
   var pending_invalidate = [];
   var next_id = 1;
@@ -45,7 +48,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         // If this is first invalidation, schedule a flush.
         // We may be inside a flush already, in which case this
         // is unnecessary but harmless.
-        pending_invalidate.length || setTimeout(B.flush, 0);
+        if (!pending_invalidate.length)
+          setTimeout(Meteor.flush, 0);
         pending_invalidate.push(this);
       }
     },
@@ -53,11 +57,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     // calls f immediately if this context was already
     // invalidated. receives one argument, the context.
     onInvalidate: function (f) {
-      this._invalidated ? f(this) : this._callbacks.push(f);
+      if (this._invalidated)
+        f(this);
+      else
+        this._callbacks.push(f);
     }
   });
 
-  _.extend(B, {
+  _.extend(Meteor, {
     // XXX specify what happens when flush calls flush. eg, flushing
     // causes a dom update, which causes onblur, which invokes an
     // event handler that calls flush. it's probably an exception --
@@ -74,7 +81,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             try {
               f(ctx);
             } catch (e) {
-              console.log("Exception from .flush:", e.stack);
+              Meteor._debug("Exception from Meteor.flush:", e.stack);
             }
           });
           delete ctx._callbacks; // maybe help the GC
@@ -82,7 +89,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       }
     },
 
-    Context: Context
+    deps: {
+      Context: Context
+    }
   });
 })();
 
@@ -119,8 +128,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   // true if there is a current Context and it's new to the set.
   _ContextSet.prototype.addCurrentContext = function () {
     var self = this;
-    var context = B.Context.current;
-    return context ? self.add(context) : false;
+    var context = Meteor.deps.Context.current;
+    if (! context)
+      return false;
+    return self.add(context);
   };
 
   // Invalidate all Contexts in this set.  They will be removed
@@ -139,7 +150,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     return true;
   };
 
-  B._ContextSet = _ContextSet;
+  Meteor.deps._ContextSet = _ContextSet;
 
   ////////// Meteor.autorun
 
@@ -148,7 +159,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   //
   // Returns an object with a stop() method. Call stop() to stop the
   // rerunning.  Also passes this object as an argument to f.
-  B.depend = function (f, that) {
+  Meteor.autorun = function (f, that) {
     var ctx;
     var slain = false;
     var handle = {
@@ -160,7 +171,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     var rerun = function () {
       if (slain)
         return;
-      ctx = new B.Context;
+      ctx = new Meteor.deps.Context;
       ctx.run(function () { f.call(that || this, handle); });
       ctx.onInvalidate(rerun);
     };
@@ -177,11 +188,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
   var atFlushQueue = [];
   var atFlushContext = null;
-  B._atFlush = function (f) {
+  Meteor._atFlush = function (f) {
     atFlushQueue.push(f);
 
     if (! atFlushContext) {
-      atFlushContext = new B.Context;
+      atFlushContext = new Meteor.deps.Context;
       atFlushContext.onInvalidate(function () {
         var f;
         while ((f = atFlushQueue.shift())) {
@@ -191,7 +202,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
           try {
             f();
           } catch (e) {
-            console.log("Exception from ._atFlush:", e.stack);
+            Meteor._debug("Exception from Meteor._atFlush:", e.stack);
           }
         }
         atFlushContext = null;
@@ -202,3 +213,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   };
 
 })();
+
+B.depend = Meteor.autorun;
+B.depend._ContextSet = Meteor.deps._ContextSet;
+
+}());
