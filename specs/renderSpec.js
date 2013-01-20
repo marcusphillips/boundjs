@@ -3,28 +3,28 @@ describe('rendering', function(){
   describe('.render() fundamentals', function(){
 
     it('adds a .render() method to jQuery objects', function(){
-      expect($empty.render).toEqual(any(Function));
+      expect($empty.render).to.be.a('function');
     });
 
     it('returns the original jquery object from jquery\'s .render()', function(){
-      expect($empty.render({})).toEqual($empty);
+      expect($empty.render({})).to.equal($empty);
     });
 
     xit('proxies an object that has been rendered against', function(){
       $empty.render(empty);
-      expect(bound.isProxied(empty)).toEqual(true);
+      expect(bound.isProxied(empty)).to.equal(true);
     });
 
     xit('adds a bound-widget attribute to the target node', function(){
-      expect($empty.render({}).attr('bound-widget') === undefined).toBe(false);
+      expect($empty.render({}).attr('bound-widget') === undefined).to.be(false);
     });
 
     xit('doesn\'t recurse onto descendant bound widgets', function(){
       $name.render({}).appendTo($empty);
-      expect(bound.getBoundDirectiveRenderCount()).toEqual(1);
+      expect(bound.getBoundDirectiveRenderCount()).to.equal(1);
       $empty.render(alice);
-      expect(bound.getBoundDirectiveRenderCount()).toEqual(1);
-      expect($name.html()).toEqual('');
+      expect(bound.getBoundDirectiveRenderCount()).to.equal(1);
+      expect($name.html()).to.equal('');
     });
 
     it('falls through to namespaces that is in middle of scope chain', function(){
@@ -40,7 +40,7 @@ describe('rendering', function(){
           grandchild: {}
         }
       });
-      expect($node.find('[bound-with=grandchild]').html()).toEqual('matched');
+      expect($node.find('[bound-with=grandchild]').html()).to.equal('matched');
     });
 
   });
@@ -48,11 +48,11 @@ describe('rendering', function(){
   describe('directive render operation counting', function(){
 
     it('counts the number of directives processed', function(){
-      expect(bound.getDirectiveRenderCount()).toEqual(0);
+      expect(bound.getDirectiveRenderCount()).to.equal(0);
       $name.render(alice);
-      expect(bound.getDirectiveRenderCount()).toEqual(1);
+      expect(bound.getDirectiveRenderCount()).to.equal(1);
       bound.resetDirectiveRenderCount();
-      expect(bound.getDirectiveRenderCount()).toEqual(0);
+      expect(bound.getDirectiveRenderCount()).to.equal(0);
     });
 
   });
@@ -61,14 +61,14 @@ describe('rendering', function(){
 
     it('does not operate on nodes that have no directives', function(){
       $empty.render({});
-      expect(bound.getDirectiveRenderCount()).toEqual(0);
+      expect(bound.getDirectiveRenderCount()).to.equal(0);
     });
 
     it('operates on all nodes in a single jQuery collection', function(){
       $name.add($age).render(alice);
-      expect(bound.getDirectiveRenderCount()).toEqual(2);
-      expect($name.html()).toEqual('alice');
-      expect($age.html()).toEqual('20');
+      expect(bound.getDirectiveRenderCount()).to.equal(2);
+      expect($name.html()).to.equal('alice');
+      expect($age.html()).to.equal('20');
     });
 
   });
@@ -76,32 +76,32 @@ describe('rendering', function(){
   describe('following directives', function(){
 
     it('does not remove a directive attribute after following it', function(){
-      expect($name.render(alice).attr('bound-contents')).toEqual('name');
+      expect($name.render(alice).attr('bound-contents')).to.equal('name');
     });
 
     xit('errors when passed an invalid directive name');
 
     it('updates nodes nested within the top level node', function(){
       $empty.append($name).render(alice);
-      expect($name.html()).toEqual('alice');
+      expect($name.html()).to.equal('alice');
     });
 
     it('it should insert contents that are text as text and not as dom nodes', function(){
-      expect($message.render({text: '<script>alert("xss");</script>'}).text()).toEqual('<script>alert("xss");</script>');
+      expect($message.render({text: '<script>alert("xss");</script>'}).text()).to.equal('<script>alert("xss");</script>');
     });
 
     it('it should insert contents that are dom nodes as dom nodes and not as text', function(){
-      expect($message.render({text: $name}).children()[0]).toBe($name[0]);
-      expect(typeof $message.render({text: $name}).children()[0]).toEqual('object');
+      expect($message.render({text: $name}).children()[0]).to.be($name[0]);
+      expect(typeof $message.render({text: $name}).children()[0]).to.equal('object');
     });
 
   });
 
   describe('debug directive', function(){
     it('detects a debug directive', function(){
-      spyOn(_, 'debug');
+      sinon.spy(_, 'debug');
       $('<div debug/>').render({});
-      expect(_.debug).toHaveBeenCalled();
+      expect(_.debug.called).to.be(true);
     });
   });
 
@@ -113,7 +113,7 @@ describe('rendering', function(){
 
     it('falls back onto the global namespace for keys that are not found on the input namespace', function(){
       global.age = 10;
-      expect($age.render({}).html()).toEqual('10');
+      expect($age.render({}).html()).to.equal('10');
     });
 
   });
@@ -125,18 +125,18 @@ describe('rendering', function(){
       $age.render(alice);
       _.extend(alice, {name: 'al', age: 24});
       alice.bound();
-      Clock.tick(0);
-      expect($name.html()).toEqual('al');
-      expect($age.html()).toEqual('24');
+      clock.tick(0);
+      expect($name.html()).to.equal('al');
+      expect($age.html()).to.equal('24');
     });
 
     xit('does not refollow directives for properties that have not change, after calling .bound()', function(){
       $name.render(alice);
-      expect(bound.getDirectiveRenderCount()).toBe(1);
+      expect(bound.getDirectiveRenderCount()).to.be(1);
       // called after no changes, so no directives should be re-run
       alice.bound();
-      Clock.tick(0);
-      expect(bound.getDirectiveRenderCount()).toBe(1);
+      clock.tick(0);
+      expect(bound.getDirectiveRenderCount()).to.be(1);
     });
 
     it('should only update the directives of nodes that were rendered against the object that has .bound() called on it', function(){
@@ -144,9 +144,9 @@ describe('rendering', function(){
       $name2.render(bob);
       bob.name = 'robert';
       bound.proxy(alice).bound('set', 'name', 'al');
-      Clock.tick(0);
-      expect($name.html()).toEqual('al');
-      expect($name2.html()).toEqual('bob');
+      clock.tick(0);
+      expect($name.html()).to.equal('al');
+      expect($name2.html()).to.equal('bob');
     });
 
     xit('should rerender the object that bound("set") on it', function(){
@@ -158,13 +158,13 @@ describe('rendering', function(){
         alice: alice,
         bob: bob
       });
-      expect(bound.getDirectiveRenderCount()).toEqual(4);
+      expect(bound.getDirectiveRenderCount()).to.equal(4);
 
       bob.name = 'billy-bob';
       bound.proxy(alice).bound('set', 'name', 'al');
-      expect($node.find('[bound-with=bob]').html()).toEqual('bob');
-      expect($node.find('[bound-with=alice]').html()).toEqual('al');
-      expect(bound.getDirectiveRenderCount()).toEqual(5);
+      expect($node.find('[bound-with=bob]').html()).to.equal('bob');
+      expect($node.find('[bound-with=alice]').html()).to.equal('al');
+      expect(bound.getDirectiveRenderCount()).to.equal(5);
     });
 
   });

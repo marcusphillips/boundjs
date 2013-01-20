@@ -10,19 +10,19 @@ describe('scopes', function(){
   describe('basics', function(){
 
     it('introduces a top level scope', function(){
-      expect(bound.scope).toEqual(any(Object));
+      expect(bound.scope).to.be.an('object');
     });
 
     it('can create subscopes', function(){
-      expect(bound.scope.extend).toEqual(any(Function));
+      expect(bound.scope.extend).to.be.a('function');
     });
 
     xit('can provide the parent scope', function(){
-      expect(childScope.parent()).toEqual(parentScope);
+      expect(childScope.parent()).to.equal(parentScope);
     });
 
     it('extend function returns object', function(){
-      expect(bound.scope.extend({})).toEqual(any(Object));
+      expect(bound.scope.extend({})).to.be.an('object');
     });
 
   });
@@ -31,13 +31,13 @@ describe('scopes', function(){
 
     it('allows lookups in the global scope from the top level scope', function(){
       global.present = 3;
-      expect(bound.scope.lookup('present')).toEqual(3);
-      expect(bound.scope.lookup('absent')).toEqual(undefined);
+      expect(bound.scope.lookup('present')).to.equal(3);
+      expect(bound.scope.lookup('absent')).to.equal(undefined);
       delete global.present;
     });
 
     it('lookups in a child scope fall through to the parent scope', function(){
-      expect(childScope.lookup('text')).toEqual('hi');
+      expect(childScope.lookup('text')).to.equal('hi');
     });
 
   });
@@ -69,7 +69,7 @@ describe('scopes', function(){
         '{key: text}': {key: 'hi'},
         '{"key" : "value"}': {key : "value"}
       }, function(value, key){
-        expect(scope.lookup(key)).toEqual(value);
+        expect(scope.lookup(key)).to.eql(value);
       });
     });
 
@@ -95,7 +95,7 @@ describe('scopes', function(){
         'masking': undefined
         // 'bob.name': 'bob'
       }, function(value, key){
-        expect(scope.lookup(key)).toBe(value);
+        expect(scope.lookup(key)).to.be(value);
       });
     });
 
@@ -109,9 +109,9 @@ describe('scopes', function(){
         parentScope.lookup('text');
         runCount++;
       });
-      expect(runCount).toBe(1);
+      expect(runCount).to.be(1);
       message.bound('set', 'text', 'hello');
-      expect(runCount).toBe(2);
+      expect(runCount).to.be(2);
     });
 
     xit('if a value is found on an object that is low in the scope chain, and the value at that key is changed on a higher level of the chain, those changes do not result in a rerender of directives that depended on the value in the leaf object', function(){
