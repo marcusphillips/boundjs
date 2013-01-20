@@ -1,4 +1,8 @@
+/*jshint expr:true*/
+
 (function(){
+  "use strict";
+
   var global = this;
 
   $.fn.render = function(namespace){
@@ -38,7 +42,7 @@
     contents: function($node, namespace) {
       var key = $node.attr("bound-contents");
       if(key){
-        var contents = bound.proxy(namespace).bound('has', key) ? namespace.bound('get', key) : bound('get', key);
+        var contents = bound.proxy(namespace).bound('has', key) ? namespace.bound('get', key) : window.bound('get', key);
         typeof contents === "string" ? $node.text(contents) : $node.html(contents);
         directiveRenderCount++;
         return {suppressRecursion: true};
