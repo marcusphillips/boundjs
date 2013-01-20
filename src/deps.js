@@ -45,7 +45,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         // If this is first invalidation, schedule a flush.
         // We may be inside a flush already, in which case this
         // is unnecessary but harmless.
-        pending_invalidate.length || setTimeout(bound.flush, 0);
+        pending_invalidate.length || setTimeout(B.flush, 0);
         pending_invalidate.push(this);
       }
     },
@@ -57,7 +57,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     }
   });
 
-  _.extend(bound, {
+  _.extend(B, {
     // XXX specify what happens when flush calls flush. eg, flushing
     // causes a dom update, which causes onblur, which invokes an
     // event handler that calls flush. it's probably an exception --
@@ -119,7 +119,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   // true if there is a current Context and it's new to the set.
   _ContextSet.prototype.addCurrentContext = function () {
     var self = this;
-    var context = bound.Context.current;
+    var context = B.Context.current;
     return context ? self.add(context) : false;
   };
 
@@ -139,7 +139,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     return true;
   };
 
-  bound._ContextSet = _ContextSet;
+  B._ContextSet = _ContextSet;
 
   ////////// Meteor.autorun
 
@@ -148,7 +148,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   //
   // Returns an object with a stop() method. Call stop() to stop the
   // rerunning.  Also passes this object as an argument to f.
-  bound.autorun = function (f, that) {
+  B.depend = function (f, that) {
     var ctx;
     var slain = false;
     var handle = {
@@ -160,7 +160,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     var rerun = function () {
       if (slain)
         return;
-      ctx = new bound.Context;
+      ctx = new B.Context;
       ctx.run(function () { f.call(that || this, handle); });
       ctx.onInvalidate(rerun);
     };
@@ -177,11 +177,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
   var atFlushQueue = [];
   var atFlushContext = null;
-  bound._atFlush = function (f) {
+  B._atFlush = function (f) {
     atFlushQueue.push(f);
 
     if (! atFlushContext) {
-      atFlushContext = new bound.Context;
+      atFlushContext = new B.Context;
       atFlushContext.onInvalidate(function () {
         var f;
         while ((f = atFlushQueue.shift())) {

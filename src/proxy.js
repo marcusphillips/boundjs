@@ -5,9 +5,9 @@
 
   var boundify = function(target){
     _.raiseIf(window.jQuery && target instanceof window.jQuery || target.nodeType === 1, 'bound() cannot yet proxy node-like objects');
-    _.raiseIf(isBoundMethod(target), "can't bind a proxy to another proxy");
+    _.raiseIf(isProxy(target), "can't bind a proxy to another proxy");
     if(target.hasOwnProperty('bound')){
-      return isBoundMethod(target.bound) ? target : _.raise("'bound' key already on object");
+      return B.isProxy(target.bound) ? target : _.raise("'bound' key already on object");
     }
 
     var proxy = target.bound = function(){
@@ -81,12 +81,12 @@
     },
 
     _ensuredContextSet: function(key){
-      return (this._dependentContextSets[key] = this._dependentContextSets[key] || new bound._ContextSet());
+      return (this._dependentContextSets[key] = this._dependentContextSets[key] || new B._ContextSet());
     }
 
   };
 
-  var isBoundMethod = function(item){
+  var isProxy = function(item){
     return item && item.prototype === boundMethodFlag;
   };
 
@@ -100,13 +100,13 @@
     return boundify(target).bound;
   };
 
-  bound.isBoundMethod = isBoundMethod;
+  global.B.isProxy = isProxy;
 
-  global.bound.each = function(collection, block, context){
+  global.B.each = function(collection, block, context){
     var args = _.extend([], arguments);
     args[1] = function(item, key){
-      //todo: write tests for bound.each
-      if(key !== 'bound' || !bound.isBoundMethod(item)){
+      //todo: write tests for B.each
+      if(key !== 'bound' || !B.isProxy(item)){
         block.apply(this, arguments);
       }
     };

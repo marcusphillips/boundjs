@@ -99,7 +99,7 @@ describe('rendering', function(){
 
   describe('debug directive', function(){
     it('detects a debug directive', function(){
-      sinon.spy(_, 'debug');
+      sinon.stub(_, 'debug');
       $('<div debug/>').render({});
       expect(_.debug.called).to.be(true);
     });
@@ -143,7 +143,7 @@ describe('rendering', function(){
       $name.render(alice);
       $name2.render(bob);
       bob.name = 'robert';
-      bound.proxy(alice).bound('set', 'name', 'al');
+      B(alice).set('name', 'al');
       clock.tick(0);
       expect($name.html()).to.equal('al');
       expect($name2.html()).to.equal('bob');
@@ -161,7 +161,7 @@ describe('rendering', function(){
       expect(bound.getDirectiveRenderCount()).to.equal(4);
 
       bob.name = 'billy-bob';
-      bound.proxy(alice).bound('set', 'name', 'al');
+      B(alice).set('name', 'al');
       expect($node.find('[bound-with=bob]').html()).to.equal('bob');
       expect($node.find('[bound-with=alice]').html()).to.equal('al');
       expect(bound.getDirectiveRenderCount()).to.equal(5);

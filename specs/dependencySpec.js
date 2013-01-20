@@ -2,7 +2,7 @@ describe('dependencies', function(){
 
   it('should not rerun any work after calling .bound() on an object that has not changed', function(){
     var runCount = 0;
-    bound.autorun(function(){
+    B.depend(function(){
       B(alice).get('name');
       runCount = runCount + 1;
     });

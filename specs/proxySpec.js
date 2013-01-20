@@ -7,8 +7,8 @@ describe('proxies', function(){
     });
 
     it('provides a helper to identify bound methods', function(){
-      expect(bound.isBoundMethod(function(){})).to.be(false);
-      expect(bound.isBoundMethod(B({}))).to.be(true);
+      expect(B.isProxy(function(){})).to.be(false);
+      expect(B.isProxy(bound.proxy({}).bound)).to.be(true);
     });
 
     it('should return the input object as a result of calling bound()', function(){
@@ -181,7 +181,7 @@ describe('proxies', function(){
 
     xit('should let you invalidate listeners for one key by exposing a bound() command "changed"', function(){
       var runCount = 0;
-      bound.autorun(function() {
+      B.depend(function() {
         B(alice).get('name');
         runCount++;
       });
@@ -203,20 +203,18 @@ describe('proxies', function(){
     });
 
     xit('should not result in re-runs of dependent contexts for setting properties to the same value they already hold', function(){
-      
-      
     });
 
     it('should not re-run properties dependent on key inclusion when only the property value has changed, not its presence in the object', function(){
       // todo: tursify
       B(alice);
       var runCount1 = 0;
-      bound.autorun(function(){
+      B.depend(function(){
         B(alice).has('hamburger');
         runCount1 += 1;
       });
       var runCount2 = 0;
-      bound.autorun(function(){
+      B.depend(function(){
         B(alice).get('name');
         runCount2 += 1;
       });

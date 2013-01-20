@@ -105,7 +105,7 @@ describe('scopes', function(){
 
     xit('reruns blocks that made lookup in a scope when target namespace changes', function(){
       var runCount = 0;
-      bound.autorun(function(){
+      B.depend(function(){
         parentScope.lookup('text');
         runCount++;
       });
