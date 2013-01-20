@@ -178,7 +178,6 @@ describe('proxies', function(){
 
     it('should not re-run properties dependent on key inclusion when only the property value has changed, not its presence in the object', function(){
       // todo: tursify
-      B(alice);
       var runCount1 = 0;
       B.depend(function(){
         B(alice).has('hamburger');
