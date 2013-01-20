@@ -27,6 +27,10 @@ describe('rendering', function(){
       expect(bound.getBoundDirectiveRenderCount()).toEqual(1);
       expect($name.html()).toEqual('');
     });
+
+    it('gets value from center scopes', function(){
+
+    });
   });
 
   describe('directive render operation counting', function(){
@@ -133,7 +137,7 @@ describe('rendering', function(){
       expect($name2.html()).toEqual('bob');
     });
 
-    it('should only update the directives of nodes that were rendered against the object that has .bound() called on it', function(){
+    xit('should rerender the object that bound("set") on it', function(){
       var $node = $('<div>\
         <div bound-with="alice" bound-contents="name"></div>\
         <div bound-with="bob" bound-contents="name"></div>\

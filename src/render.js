@@ -14,12 +14,8 @@
         var suppressRecursion;
         _.each(directiveProcessors, function(processor){
           var result = processor($node, scope) || {};
-          if(result.scope){
-            scope = result.scope;
-          }
-          if(result.suppressRecursion){
-            suppressRecursion = result.suppressRecursion;
-          }
+          result.scope && (scope = result.scope);
+          result.suppressRecursion && (suppressRecursion = result.suppressRecursion);
         });
         suppressRecursion || $node.children().each(function(){
           renderForScope($(this), scope);
