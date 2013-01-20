@@ -1,3 +1,6 @@
+/*jshint expr:true, supernew:true, loopfunc:true, curly:false*/
+"use strict";
+
 /*
 ========================================
 Meteor is licensed under the MIT License
@@ -145,7 +148,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   //
   // Returns an object with a stop() method. Call stop() to stop the
   // rerunning.  Also passes this object as an argument to f.
-  bound.autorun = function (f) {
+  bound.autorun = function (f, that) {
     var ctx;
     var slain = false;
     var handle = {
@@ -158,7 +161,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       if (slain)
         return;
       ctx = new bound.Context;
-      ctx.run(function () { f.call(this, handle); });
+      ctx.run(function () { f.call(that || this, handle); });
       ctx.onInvalidate(rerun);
     };
     rerun();

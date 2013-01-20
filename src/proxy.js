@@ -1,46 +1,42 @@
-(function(){
+(function(global){
+  "use strict";
 
   // TODO: test that passing in non-objects throws an informative error
 
-  var global = this;
-  var boundMethodFlag = {};
-  var Proxy = function(target){
-    this._dependentContextSets = {};
-
+  var boundify = function(target){
     _.raiseIf(window.jQuery && target instanceof window.jQuery || target.nodeType === 1, 'bound() cannot yet proxy node-like objects');
-    _.raiseIf(target instanceof Proxy, "can't bind a proxy to another proxy");
+    _.raiseIf(isBoundMethod(target), "can't bind a proxy to another proxy");
     if(target.hasOwnProperty('bound')){
-      return isBoundMethod(target.bound) ? target.bound('proxy') : _.raise("'bound' key already on object");
+      return isBoundMethod(target.bound) ? target : _.raise("'bound' key already on object");
     }
 
-    this.target = target;
-    var proxy = this;
-
-    var boundMethod = function(commandName){
-      _.raiseIf(target.bound !== boundMethod, "cannot call bound on objects that lack a bound method.");
+    var proxy = target.bound = function(){
+      _.raiseIf(target.bound !== proxy, "cannot call bound on objects that lack a bound method.");
       if (this !== target) {
         _.raiseIf(!_.isAncestor(target, this), "cannot call bound on foreign objects.");
-        bound.proxy(this);
-        return this.bound.apply(this, arguments);
+        return B(this).apply(this, arguments);
       }
-      _.raiseIf(typeof proxy[commandName] !== 'function', 'invalid command name.');
-      return proxy[commandName].apply(proxy, _.toArray(arguments).slice(1));
+      //todo: this probably never deletes context sets stored at keys that are entirely cleared from contexts
+      if(arguments.length){
+        return proxy[arguments[0]].apply(proxy, _.toArray(arguments).slice(1));
+      }else{
+        _.invoke(proxy._dependentContextSets, 'invalidateAll');
+        return this;
+      }
     };
-    boundMethod.prototype = boundMethodFlag;
-    target.bound = boundMethod;
+    _.extend(proxy, proxyMethods, {
+      target: target,
+      _dependentContextSets: {},
+      prototype: boundMethodFlag
+    });
+
+    return target;
   };
 
-  Proxy.prototype = {
-    constructor: Proxy,
+  var boundMethodFlag = {};
+  var proxyMethods = {
 
-    proxy: function(){
-      return this;
-    },
-
-    // when no command is passed at all
-    'undefined': function(){
-      //todo: this probably never deletes context sets stored at keys that are entirely cleared from contexts
-      _.invoke(this._dependentContextSets, 'invalidateAll');
+    getProxy: function(){
       return this;
     },
 
@@ -91,10 +87,14 @@
     return item && item.prototype === boundMethodFlag;
   };
 
-  new Proxy(global);
-  // todo: rename to .ify()
+  boundify(global);
+
   global.bound.proxy = function(target){
-    return new Proxy(target).target;
+    return boundify(target);
+  };
+
+  global.B = function(target){
+    return boundify(target).bound;
   };
 
   bound.isBoundMethod = isBoundMethod;
@@ -110,4 +110,4 @@
     _.each.apply(_, args);
   };
 
-}());
+}(this));

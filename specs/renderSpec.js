@@ -28,6 +28,22 @@ describe('rendering', function(){
       expect($name.html()).to.equal('');
     });
 
+    it('falls through to namespaces that is in middle of scope chain', function(){
+      var $node = $('<div>\
+        <div bound-with="child">\
+          <div bound-with="grandchild" bound-contents="text"></div>\
+        </div>\
+      </div>');
+      $node.render({
+        text: 'masked',
+        child: {
+          text: 'matched',
+          grandchild: {}
+        }
+      });
+      expect($node.find('[bound-with=grandchild]').html()).to.equal('matched');
+    });
+
   });
 
   describe('directive render operation counting', function(){
@@ -82,15 +98,23 @@ describe('rendering', function(){
 
   });
 
+  describe('debug directive', function(){
+    it('detects a debug directive', function(){
+      sinon.spy(_, 'debug');
+      $('<div debug/>').render({});
+      expect(_.debug.called).to.be(true);
+    });
+  });
+
   describe('scopes and multiple namespace inputs', function(){
 
     afterEach(function(){
-      delete global.name;
+      delete global.age;
     });
 
     it('falls back onto the global namespace for keys that are not found on the input namespace', function(){
-      global.name = 'globalname';
-      expect($name.render({}).html()).to.equal('globalname');
+      global.age = 10;
+      expect($age.render({}).html()).to.equal('10');
     });
 
   });
@@ -119,12 +143,29 @@ describe('rendering', function(){
     it('should only update the directives of nodes that were rendered against the object that has .bound() called on it', function(){
       $name.render(alice);
       $name2.render(bob);
-      alice.name = 'al';
       bob.name = 'robert';
-      alice.bound(); // TODO: Refactor to use the bound 'set' method
+      bound.proxy(alice).bound('set', 'name', 'al');
       clock.tick(0);
       expect($name.html()).to.equal('al');
       expect($name2.html()).to.equal('bob');
+    });
+
+    xit('should rerender the object that bound("set") on it', function(){
+      var $node = $('<div>\
+        <div bound-with="alice" bound-contents="name"></div>\
+        <div bound-with="bob" bound-contents="name"></div>\
+      </div>');
+      $node.render({
+        alice: alice,
+        bob: bob
+      });
+      expect(bound.getDirectiveRenderCount()).to.equal(4);
+
+      bob.name = 'billy-bob';
+      bound.proxy(alice).bound('set', 'name', 'al');
+      expect($node.find('[bound-with=bob]').html()).to.equal('bob');
+      expect($node.find('[bound-with=alice]').html()).to.equal('al');
+      expect(bound.getDirectiveRenderCount()).to.equal(5);
     });
 
   });

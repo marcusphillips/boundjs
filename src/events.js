@@ -1,4 +1,7 @@
+"use strict";
+
 var mixEvents = function(target){
+
   var eventHash = {};
 
   target.on = function(event , func){

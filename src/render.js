@@ -1,21 +1,24 @@
-(function(){
-  var global = this;
+(function(global){
+  "use strict";
 
   $.fn.render = function(namespace){
     bound.proxy(namespace);
-    var $that = this;
+    renderForScope(this, bound.scope.extend(namespace))
+    return this;
+  };
+
+  var renderForScope = function($that, scope){
     bound.autorun(function(){
       $that.each(function(){
         var $node = $(this);
-        // todo: all directive computations will share a context
+        var suppressRecursion;
         _.each(directiveProcessors, function(processor){
-          var result = processor($node, namespace);
-          if(processor === directiveProcessors['with']){
-            namespace = result.scope;
-          }
+          var result = processor($node, scope) || {};
+          result.scope && (scope = result.scope);
+          result.suppressRecursion && (suppressRecursion = result.suppressRecursion);
         });
-        $node.children().each(function(){
-          $(this).render(namespace);
+        suppressRecursion || $node.children().each(function(){
+          renderForScope($(this), scope);
         });
       });
     });
@@ -32,29 +35,37 @@
   };
 
   var directiveProcessors = {
-    contents: function($node, namespace) {
+    contents: function($node, scope) {
       var key = $node.attr("bound-contents");
       if(key){
-        var contents = bound.proxy(namespace).bound('has', key) ? namespace.bound('get', key) : bound('get', key);
+        var contents = scope.lookup(key);
         typeof contents === "string" ? $node.text(contents) : $node.html(contents);
         directiveRenderCount++;
+        return {suppressRecursion: true};
       }
     },
 
-    attr: function($node, namespace) {
+    attr: function($node, scope) {
       _.each($node[0].attributes, function(attribute){
         if((/^bound-attr-.+/).test(attribute.name)) {
-          $node.attr((attribute.name).slice("bound-attr-".length), namespace[attribute.value]);
+          $node.attr(attribute.name.slice("bound-attr-".length), scope.lookup(attribute.value));
           directiveRenderCount++;
         }
       });
     },
 
+    debug: function($node, scope) {
+      _.debug( $node.attr('debug') !== undefined );
+    },
+
     'with': function($node, scope) {
-      return {
-        scope: $node.attr("bound-with") ? scope[$node.attr("bound-with")] : scope
-      };
+      if($node.attr("bound-with")){
+        directiveRenderCount++;
+        return {
+          scope: scope.extend(scope.lookup($node.attr("bound-with")))
+        };
+      }
     }
   };
 
-}());
+}(this));
