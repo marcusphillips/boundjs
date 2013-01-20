@@ -11,13 +11,17 @@
     bound.autorun(function(){
       $that.each(function(){
         var $node = $(this);
+        var suppressRecursion;
         _.each(directiveProcessors, function(processor){
           var result = processor($node, scope) || {};
           if(result.scope){
             scope = result.scope;
           }
+          if(result.suppressRecursion){
+            suppressRecursion = result.suppressRecursion;
+          }
         });
-        $node.children().each(function(){
+        suppressRecursion || $node.children().each(function(){
           renderForScope($(this), scope);
         });
       });
@@ -41,6 +45,7 @@
         var contents = scope.lookup(key);
         typeof contents === "string" ? $node.text(contents) : $node.html(contents);
         directiveRenderCount++;
+        return {suppressRecursion: true};
       }
     },
 
