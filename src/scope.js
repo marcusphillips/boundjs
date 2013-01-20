@@ -1,5 +1,6 @@
+"use strict";
+
 (function(){
-  "use strict";
 
   bound.scope = {
     _context: window,
