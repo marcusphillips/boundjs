@@ -12,7 +12,11 @@
       $that.each(function(){
         var $node = $(this);
         var suppressRecursion;
-        _.each(directiveProcessors, function(processor){
+        _.each([directiveProcessors.contents,
+          directiveProcessors.attr,
+          directiveProcessors.debug,
+          directiveProcessors['with']
+        ], function(processor){
           var result = processor($node, scope) || {};
           result.scope && (scope = result.scope);
           result.suppressRecursion && (suppressRecursion = result.suppressRecursion);
