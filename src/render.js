@@ -34,6 +34,7 @@
     return directiveRenderCount;
   };
 
+  //TODO: add bound-checked and bound-loop
   var directiveProcessors = {
     contents: function($node, scope) {
       var key = $node.attr("bound-contents");

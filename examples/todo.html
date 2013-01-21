@@ -1,0 +1,21 @@
+<html>
+  <head>
+	<title>Bound.Js Todo app</title>
+	<script src="src/bound.js"></script>
+  </head>
+  <body>
+    <h1>Todos</h1>
+    <input type="text"/>
+    <div id="listing" bound-loop="todos">
+      <input type="checkbox" bound-checked="done"/>
+      <div bound-contents="content"></div>
+    </div>
+
+    <script>
+      var todos = [
+        {content: 'listing todos', done:false},
+        {content: 'adding todo', done:false}
+      ];
+    </script>
+  </body>
+</html>
