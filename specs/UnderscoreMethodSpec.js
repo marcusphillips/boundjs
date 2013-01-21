@@ -132,7 +132,7 @@ describe('underscoreMethod', function(){
       expect(B([1,2,3,4,5,5]).uniq()).to.eql(oldArray);
     });
 
-    it('should produces a duplicate-free version of the array',function(){
+    it('should merges together the values of each of the arrays',function(){
      expect(B(['Bonnie', 'yes']).zip(['and', 'or'],['Clyde', 'no'])).to.eql([['Bonnie','and','Clyde' ], ['yes', 'or','no']]);
     });
 
