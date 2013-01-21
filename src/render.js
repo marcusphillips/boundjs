@@ -3,7 +3,7 @@
 
   $.fn.render = function(namespace){
     bound.proxy(namespace);
-    renderForScope(this, bound.scope.extend(namespace))
+    renderForScope(this, bound.scope.extend(namespace));
     return this;
   };
 
