@@ -8,7 +8,7 @@
   };
 
   var renderForScope = function($that, scope){
-    bound.autorun(function(){
+    B.depend(function(){
       $that.each(function(){
         var $node = $(this);
         var suppressRecursion;
@@ -26,11 +26,11 @@
   };
 
   var directiveRenderCount = 0;
-  bound.resetDirectiveRenderCount = function(){
+  B.resetDirectiveRenderCount = function(){
     directiveRenderCount = 0;
   };
 
-  bound.getDirectiveRenderCount = function(){
+  B.getDirectiveRenderCount = function(){
     return directiveRenderCount;
   };
 

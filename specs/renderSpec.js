@@ -21,9 +21,9 @@ describe('rendering', function(){
 
     xit('doesn\'t recurse onto descendant bound widgets', function(){
       $name.render({}).appendTo($empty);
-      expect(bound.getBoundDirectiveRenderCount()).to.equal(1);
+      expect(B.getDirectiveRenderCount()).to.equal(1);
       $empty.render(alice);
-      expect(bound.getBoundDirectiveRenderCount()).to.equal(1);
+      expect(B.getDirectiveRenderCount()).to.equal(1);
       expect($name.html()).to.equal('');
     });
 
@@ -48,11 +48,11 @@ describe('rendering', function(){
   describe('directive render operation counting', function(){
 
     it('counts the number of directives processed', function(){
-      expect(bound.getDirectiveRenderCount()).to.equal(0);
+      expect(B.getDirectiveRenderCount()).to.equal(0);
       $name.render(alice);
-      expect(bound.getDirectiveRenderCount()).to.equal(1);
-      bound.resetDirectiveRenderCount();
-      expect(bound.getDirectiveRenderCount()).to.equal(0);
+      expect(B.getDirectiveRenderCount()).to.equal(1);
+      B.resetDirectiveRenderCount();
+      expect(B.getDirectiveRenderCount()).to.equal(0);
     });
 
   });
@@ -61,12 +61,12 @@ describe('rendering', function(){
 
     it('does not operate on nodes that have no directives', function(){
       $empty.render({});
-      expect(bound.getDirectiveRenderCount()).to.equal(0);
+      expect(B.getDirectiveRenderCount()).to.equal(0);
     });
 
     it('operates on all nodes in a single jQuery collection', function(){
       $name.add($age).render(alice);
-      expect(bound.getDirectiveRenderCount()).to.equal(2);
+      expect(B.getDirectiveRenderCount()).to.equal(2);
       expect($name.html()).to.equal('alice');
       expect($age.html()).to.equal('20');
     });
@@ -99,7 +99,7 @@ describe('rendering', function(){
 
   describe('debug directive', function(){
     it('detects a debug directive', function(){
-      sinon.spy(_, 'debug');
+      sinon.stub(_, 'debug');
       $('<div debug/>').render({});
       expect(_.debug.called).to.be(true);
     });
@@ -132,18 +132,18 @@ describe('rendering', function(){
 
     xit('does not refollow directives for properties that have not change, after calling .bound()', function(){
       $name.render(alice);
-      expect(bound.getDirectiveRenderCount()).to.be(1);
+      expect(B.getDirectiveRenderCount()).to.be(1);
       // called after no changes, so no directives should be re-run
       alice.bound();
       clock.tick(0);
-      expect(bound.getDirectiveRenderCount()).to.be(1);
+      expect(B.getDirectiveRenderCount()).to.be(1);
     });
 
     it('should only update the directives of nodes that were rendered against the object that has .bound() called on it', function(){
       $name.render(alice);
       $name2.render(bob);
       bob.name = 'robert';
-      bound.proxy(alice).bound('set', 'name', 'al');
+      B(alice).set('name', 'al');
       clock.tick(0);
       expect($name.html()).to.equal('al');
       expect($name2.html()).to.equal('bob');
@@ -158,13 +158,13 @@ describe('rendering', function(){
         alice: alice,
         bob: bob
       });
-      expect(bound.getDirectiveRenderCount()).to.equal(4);
+      expect(B.getDirectiveRenderCount()).to.equal(4);
 
       bob.name = 'billy-bob';
-      bound.proxy(alice).bound('set', 'name', 'al');
+      B(alice).set('name', 'al');
       expect($node.find('[bound-with=bob]').html()).to.equal('bob');
       expect($node.find('[bound-with=alice]').html()).to.equal('al');
-      expect(bound.getDirectiveRenderCount()).to.equal(5);
+      expect(B.getDirectiveRenderCount()).to.equal(5);
     });
 
   });

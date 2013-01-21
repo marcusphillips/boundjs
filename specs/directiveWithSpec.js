@@ -24,7 +24,7 @@ describe('with', function() {
 
   xit('does not render directives nested under a with directive that resolve to a non-object', function(){
     expect($email.render({name: 'irrelevant'}).find('.name').html()).to.equal('');
-    expect(bound.getDirectiveRenderCount()).to.equal(1);
+    expect(B.getDirectiveRenderCount()).to.equal(1);
   });
 
 });
