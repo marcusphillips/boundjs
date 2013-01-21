@@ -113,7 +113,7 @@ describe('underscoreMethod', function(){
     });
 
     it('should return new array with all instances of the values removed', function(){
-      expect(B([0,1,2,0,3,4,0,5,6,6]).without(0, 6)).to.eql(oldArray);
+      expect(B([0,1,2,3,4,5,6]).without(0, 6)).to.eql(oldArray);
     });
 
     it('should return new array that computes the union of the passed in arrays', function(){
@@ -126,6 +126,14 @@ describe('underscoreMethod', function(){
 
     it('should return the values from array that are not present in the other arrays',function(){
       expect(B(oldArray).difference([1,2],[1,4])).to.eql([3,5]);
+    });
+
+    it('should produces a duplicate-free version of the array',function(){
+      expect(B([1,2,3,4,5,5]).uniq()).to.eql(oldArray);
+    });
+
+    it('should produces a duplicate-free version of the array',function(){
+     expect(B(['Bonnie', 'yes']).zip(['and', 'or'],['Clyde', 'no'])).to.eql([['Bonnie','and','Clyde' ], ['yes', 'or','no']]);
     });
 
   });
