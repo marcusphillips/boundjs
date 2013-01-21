@@ -2,7 +2,7 @@ describe('underscoreMethod', function(){
 
   describe('using unserscore method on proxy target', function(){
     var oldArray;
-    var obj;
+    var arrayObjs;
     beforeEach(function(){
       oldArray = [1,2,3,4,5];
       arrayObjs = [
@@ -23,7 +23,7 @@ describe('underscoreMethod', function(){
     });
 
     it('should return single value that has been boiled down from array of values', function(){
-      expect(B(oldArray).reduce(function(m, v){ return m+v; },1)).to.equal(16);
+      expect(B(oldArray).reduce(function(m, v){ return m + v; },1)).to.equal(16);
     });
 
     it('should return the first value that passes truth test', function(){
@@ -118,6 +118,14 @@ describe('underscoreMethod', function(){
 
     it('should return new array that computes the union of the passed in arrays', function(){
       expect(B([1,2,3]).union([2,3,4],[4,5])).to.eql(oldArray);
+    });
+
+    it('should return array of all the values which are intersection of all the arrays', function(){
+      expect(B(oldArray).intersection([1,2],[1,4])).to.eql([1]);
+    });
+
+    it('should return the values from array that are not present in the other arrays',function(){
+      expect(B(oldArray).difference([1,2],[1,4])).to.eql([3,5]);
     });
 
   });

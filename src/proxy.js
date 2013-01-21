@@ -83,7 +83,7 @@
 
   };
 
-  var underscoreProp = 'each map reduce find filter every some contains where reject pluck groupBy countBy max min shuffle toArray size initial first last rest compact flatten without union'.split(' ');
+  var underscoreProp = 'each map reduce find filter every some contains where reject pluck groupBy countBy max min shuffle toArray size initial first last rest compact flatten without union intersection difference'.split(' ');
 
   _.each(underscoreProp, function(methodName){
     proxyMethods[methodName] = function(){
