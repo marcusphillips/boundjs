@@ -11,4 +11,16 @@ describe('loop directive', function(){
     ]).to.eql(['', 'alice', 'bob', 'charlie']);
   });
 
+  it('should clear previously created child nodes when re-rendering', function () {
+    $friends.render(david)
+    var $children = $friends.render(david).children();
+    expect($children.length).to.equal(4);
+    expect([
+      $children.eq(0).html(),
+      $children.eq(1).html(),
+      $children.eq(2).html(),
+      $children.eq(3).html()
+    ]).to.eql(['', 'alice', 'bob', 'charlie']);
+  })
+
 });

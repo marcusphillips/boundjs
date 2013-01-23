@@ -80,9 +80,11 @@
     loop: function ($node, scope, isRecursing) {
       var namespace = $node.attr('bound-loop');
       if (namespace) {
+        var newNodes = [];
         var scopeItems = scope.lookup(namespace);
         var $itemTemplate = $node.children().eq(0);
-        var newNodes = [];
+        $node.empty();
+        $node.append($itemTemplate);
         if (typeof scopeItems === 'object') {
           newNodes.push(B(scopeItems).map(function (item, i) {
             return $itemTemplate.clone().render(item);
