@@ -65,11 +65,14 @@
     },
 
     'with': function($node, scope) {
-      var namespace = $node.attr("bound-with");
-      if(namespace){
+      var key = $node.attr("bound-with");
+      if(key){
         directiveRenderCount++;
-        return {
-          scope: scope.extend(scope.lookup($node.attr("bound-with")))
+        var namespace = scope.lookup($node.attr("bound-with"));
+        return namespace ? {
+          scope: scope.extend(namespace)
+        } : {
+          suppressRecursion: true
         };
       }
     },
@@ -81,6 +84,7 @@
     loop: function($node, scope) {
       var namespace = $node.attr("bound-loop");
       if(namespace){
+        debugger
         var items = scope.lookup(namespace);
         var $itemTemplate = $node.children().eq(0);
         if(typeof items === 'object'){
