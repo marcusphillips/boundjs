@@ -8,7 +8,7 @@ describe('loop directive', function(){
       $children.eq(1).html(),
       $children.eq(2).html(),
       $children.eq(3).html()
-    ]).to.equal(['', 'alice', 'bob', 'charlie']);
+    ]).to.eql(['', 'alice', 'bob', 'charlie']);
   });
 
 });
