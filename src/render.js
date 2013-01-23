@@ -3,7 +3,7 @@
 
   $.fn.render = function(namespace){
     bound.proxy(namespace);
-    renderForScope(this, bound.scope.extend(namespace))
+    renderForScope(this, bound.scope.extend(namespace));
     return this;
   };
 
@@ -12,7 +12,12 @@
       $that.each(function(){
         var $node = $(this);
         var suppressRecursion;
-        _.each(directiveProcessors, function(processor){
+        _.each([directiveProcessors.contents,
+          directiveProcessors.attr,
+          directiveProcessors.debug,
+          directiveProcessors.loop,
+          directiveProcessors['with']
+        ], function(processor){
           var result = processor($node, scope) || {};
           result.scope && (scope = result.scope);
           result.suppressRecursion && (suppressRecursion = result.suppressRecursion);
@@ -60,11 +65,33 @@
     },
 
     'with': function($node, scope) {
-      if($node.attr("bound-with")){
+      var namespace = $node.attr("bound-with");
+      if(namespace){
         directiveRenderCount++;
         return {
           scope: scope.extend(scope.lookup($node.attr("bound-with")))
         };
+      }
+    },
+
+    // todo: don't throw away the item template node - must still be the first node after this render() is done
+    // todo: make sure we don't render the item template node
+    // todo: make sure we don't clobber the existing bound-with property
+    // todo: make sure we get rid of the previously-added nodes
+    loop: function($node, scope) {
+      var namespace = $node.attr("bound-loop");
+      if(namespace){
+        var items = scope.lookup(namespace);
+        var $itemTemplate = $node.children().eq(0);
+        if(typeof items === 'object'){
+          $node.append(B(items).map(function(item, index){
+            debugger;
+            return $itemTemplate.clone().attr({'bound-with': index});
+          }));
+        }else{
+          _.raiseIf(!items, 'Expected ' + namespace + ' to be enumerable.');
+          $node.hide();
+        }
       }
     }
   };

@@ -17,6 +17,7 @@ describe('scopes', function(){
       expect(bound.scope.extend).to.be.a('function');
     });
 
+    // todo: june
     xit('can provide the parent scope', function(){
       expect(childScope.parent()).to.equal(parentScope);
     });
