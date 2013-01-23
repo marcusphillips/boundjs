@@ -77,20 +77,16 @@
     // todo: make sure we don't render the item template node
     // todo: make sure we don't clobber the existing bound-with property
     // todo: make sure we get rid of the previously-added nodes
-    loop: function ($node, scope, isRecursing) {
+    loop: function ($node, scope) {
       var namespace = $node.attr('bound-loop');
       if (namespace) {
         var newNodes = [];
         var scopeItems = scope.lookup(namespace);
         var $itemTemplate = $node.children().eq(0);
-        $node.empty();
-        $node.append($itemTemplate);
+        $node.empty().append($itemTemplate);
         if (typeof scopeItems === 'object') {
-          newNodes.push(B(scopeItems).map(function (item, i) {
-            return $itemTemplate.clone().render(item);
-          }));
-          B(newNodes[0]).each(function (childNode, i, newNodes) {
-            $node.append(childNode);
+          B(scopeItems).each(function (item, i) {
+            $node.append($itemTemplate.clone().render(item));
           });
         } else {
           _.raiseIf(!scopeItems, 'Expected ' + namespace + ' to be enumerable.');
