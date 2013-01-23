@@ -10,6 +10,7 @@ describe('rendering', function(){
       expect($empty.render({})).to.equal($empty);
     });
 
+    // june: todo
     xit('proxies an object that has been rendered against', function(){
       $empty.render(empty);
       expect(bound.isProxied(empty)).to.equal(true);
@@ -149,7 +150,7 @@ describe('rendering', function(){
       expect($name2.html()).to.equal('bob');
     });
 
-    xit('should rerender the object that bound("set") on it', function(){
+    xit('should rerender nodes that depend on objects changed with .set()', function(){
       var $node = $('<div>\
         <div bound-with="alice" bound-contents="name"></div>\
         <div bound-with="bob" bound-contents="name"></div>\

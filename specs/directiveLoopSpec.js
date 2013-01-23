@@ -1,6 +1,6 @@
 describe('loop directive', function(){
 
-  xit('should populate a loop directive node with copies of the template node', function(){
+  it('should populate a loop directive node with copies of the template node', function(){
     var $children = $friends.render(david).children();
     expect($children.length).to.equal(4);
     expect([

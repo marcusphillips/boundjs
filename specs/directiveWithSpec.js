@@ -6,6 +6,7 @@ describe('with directive', function() {
     expect($email.render(message).find('.name').html()).to.equal('alice');
   });
 
+  // june: todo
   xit('should fall back to other namespaces', function() {
     expect($email.render({
       name: 'hello',
@@ -22,6 +23,7 @@ describe('with directive', function() {
     }).find('.name').html()).to.equal('alice');
   });
 
+  // june: maybe todo
   xit('does not render directives nested under a with directive that resolve to a non-object', function(){
     expect($email.render({name: 'irrelevant'}).find('.name').html()).to.equal('');
     expect(B.getDirectiveRenderCount()).to.equal(1);
