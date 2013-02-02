@@ -1,3 +1,6 @@
+/*jshint debug:true*/
+"use strict";
+
 (function(){
   var ancestryFlag = {};
 
@@ -14,15 +17,26 @@
       F.prototype = o;
       return new F();
     },
+
+    debug: function (condition) {
+      if(!arguments.length || condition){ debugger; }
+    },
+
     // TODO: write tests for this function
     isAncestor: function(parent, child){
-      var hadProp = 'ancestryFlag' in parent;
-      var oldAncestryFlag = parent.ancestryFlag;
+      var childHadProp = 'ancestryFlag' in parent;
+      var parentHadProp = 'ancestryFlag' in parent;
+      var parentOldAncestryFlag = parent.ancestryFlag;
+      var childOldAncestryFlag = child.ancestryFlag;
       parent.ancestryFlag = ancestryFlag;
+      delete child.ancestryFlag;
       var result = child.ancestryFlag === ancestryFlag;
       delete parent.ancestryFlag;
-      if (hadProp) {
-        parent.ancestryFlag = oldAncestryFlag;
+      if (parentHadProp) {
+        parent.ancestryFlag = parentOldAncestryFlag;
+      }
+      if (childHadProp) {
+        child.ancestryFlag = childOldAncestryFlag;
       }
       return result;
     }

@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Jasmine Spec Runner</title>
+  <title>Mocha Spec Runner</title>
 
-  <link rel="shortcut icon" type="image/png" href="lib/jasmine-1.3.0/jasmine_favicon.png">
-  <link rel="stylesheet" type="text/css" href="lib/jasmine-1.3.0/jasmine.css">
+  <link rel="stylesheet" type="text/css" href="lib/mocha.css">
   <script src="lib/jquery/jquery-latest.js"></script>
   <script src="lib/underscore/underscore.js"></script>
   <script src="src/undermore.js"></script>
-  <script src="lib/jasmine-1.3.0/jasmine.js"></script>
-  <script src="lib/jasmine-1.3.0/jasmine-html.js"></script>
+  <script src="lib/expect.js"></script>
+  <script src="lib/sinon.js"></script>
+  <script src="lib/sinon-expect.js"></script>
+  <script src="lib/mocha.js"></script>
 
+  <!-- Set up the mocha environment -->
+  <script>mocha.setup('bdd')</script>
+
+  <!-- Load some global fixtures -->
   <script src="testEnv/testEnv.js"></script>
   <script src="testEnv/fixtures.js"></script>
 
@@ -18,70 +23,81 @@
   <script src="src/events.js"></script>
   <script src="src/proxy.js"></script>
   <script src="src/deps.js"></script>
+  <script src="src/deps-utils.js"></script>
   <script src="src/scope.js"></script>
   <script src="src/render.js"></script>
 
   <!-- include spec files here... -->
+  <script src="specs/undermoreSpec.js"></script>
   <script src="specs/eventsSpec.js"></script>
   <script src="specs/proxySpec.js"></script>
   <script src="specs/dependencySpec.js"></script>
   <script src="specs/scopeSpec.js"></script>
   <script src="specs/renderSpec.js"></script>
+  <script src="specs/underscoreMethodSpec.js"></script>
   <script src="specs/directiveContentsSpec.js"></script>
   <script src="specs/directiveAttrSpec.js"></script>
   <script src="specs/directiveLoopSpec.js"></script>
+  <script src="specs/directiveWithSpec.js"></script>
+  <script src="specs/directiveClassessSpec.js"></script>
 
   <script>
-    (function() {
-      beforeEach(function(){
-        bound.resetDirectiveRenderCount();
-      });
+		var clock;
+    before(function () {
+      clock = sinon.useFakeTimers();
+    });
+    after(function () {
+      clock.restore();
+    });
+    beforeEach(function(){
+      B.resetDirectiveRenderCount();
+    });
+    onload = function(){
+      testEnv.integrateMocha();
 
-      testEnv.integrateJasmine();
-      jasmine.Clock.useMock();
-
-      var jasmineEnv = jasmine.getEnv();
-      jasmineEnv.updateInterval = 1000;
-
-      var htmlReporter = new jasmine.HtmlReporter();
-
-      jasmineEnv.addReporter(htmlReporter);
-
-      jasmineEnv.specFilter = function(spec) {
-        return htmlReporter.specFilter(spec);
-      };
-
-      var currentWindowOnload = window.onload;
-
-      window.onload = function() {
-        if (currentWindowOnload) {
-          currentWindowOnload();
-        }
-        execJasmine();
-      };
-
-      function execJasmine() {
-        jasmineEnv.execute();
-      }
-
-    }());
+      var runner = mocha
+                    //TODO: Factor this into fixtures helper, add a post-test cleanup step
+                    .globals(['$email', '$empty', '$name', '$grandparent',
+                    '$parent', '$child', '$superwidget', '$widget', '$subwidgetA', '$subwidgetB', 'age', '$age', '$message', '$friends', '$empty2', '$name2', '$email2', '$grandparent2', '$parent2', '$child2', '$superwidget2', '$widget2', '$subwidgetA2', '$subwidgetB2', '$age2', '$message2', '$friends2', '$empty3', '$name3', '$email3', '$grandparent3', '$parent3', '$child3', '$superwidget3', '$widget3', '$subwidgetA3', '$subwidgetB3', '$age3', '$message3', '$friends3', '$empty4', '$name4', '$email4', '$grandparent4', '$parent4', '$child4', '$superwidget4', '$widget4', '$subwidgetA4', '$subwidgetB4', '$age4', '$message4', '$friends4', '$empty5', '$name5', '$email5', '$grandparent5', '$parent5', '$child5', '$superwidget5', '$widget5', '$subwidgetA5', '$subwidgetB5', '$age5', '$message5', '$friends5', 'empty', 'shopping', 'message', 'navItems', 'ticTacToe', 'people', 'grandparent', 'parent', 'child', 'alice', 'bob', 'charlie', 'david', 'ellen', 'hacker'])
+                    .run();
+    };
   </script>
 
 </head>
 
 <body>
+  <!-- Display area for tests -->
+  <div id="mocha"></div>
+
   <div id="fixtures" style="display:none;">
 
     <div fixture="empty"></div>
 
-    <div fixture="name" contents="name"></div>
+    <div fixture="name" bound-contents="name"></div>
 
-    <div fixture="age" contents="age"></div>
+    <div fixture="email" bound-with="sender">
+      <div class="name" bound-contents="name"></div>
+    </div>
 
-    <div fixture="message" bound-classes="readState" contents="text"></div>
+    <div fixture="grandparent">
+      <div fixture="parent">
+        <div fixture="child"></div>
+      </div>
+    </div>
 
-    <div fixture="friends" loop="friends">
-      <div contents="name"></div>
+    <div fixture="superwidget" bound-widget="superwidget">
+      <div fixture="widget" bound-widget="widget">
+        <div fixture="subwidgetA" bound-widget="subwidget"></div>
+        <div fixture="subwidgetB" bound-widget="subwidget"></div>
+      </div>
+    </div>
+
+    <div fixture="age" bound-contents="age"></div>
+
+    <div fixture="message" bound-classes="readState" bound-contents="text"></div>
+
+    <div fixture="friends" bound-loop="friends">
+      <div bound-contents="name"></div>
     </div>
 
   </div>
