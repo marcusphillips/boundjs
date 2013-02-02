@@ -12,15 +12,16 @@
       $that.each(function(){
         var $node = $(this);
         var suppressRecursion;
-        _.each([directiveProcessors.contents,
+        _.each([
+          directiveProcessors.contents,
           directiveProcessors.attr,
           directiveProcessors.debug,
           directiveProcessors.loop,
           directiveProcessors['with']
         ], function(processor){
           var result = processor($node, scope) || {};
-          result.scope && (scope = result.scope);
-          result.suppressRecursion && (suppressRecursion = result.suppressRecursion);
+          scope = result.scope || scope;
+          suppressRecursion = suppressRecursion || result.suppressRecursion;
         });
         suppressRecursion || $node.children().each(function(){
           renderForScope($(this), scope);
@@ -47,7 +48,9 @@
         var contents = scope.lookup(key);
         typeof contents === "string" ? $node.text(contents) : $node.html(contents);
         directiveRenderCount++;
-        return {suppressRecursion: true};
+        return {
+          suppressRecursion: true
+        };
       }
     },
 
