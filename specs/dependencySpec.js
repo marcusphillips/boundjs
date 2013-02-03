@@ -2,16 +2,15 @@ describe('dependencies', function(){
 
   it('should not rerun any work after calling .bound() on an object that has not changed', function(){
     var runCount = 0;
-    B(alice);
     B.depend(function(){
-      alice.bound('get', 'name');
+      B(alice).get('name');
       runCount = runCount + 1;
     });
 
-    alice.bound();
+    B(alice);
     expect(runCount).to.be(1);
 
-    alice.bound('set', 'name', 'alice');
+    B(alice).set('name', 'alice');
     expect(runCount).to.be(1);
   });
 

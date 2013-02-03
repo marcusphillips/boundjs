@@ -3,7 +3,7 @@ describe('proxies', function(){
   describe('making proxies', function(){
 
     it('adds a bound() function to the global scope', function(){
-      expect(bound).to.be.a('function');
+      expect(B).to.be.a('function');
     });
 
     it('provides a helper to identify bound methods', function(){
@@ -12,53 +12,54 @@ describe('proxies', function(){
     });
 
     it('should return the input object as a result of calling bound()', function(){
-      expect(bound.proxy(alice)).to.equal(alice);
+      expect(B(alice)).to.equal(alice.bound);
     });
 
-    it('should augment objects passed into bound.proxy() with a .bound() method', function(){
-      expect(bound.proxy({}).bound).to.be.a('function');
+    it('should augment objects passed into B() with a .bound() method', function(){
+      expect( B({}) ).to.be.a('function');
     });
 
-    it('should throw an error if a non bound method is already stored at the key "bound" and bound.proxy() is called on it', function(){
+    it('should throw an error if a non bound method is already stored at the key "bound" and B() is called on it', function(){
       expect(function(){
-        bound.proxy({bound:3});
+        B({bound:3});
       }).to.throwException();
     });
 
     it('should not throw an error if a bound method is already stored at the key "bound" and bound is called on it', function(){
       expect(function(){
-        bound.proxy(alice);
-        bound.proxy(alice);
+        B(alice);
+        B(alice);
       }).not.to.throwException();
     });
 
     // regression test
     it('should not throw an error if you try to proxy an object that has a target property', function(){
       expect(function() {
-        bound.proxy({target:3});
+        B({target:3});
       }).not.to.throwException();
     });
 
     it('should put a unique bound method on each proxied object', function(){
-      expect(bound.proxy({}).bound).not.to.be(bound.proxy({}).bound);
+      expect(B({})).not.to.be(B({}));
     });
 
     it('should provide the same method if the same object is passed in twice', function(){
-      expect(bound.proxy(alice).bound).to.equal(bound.proxy(alice).bound);
+      expect(B(alice)).to.equal(B(alice));
     });
 
     it('should not provide the same bound method for a child as the one available on its prototype', function(){
-      expect(bound.proxy(child).bound).not.to.equal(bound.proxy(parent).bound);
+      expect(B(parent)).not.to.equal(B(child));
     });
 
     it('should not add any properties to a object other than .bound()', function(){
-      expect(bound.proxy({})).to.only.have.keys(['bound']);
+      B(empty);
+      expect(B(empty).target()).to.only.have.keys(['bound']);
     });
 
     it('should not allow proxying proxy objects', function(){
       expect(function() {
         var proxy = B(empty);
-        bound.proxy(proxy);
+        B(proxy);
       }).to.throwException();
     });
 
@@ -97,33 +98,8 @@ describe('proxies', function(){
     it('should not allow the bound method of one object to be called in the context of another object', function(){
       // todo: long term, this should actually just have the effect of calling the bound method of the target object instead
       expect(function(){
-        bound.proxy(alice).bound.apply(bob);
+        B(alice).apply(bob);
       }).to.throwException();
-    });
-
-    it('throws an error when a .bound() method is called on its associated object, but the method is not found on the target at the key \'bound\'', function(){
-      var removedMethod = bound.proxy(alice).bound;
-      delete alice.bound;
-      expect(function(){
-        removedMethod.apply(alice);
-      }).to.throwException();
-
-      alice.bound = function(){};
-      expect(function(){
-        removedMethod.apply(alice);
-      }).to.throwException();
-
-      alice.wrongkey = removedMethod;
-      expect(function(){
-        alice.wrongKey();
-      }).to.throwException();
-    });
-
-    it('should augment child objects with their own .bound() property when a call to .bound() delegates through to the prototype object', function(){
-      bound.proxy(parent);
-      expect(parent.bound).to.equal(child.bound);
-      child.bound(); // delegates to parent.bound()
-      expect(parent.bound).not.to.equal(child.bound);
     });
 
   });
@@ -131,7 +107,7 @@ describe('proxies', function(){
   describe('bound proxy object methods', function(){
 
     it('should allow access to a proxy object by calling the "getProxy" command', function(){
-      var proxy = bound.proxy({}).bound.getProxy();
+      var proxy = B({});
       var proxyMethods = 'get set del has owns run exec pub sub getProxy meta'.split(' ');
       _.each(proxyMethods, function(methodName){
         var randomNumber = Math.random();
@@ -143,20 +119,17 @@ describe('proxies', function(){
     });
 
     it('should get the value of properties from the target object when you run the get command', function(){
-      var object = bound.proxy(alice);
-      expect(alice.bound.get('name')).to.equal('alice');
+      expect(B(alice).get('name')).to.equal('alice');
     });
 
     it('should set the value of properties from the target object when you run the set command', function(){
-      bound.proxy(alice);
-      alice.bound('set', 'name', 'al');
+      B(alice).set('name', 'al');
       expect(alice.name).to.equal('al');
     });
 
     it('should delete properties from the target object when you run the del command', function(){
-      bound.proxy(alice);
-      alice.bound('del', 'name');
-      expect(alice.bound('get', 'name')).to.equal(undefined);
+      B(alice).del('name');
+      expect(B(alice).get('name')).to.equal(undefined);
       expect(alice.hasOwnProperty('setThing')).not.to.be(true);
     });
 
@@ -165,16 +138,21 @@ describe('proxies', function(){
     xit('should re-run work that was dependent on calls to "has" after setting properties that didnt\'t used to exist');
 
     it('should return the presence or absence of a property on the target object when you run the has command', function(){
-      bound.proxy(message);
-      expect(message.bound('has', 'text')).to.be(true);
-      expect(message.bound('has', 'unicorns')).to.be(false);
+      expect(B(message).has('text')).to.be(true);
+      expect(B(message).has('unicorns')).to.be(false);
     });
 
     it('should return the immediate presence or absence of a property (not prototype-inherited) on the target object when you run the owns command', function(){
-      bound.proxy(parent).bound('set', 'prop', 2);
-      expect(child.bound('owns', 'prop')).to.be(false);
-      child.bound('set', 'prop', 2);
-      expect(child.bound('owns', 'prop')).to.be(true);
+      B(parent).set('prop', 2);
+      expect(B(child).owns('prop')).to.be(false);
+      B(child).set('prop', 2);
+      expect(B(child).owns('prop')).to.be(true);
+    });
+
+
+    it('should return the proxy target when you run the target() command', function(){
+      expect(B(parent).target()).to.be(parent);
+      expect(B(child).target()).to.be(child);
     });
 
     xit('todo: need to provide a way for users to run a function or a method in an arbitrary context');
@@ -193,16 +171,16 @@ describe('proxies', function(){
     xit('should let you invalidate listeners for one key by exposing a bound() command "changed"', function(){
       var runCount = 0;
       B.depend(function() {
-        alice.bound('get', 'name');
+        B(alice).get('name');
         runCount++;
       });
       expect(runCount).to.equal(1);
       alice.name = 'al';
-      alice.bound('changed', 'name');
+      B(alice).changed('name');
       clock.tick(0);
       expect(runCount).to.equal(2);
       alice.age = 21;
-      alice.bound('changed', 'age');
+      B(alice).changed('age');
       clock.tick(0);
       expect(runCount).to.equal(2);
     });
@@ -218,26 +196,19 @@ describe('proxies', function(){
 
     it('should not re-run properties dependent on key inclusion when only the property value has changed, not its presence in the object', function(){
       // todo: tursify
-      bound.proxy(alice);
       var runCount1 = 0;
       B.depend(function(){
-        alice.bound('has', 'hamburger');
+        B(alice).has('hamburger');
         runCount1 += 1;
       });
       var runCount2 = 0;
       B.depend(function(){
-        alice.bound('get', 'name');
+        B(alice).get('name');
         runCount2 += 1;
       });
-      alice.bound('set', 'name', 'al');
+      B(alice).set('name', 'al');
       clock.tick(0);
       expect([runCount1, runCount2]).to.eql([1, 2]);
-    });
-
-    it('errors when passed an invalid command name', function(){
-      expect(function(){
-        bound.proxy({}).bound('invalidCommand');
-      }).to.throwException();
     });
 
   });
