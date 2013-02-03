@@ -55,31 +55,6 @@
     this.makeObjects = fixtureObjectMaker;
   };
 
-  global.globals = function(varsMaker){
-    mocha.globals(Object.keys(varsMaker()));
-    var variables;
-    var previous;
-    var presence;
-    beforeEach(function(){
-      variables = varsMaker();
-      previous = {};
-      presence = {};
-      for(var key in variables){
-        presence[key] = key in global;
-        previous[key] = global[key];
-        global[key] = variables[key];
-      }
-    });
-    afterEach(function(){
-      for(var key in variables){
-        global[key] = previous[key];
-        if(!presence[key]){
-          delete global[key];
-        }
-      }
-    });
-  };
-
   testEnv._integrate = function(){
     beforeEach(testEnv.beforeAll);
     afterEach(testEnv.afterAll);
@@ -90,7 +65,6 @@
     testEnv._integrate();
     global.any = jasmine.any;
     global.clock = jasmine.Clock;
-    global.globals = testEnv.globals;
     global.makeSpied = function(func){
       func = func || function(){};
       var container = {func: func};

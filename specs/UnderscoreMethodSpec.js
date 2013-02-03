@@ -1,16 +1,15 @@
 describe('underscoreMethod', function(){
 
   describe('using unserscore method on proxy target', function(){
-
-    globals(function(){
-      return {
-        oldArray: [1,2,3,4,5],
-        arrayObjs: [
-          {name:'alice', age:33},
-          {name:'bob', age:33},
-          {name:'alex', age:44}
-        ]
-      };
+    var oldArray;
+    var arrayObjs;
+    beforeEach(function(){
+      oldArray = [1,2,3,4,5];
+      arrayObjs = [
+        {name:'alice', age:33},
+        {name:'bob', age:33},
+        {name:'alex', age:44}
+      ];
     });
 
     it('iterates through each value in array', function(){
@@ -137,10 +136,6 @@ describe('underscoreMethod', function(){
      expect(B(['Bonnie', 'yes']).zip(['and', 'or'],['Clyde', 'no'])).to.eql([['Bonnie','and','Clyde' ], ['yes', 'or','no']]);
     });
 
-  });
-
-  it('shouldnt be lame', function(){
-    global.oldArray = 'lame';
   });
 
 });
