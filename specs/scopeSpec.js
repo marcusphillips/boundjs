@@ -3,18 +3,18 @@ describe('scopes', function(){
   var parentScope, childScope;
 
   beforeEach(function(){
-    parentScope = bound.scope.extend(message);
+    parentScope = B.scope.extend(message);
     childScope = parentScope.extend(alice);
   });
 
   describe('basics', function(){
 
     it('introduces a top level scope', function(){
-      expect(bound.scope).to.be.an('object');
+      expect(B.scope).to.be.an('object');
     });
 
     it('can create subscopes', function(){
-      expect(bound.scope.extend).to.be.a('function');
+      expect(B.scope.extend).to.be.a('function');
     });
 
     // todo: june
@@ -23,7 +23,15 @@ describe('scopes', function(){
     });
 
     it('extend function returns object', function(){
-      expect(bound.scope.extend({})).to.be.an('object');
+      expect(B.scope.extend({})).to.be.an('object');
+    });
+
+    describe('.namespace()', function(){
+      xit('provides the appropriate namespace object');
+    });
+
+    describe('.namespaces()', function(){
+      xit('provides the appropriate array of namespace objects');
     });
 
   });
@@ -32,8 +40,8 @@ describe('scopes', function(){
 
     it('allows lookups in the global scope from the top level scope', function(){
       global.present = 3;
-      expect(bound.scope.lookup('present')).to.equal(3);
-      expect(bound.scope.lookup('absent')).to.equal(undefined);
+      expect(B.scope.lookup('present')).to.equal(3);
+      expect(B.scope.lookup('absent')).to.equal(undefined);
       delete global.present;
     });
 
@@ -43,19 +51,19 @@ describe('scopes', function(){
 
   });
 
-  describe('literals', function(){
+  describe('nested scopes and literals', function(){
 
     var scope;
 
     beforeEach(function(){
-      scope = bound.scope.extend({
+      scope = B.scope.extend({
         zero: 0,
         masking: 'masked',
         text: 'hi'
       }).extend({
         masking: undefined
       });
-    })
+    });
 
     it('should allow lookups of literal objects and arrays strings with double and single quotes', function(){
       _.each({
@@ -72,6 +80,10 @@ describe('scopes', function(){
       }, function(value, key){
         expect(scope.lookup(key)).to.eql(value);
       });
+    });
+
+    describe('strict equalities', function(){
+      xit('todo: move simple literals like null and false into here');
     });
 
     it('should allow lookups of literal booleans, numbers and strings with double and single quotes', function(){
@@ -100,6 +112,13 @@ describe('scopes', function(){
       });
     });
 
+  });
+
+  describe('lookups on object literals that include types of whitespace', function(){
+  });
+
+  describe('this lookups', function(){
+    xit('lookups to "this" should resolve to scope\'s target namespace');
   });
 
   describe('reruns', function(){

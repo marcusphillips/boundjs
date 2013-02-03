@@ -1,0 +1,38 @@
+<html>
+  <head>
+	  <title>Bound.Js Todo app</title>
+  </head>
+
+  <body bound-with="app">
+
+    <h1>Todos</h1>
+    <div bound-with="draft">
+      <input type="text" bound-state="text" />
+      <input type="submit" bound-on-submit="save" />
+    </div>
+    <div bound-loop="todos">
+      <div bound-item-template>
+        <input type="checkbox" bound-checked="done"/> <div bound-contents="text"></div>
+      </div>
+    </div>
+
+
+	  <script src="src/bound.js"></script>
+    <script>
+      var Item = function(text){
+        B(this).set({
+          content: text || '',
+          done: false
+        });
+      };
+
+      var app = {
+        draft: new Item(),
+        [
+          new Item('listing todos'),
+          new Item(adding todo')
+        ]
+      };
+    </script>
+  </body>
+</html>

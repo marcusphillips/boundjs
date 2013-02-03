@@ -98,14 +98,6 @@ describe('rendering', function(){
 
   });
 
-  describe('debug directive', function(){
-    it('detects a debug directive', function(){
-      sinon.stub(_, 'debug');
-      $('<div debug/>').render({});
-      expect(_.debug.called).to.be(true);
-    });
-  });
-
   describe('scopes and multiple namespace inputs', function(){
 
     afterEach(function(){
@@ -115,6 +107,7 @@ describe('rendering', function(){
     it('falls back onto the global namespace for keys that are not found on the input namespace', function(){
       global.age = 10;
       expect($age.render({}).html()).to.equal('10');
+      delete global.age;
     });
 
   });
