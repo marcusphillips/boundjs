@@ -13,6 +13,7 @@
 - make a grunt task that builds a specrunner.html file by concatenating all the filenames within the specs folder
 - run underscore's tests on our proxies
 - Search for the word "TODO" and move a clear description of the item into this list!
+- make scope lookups to any native global variables fail
 
 --- Projects ---
 - Documentation (!)
@@ -26,6 +27,7 @@
   - Array dependencies (mark rev)
     - directive: bound-loop (mark rosetti)
   - helper function augmentation
+- directive: bound-let-key="value"
 - directive: bound-classes (paul)
 - Parser (DONE)
   - Scopes (DONE)

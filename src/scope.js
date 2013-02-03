@@ -1,20 +1,27 @@
 "use strict";
 
-(function(){
+(function(global){
 
-  bound.scope = {
+  global.B.scope = {
     _namespace: window,
 
     extend: function(obj){
-      var newScope = {
+      return _.defaults({
+        _parent: this,
         _namespace: obj,
-        _parent: this
-      };
-      return _.defaults(newScope, bound.scope);
+        namespace: function(){
+          return this._namespace;
+        }
+      }, B.scope);
+    },
+
+    index: function(index){
+      // todo: this should probably fall through to the first arraylike namespace, and shouldn't look up on any namespaces above or below it
+      return this._findInScope(index);
     },
 
     _findInScope: function(key){
-      return bound.proxy(this._namespace).bound('has', key) ? this._namespace.bound('get', key) : this._parent && this._parent._findInScope(key);
+      return B(this._namespace).has(key) ? B(this._namespace).get(key) : this._parent && this._parent._findInScope(key);
     },
 
     lookup: function(json){
@@ -42,7 +49,6 @@
         );
       };
 
-      //TODO : DIFFERENT KIND OF WITHE SPACE(/n)
       var consumeSpace = function(){
         while(peek() === ' '){
           consume(' ');
@@ -105,7 +111,6 @@
         return result;
       };
 
-      //TODO white space end of word
       var consumeString = function(){
         var result = '';
         var delimiter = consume();
@@ -157,4 +162,4 @@
     }
   };
 
-}());
+}(this));

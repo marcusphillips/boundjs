@@ -14,6 +14,7 @@
 
   <!-- Set up the mocha environment -->
   <script>mocha.setup('bdd')</script>
+  <style>.test.pass.fast{ display: none; }</style>
 
   <!-- Load some global fixtures -->
   <script src="testEnv/testEnv.js"></script>
@@ -34,7 +35,9 @@
   <script src="specs/dependencySpec.js"></script>
   <script src="specs/scopeSpec.js"></script>
   <script src="specs/renderSpec.js"></script>
+  <script src="specs/jqueryHelpersSpec.js"></script>
   <script src="specs/underscoreMethodSpec.js"></script>
+  <script src="specs/directiveDebugSpec.js"></script>
   <script src="specs/directiveContentsSpec.js"></script>
   <script src="specs/directiveAttrSpec.js"></script>
   <script src="specs/directiveLoopSpec.js"></script>
@@ -53,13 +56,9 @@
       B.resetDirectiveRenderCount();
     });
     onload = function(){
+      //TODO: add a post-test cleanup step for the .globals() call in integrateMocha()
       testEnv.integrateMocha();
-
-      var runner = mocha
-                    //TODO: Factor this into fixtures helper, add a post-test cleanup step
-                    .globals(['$email', '$empty', '$name', '$grandparent',
-                    '$parent', '$child', '$superwidget', '$widget', '$subwidgetA', '$subwidgetB', 'age', '$age', '$message', '$friends', '$empty2', '$name2', '$email2', '$grandparent2', '$parent2', '$child2', '$superwidget2', '$widget2', '$subwidgetA2', '$subwidgetB2', '$age2', '$message2', '$friends2', '$empty3', '$name3', '$email3', '$grandparent3', '$parent3', '$child3', '$superwidget3', '$widget3', '$subwidgetA3', '$subwidgetB3', '$age3', '$message3', '$friends3', '$empty4', '$name4', '$email4', '$grandparent4', '$parent4', '$child4', '$superwidget4', '$widget4', '$subwidgetA4', '$subwidgetB4', '$age4', '$message4', '$friends4', '$empty5', '$name5', '$email5', '$grandparent5', '$parent5', '$child5', '$superwidget5', '$widget5', '$subwidgetA5', '$subwidgetB5', '$age5', '$message5', '$friends5', 'empty', 'shopping', 'message', 'navItems', 'ticTacToe', 'people', 'grandparent', 'parent', 'child', 'alice', 'bob', 'charlie', 'david', 'ellen', 'hacker'])
-                    .run();
+      var runner = mocha.run();
     };
   </script>
 
@@ -97,7 +96,7 @@
     <div fixture="message" bound-classes="readState" bound-contents="text"></div>
 
     <div fixture="friends" bound-loop="friends">
-      <div bound-contents="name"></div>
+      <div fixture="friendsItemTemplate" bound-contents="name" bound-item-template></div>
     </div>
 
   </div>
