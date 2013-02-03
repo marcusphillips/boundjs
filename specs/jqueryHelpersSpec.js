@@ -33,21 +33,19 @@ describe('jquery helpers', function(){
 
   describe('.subwidgets()', function(){
     xit('', function(){
-      // todo: indentme
-
-    // todo: define a mechanism that retrieves descendant widgets with a given name
-    //   when nodes are rendered that have a bound-widget attribute, they are available from their ancestors
-    // note - this might not work with jasmine, since it would have to do deep comparison
-    expect($widget.subwidgets()).to.equal([$subwidgetA, $subwidgetB]);
-    expect($superwidget.subwidgets('widget')).to.equal([$widget]); // todo: toArray() ?
-    expect($superwidget.subwidgets('nonexistant').length).to.equal(0);
-    expect($superwidget.subwidget('widget')).to.equal($widget);
-    expect(function(){
-      // when a specifier sent to subwidget() matches more than one widget, it errors
-      $superwidget.subwidget('subwidget');
-    }).to.throwException();
-    expect($superwidget.subwidget('nonexistant').length).to.equal(0);
-    expect($widget.superwidget()).to.equal($superwidget);
+      // todo: define a mechanism that retrieves descendant widgets with a given name
+      //   when nodes are rendered that have a bound-widget attribute, they are available from their ancestors
+      // note - this might not work with jasmine, since it would have to do deep comparison
+      expect($widget.subwidgets()).to.equal([$subwidgetA, $subwidgetB]);
+      expect($superwidget.subwidgets('widget')).to.equal([$widget]); // todo: toArray() ?
+      expect($superwidget.subwidgets('nonexistant').length).to.equal(0);
+      expect($superwidget.subwidget('widget')).to.equal($widget);
+      expect(function(){
+        // when a specifier sent to subwidget() matches more than one widget, it errors
+        $superwidget.subwidget('subwidget');
+      }).to.throwException();
+      expect($superwidget.subwidget('nonexistant').length).to.equal(0);
+      expect($widget.superwidget()).to.equal($superwidget);
 
     });
   });

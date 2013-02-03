@@ -2,8 +2,6 @@
   "use strict";
 
   $.fn.render = function(namespace){
-    // todo: can we remove this line?
-    B(namespace);
     renderForScope(this, B.scope.extend(namespace));
     return this;
   };

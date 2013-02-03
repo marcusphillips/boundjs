@@ -16,9 +16,7 @@
     testEnv.refreshObjects();
   };
 
-  // todo: unneeded?
   testEnv.afterAll = function(){
-    ($('#fixtures')[0] || {}).innerHTML = '';
   };
 
   testEnv.augmentJQuery = function(){
