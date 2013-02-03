@@ -16,6 +16,7 @@
           directiveProcessors.contents,
           directiveProcessors.attr,
           directiveProcessors.debug,
+          directiveProcessors.loop,
           directiveProcessors['with']
         ], function(processor){
           var result = processor($node, scope) || {};
@@ -39,6 +40,7 @@
     return directiveRenderCount;
   };
 
+  //TODO: add bound-checked and bound-loop
   var directiveProcessors = {
     contents: function($node, scope) {
       var key = $node.attr("bound-contents");
@@ -66,11 +68,37 @@
     },
 
     'with': function($node, scope) {
-      if($node.attr("bound-with")){
+      var key = $node.attr("bound-with");
+      if(key){
         directiveRenderCount++;
-        return {
-          scope: scope.extend(scope.lookup($node.attr("bound-with")))
+        var namespace = scope.lookup($node.attr("bound-with"));
+        return namespace ? {
+          scope: scope.extend(namespace)
+        } : {
+          suppressRecursion: true
         };
+      }
+    },
+
+    // todo: don't throw away the item template node - must still be the first node after this render() is done
+    // todo: make sure we don't render the item template node
+    // todo: make sure we don't clobber the existing bound-with property
+    // todo: make sure we get rid of the previously-added nodes
+    loop: function($node, scope) {
+      var namespace = $node.attr("bound-loop");
+      if(namespace){
+        debugger
+        var items = scope.lookup(namespace);
+        var $itemTemplate = $node.children().eq(0);
+        if(typeof items === 'object'){
+          $node.append(B(items).map(function(item, index){
+            debugger;
+            return $itemTemplate.clone().attr({'bound-with': index});
+          }));
+        }else{
+          _.raiseIf(!items, 'Expected ' + namespace + ' to be enumerable.');
+          $node.hide();
+        }
       }
     }
   };

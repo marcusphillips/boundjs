@@ -6,4 +6,6 @@ describe('attr directive', function(){
     expect($node.attr('foo')).to.equal('alice');
   });
 
+  xit('this needs way more tests');
+
 });

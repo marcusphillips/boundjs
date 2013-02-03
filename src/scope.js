@@ -64,6 +64,7 @@
         'undefined': undefined
       };
 
+      //TODO: 'this' should resolve to scope target
       var consumeName = function(){
         var key = parseName();
         return key in keywords ? keywords[key] : that._findInScope(key);
@@ -105,7 +106,6 @@
         return result;
       };
 
-      //TODO white space end of word
       var consumeString = function(){
         var result = '';
         var delimiter = consume();
