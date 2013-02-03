@@ -7,7 +7,7 @@ describe('dependencies', function(){
       runCount = runCount + 1;
     });
 
-    B(alice);
+    alice.bound();
     expect(runCount).to.be(1);
 
     B(alice).set('name', 'alice');

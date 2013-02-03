@@ -36,6 +36,8 @@
 - directive: log
 - directive: debug (oleg)
 - directive: bound-partial & bound-include
+- directive: bound-checked
+- directive: bound-value
 - directive: bound-if
 - Widgets
   - scope chain collapsing (merging values onto 'this')

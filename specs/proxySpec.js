@@ -15,8 +15,8 @@ describe('proxies', function(){
       expect(B(alice)).to.equal(alice.bound);
     });
 
-    it('should augment objects passed into B() with a .bound() method', function(){
-      expect( B({}) ).to.be.a('function');
+    it('should augment objects passed into B() with a .bound() proxy method', function(){
+      expect(B({})).to.be.a('function');
     });
 
     it('should throw an error if a non bound method is already stored at the key "bound" and B() is called on it', function(){
@@ -25,7 +25,7 @@ describe('proxies', function(){
       }).to.throwException();
     });
 
-    it('should not throw an error if a bound method is already stored at the key "bound" and bound is called on it', function(){
+    it('does not throw an error if a bound proxy method is already stored at the key "bound" and it is proxied a second time by passing it to B()', function(){
       expect(function(){
         B(alice);
         B(alice);
@@ -33,7 +33,7 @@ describe('proxies', function(){
     });
 
     // regression test
-    it('should not throw an error if you try to proxy an object that has a target property', function(){
+    it('should not throw an error if you try to proxy an object that has a .target property', function(){
       expect(function() {
         B({target:3});
       }).not.to.throwException();
@@ -52,7 +52,6 @@ describe('proxies', function(){
     });
 
     it('should not add any properties to a object other than .bound()', function(){
-      B(empty);
       expect(B(empty).target()).to.only.have.keys(['bound']);
     });
 
@@ -96,7 +95,6 @@ describe('proxies', function(){
   describe('applying to bound method between contexts', function(){
 
     it('should not allow the bound method of one object to be called in the context of another object', function(){
-      // todo: long term, this should actually just have the effect of calling the bound method of the target object instead
       expect(function(){
         B(alice).apply(bob);
       }).to.throwException();
@@ -108,13 +106,11 @@ describe('proxies', function(){
 
     it('should allow access to a proxy object by calling the "getProxy" command', function(){
       var proxy = B({});
-      var proxyMethods = 'get set del has owns run exec pub sub getProxy meta'.split(' ');
+      var proxyMethods = 'get set del has owns run exec pub sub meta'.split(' ');
       _.each(proxyMethods, function(methodName){
         var randomNumber = Math.random();
         expect(proxy[methodName]).to.be.a('function');
         sinon.spy(proxy, methodName);
-        proxy[methodName](randomNumber);
-        expect(proxy[methodName].calledWith(randomNumber)).to.be(true);
       });
     });
 
@@ -129,8 +125,7 @@ describe('proxies', function(){
 
     it('should delete properties from the target object when you run the del command', function(){
       B(alice).del('name');
-      expect(B(alice).get('name')).to.equal(undefined);
-      expect(alice.hasOwnProperty('setThing')).not.to.be(true);
+      expect('name' in alice).not.to.be(true);
     });
 
     xit('should re-run work that was dependent on calls to "has" after deleting properties that used to exist');
