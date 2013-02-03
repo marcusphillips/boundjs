@@ -56,11 +56,11 @@
 
   var directiveProcessors = {
     contents: forDirective('contents', function(key, $node, scope) {
-        var contents = scope.lookup(key);
-        typeof contents === "string" ? $node.text(contents) : $node.html(contents);
-        return {
-          suppressRecursion: true
-        };
+      var contents = scope.lookup(key);
+      typeof contents === "string" ? $node.text(contents) : $node.html(contents);
+      return {
+        suppressRecursion: true
+      };
     }),
 
     attr: function($node, scope) {
@@ -77,12 +77,12 @@
     }),
 
     'with': forDirective('with', function(key, $node, scope) {
-        var namespace = scope[/\d+/.test(key) ? 'index' : 'lookup'](key);
-        return namespace ? {
-          scope: scope.extend(namespace)
-        } : {
-          suppressRecursion: true
-        };
+      var namespace = scope[/\d+/.test(key) ? 'index' : 'lookup'](key);
+      return namespace ? {
+        scope: scope.extend(namespace)
+      } : {
+        suppressRecursion: true
+      };
     }),
 
     'with-item': forDirective('with-item', function(key, $node, scope) {
@@ -95,28 +95,28 @@
     }),
 
     loop: forDirective('loop', function(key, $node, scope) {
-        var items = scope.lookup(key);
-        var $itemTemplate = $node.children().eq(0);
-        _.raiseIf($itemTemplate.attr('bound-item-template') === undefined, 'The first child of a loop node must be annotated with the bound-item-template attribute');
-        if(typeof items === 'object'){
-          $node.innerHTML = '';
-          $node.append($itemTemplate).append(B(items).map(function(item, index){
-            return $itemTemplate.clone(true).removeAttr('bound-item-template').attr({
-              'bound-with-item': index,
-              'bound-item': ''
-            });
-          }));
-        }else{
-          _.raiseIf(items, 'Expected ' + key + ' to be enumerable.');
-          $node.hide();
-          return {
-            // todo: make things like this a calls to this.suppressRecursion()
-            suppressRecursion: true
-          };
-        }
+      var items = scope.lookup(key);
+      var $itemTemplate = $node.children().eq(0);
+      _.raiseIf($itemTemplate.attr('bound-item-template') === undefined, 'The first child of a loop node must be annotated with the bound-item-template attribute');
+      if(typeof items === 'object'){
+        $node.innerHTML = '';
+        $node.append($itemTemplate).append(B(items).map(function(item, index){
+          return $itemTemplate.clone(true).removeAttr('bound-item-template').attr({
+            'bound-with-item': index,
+            'bound-item': ''
+          });
+        }));
+      }else{
+        _.raiseIf(items, 'Expected ' + key + ' to be enumerable.');
+        $node.hide();
         return {
-          scope: scope.extend(items)
+          // todo: make things like this a calls to this.suppressRecursion()
+          suppressRecursion: true
         };
+      }
+      return {
+        scope: scope.extend(items)
+      };
     })
 
   };
