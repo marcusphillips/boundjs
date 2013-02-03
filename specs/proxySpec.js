@@ -67,11 +67,29 @@ describe('proxies', function(){
 
   describe('iteration', function(){
 
-    xit('skips .bound methods');
+    xit('skips proxies', function(){
+      var visitedKeys = [];
+      B({key:'val'}).each(function(item, key){
+        keys.push(key);
+      });
+      expect(visitedKeys).to.eql(['key']);
+    });
 
-    xit('does not skip .bound properties that are not bound methods');
+    xit('does not skip .bound properties that are not proxies', function(){
+      var keys = [];
+      B.each({bound: 'val'}, function(item, key){
+        keys.push(key);
+      });
+      expect(keys).to.eql(['bound']);
+    });
 
-    xit('does not skip bound methods stored at keys besides .bound');
+    it('does not skip proxies stored at keys besides .bound', function(){
+      var keys = [];
+      B.each({key1: B({})}, function(item, key){
+        keys.push(key);
+      });
+      expect(keys).to.eql(['key1']);
+    });
 
   });
 

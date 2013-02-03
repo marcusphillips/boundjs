@@ -1,12 +1,12 @@
   // todo: check that .scope() works correctly after a with directive
 
-describe('with', function() {
+describe('with directive', function() {
 
   it('should use the specified namespace to render the template', function() {
     expect($email.render(message).find('.name').html()).to.equal('alice');
   });
 
-  xit('should fall back to other namespaces', function() {
+  it('should fall back to other namespaces', function() {
     expect($email.render({
       name: 'hello',
       sender: {}
@@ -22,9 +22,9 @@ describe('with', function() {
     }).find('.name').html()).to.equal('alice');
   });
 
-  xit('does not render directives nested under a with directive that resolve to a non-object', function(){
+  it('does not render directives nested under a with directive that resolve to a non-object', function(){
     expect($email.render({name: 'irrelevant'}).find('.name').html()).to.equal('');
-    expect(bound.getDirectiveRenderCount()).to.equal(1);
+    expect(B.getDirectiveRenderCount()).to.equal(1);
   });
 
 });
