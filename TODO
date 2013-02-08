@@ -11,7 +11,9 @@
 - move the .bound() method to ._bound()
 - delete the global bound object, and convert all calls to bound.proxy() into the B() interface
 - make a grunt task that builds a specrunner.html file by concatenating all the filenames within the specs folder
+- run underscore's tests on our proxies
 - Search for the word "TODO" and move a clear description of the item into this list!
+- make scope lookups to any native global variables fail
 
 --- Projects ---
 - Documentation (!)
@@ -25,8 +27,8 @@
   - Array dependencies (mark rev)
     - directive: bound-loop (mark rosetti)
   - helper function augmentation
+- directive: bound-let-key="value"
 - directive: bound-classes (paul)
-- directive: bound-attr (mark rosetti)
 - Parser (DONE)
   - Scopes (DONE)
     - directive: bound-with (DONE)
@@ -34,6 +36,8 @@
 - directive: log
 - directive: debug (oleg)
 - directive: bound-partial & bound-include
+- directive: bound-checked
+- directive: bound-value
 - directive: bound-if
 - Widgets
   - scope chain collapsing (merging values onto 'this')

@@ -25,7 +25,7 @@
       }
     };
     _.extend(proxy, proxyMethods, {
-      target: target,
+      _target: target,
       _dependentContextSets: {},
       prototype: boundMethodFlag
     });
@@ -36,40 +36,49 @@
   var boundMethodFlag = {};
   var proxyMethods = {
 
-    getProxy: function(){
-      return this;
-    },
-
     has: function(key){
       this._addKeyDependency(key);
-      return key in this.target;
+      return key in this.target();
     },
+
     get: function(key){
       this._addKeyDependency(key);
-      return this.target[key];
+      return this.target()[key];
     },
+
     set: function(key, value){
       // todo: keep track of the current state to compare to future states, here and in del
-      this.target[key] = value;
+      this.target()[key] = value;
       // todo: only invalidate the keys that were set -- do this for other mutator methods as well. first though, write tests to ensure that we keep track of how many keys get visited in the process
       this._ensuredContextSet(key).invalidateAll();
     },
+
     del: function(key){
-      delete this.target[key];
+      delete this.target()[key];
       this._ensuredContextSet(key).invalidateAll();
     },
+
     owns: function(key){
       this._addKeyDependency(key);
-      return this.target.hasOwnProperty(key);
+      return this.target().hasOwnProperty(key);
     },
+
+    target: function(){
+      return this._target;
+    },
+
     run: function(){
     },
+
     exec: function(){
     },
+
     pub: function(){
     },
+
     sub: function(){
     },
+
     meta: function(){
     },
 
@@ -114,94 +123,96 @@
   //TODO : add method only to proxies of the relevent types.
   var underscoreProp = [
     // Collections
-    "each",
-    "map",
-    "reduce",
-    "reduceRight",
-    "find",
-    "filter",
-    "where",
-    "reject",
-    "every",
-    "some",
-    "contains",
-    "invoke",
-    "pluck",
-    "max",
-    "min",
-    "sortBy",
-    "groupBy",
-    "countBy",
-    "shuffle",
-    "toArray",
-    "size",
+    'each',
+    'map',
+    'reduce',
+    'reduceRight',
+    'find',
+    'filter',
+    'where',
+    'reject',
+    'every',
+    'some',
+    'contains',
+    'invoke',
+    'pluck',
+    'max',
+    'min',
+    'sortBy',
+    'groupBy',
+    'countBy',
+    'shuffle',
+    'toArray',
+    'size',
 
     // Arrays
-    "first",
-    "initial",
-    "last",
-    "rest",
-    "compact",
-    "flatten",
-    "without",
-    "union",
-    "intersection",
-    "difference",
-    "uniq",
-    "zip",
-    "object",
-    "indexOf",
-    "lastIndexOf",
-    "sortedIndex",
-    "range",
+    'first',
+    'initial',
+    'last',
+    'rest',
+    'compact',
+    'flatten',
+    'without',
+    'union',
+    'intersection',
+    'difference',
+    'uniq',
+    'zip',
+    'object',
+    'indexOf',
+    'lastIndexOf',
+    'sortedIndex',
+    'range',
 
     // Functions
-    "bind",
-    "bindAll",
-    "memoize",
-    "delay",
-    "defer",
-    "throttle",
-    "debounce",
-    "once",
-    "after",
-    "wrap",
-    "compose",
+    'bind',
+    'bindAll',
+    'memoize',
+    'delay',
+    'defer',
+    'throttle',
+    'debounce',
+    'once',
+    'after',
+    'wrap',
+    'compose',
 
     // Objects
-    "keys",
-    "values",
-    "pairs",
-    "invert",
-    "functions",
-    "extend",
-    "pick",
-    "omit",
-    "defaults",
-    "clone",
-    "tap",
-    "has",
-    "isEqual",
-    "isEmpty",
-    "isElement",
-    "isArray",
-    "isObject",
-    "isArguments",
-    "isFunction",
-    "isString",
-    "isNumber",
-    "isFinite",
-    "isBoolean",
-    "isDate",
-    "isRegExp",
-    "isNaN",
-    "isNull",
-    "isUndefined"
+    'keys',
+    'values',
+    'pairs',
+    'invert',
+    'functions',
+    'extend',
+    'pick',
+    'omit',
+    'defaults',
+    'clone',
+    'tap',
+    // collision between bound proxy has and udnerscore has
+    // 'has'
+    'isEqual',
+    'isEmpty',
+    'isElement',
+    'isArray',
+    'isObject',
+    'isArguments',
+    'isFunction',
+    'isString',
+    'isNumber',
+    'isFinite',
+    'isBoolean',
+    'isDate',
+    'isRegExp',
+    'isNaN',
+    'isNull',
+    'isUndefined'
   ];
 
   _.each(underscoreProp, function(methodName){
+    _.raiseIf(proxyMethods[methodName], methodName + ' method already exists');
     proxyMethods[methodName] = function(){
-      var args = [this.target].concat(_.toArray(arguments));
+      var args = [this.target()].concat(_.toArray(arguments));
       return _[methodName].apply(_, args);
     };
   });

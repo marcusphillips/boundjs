@@ -17,7 +17,6 @@
   };
 
   testEnv.afterAll = function(){
-    ($('#fixtures')[0] || $('<div/>')[0]).innerHTML = '';
   };
 
   testEnv.augmentJQuery = function(){
@@ -26,7 +25,7 @@
     }
   };
 
-  var $originalFixtureNodes, nodes;
+  var $originalFixtureNodes;
   $(function(){
     $originalFixtureNodes = $('#fixtures').remove();
   });
@@ -34,35 +33,52 @@
   // clones new fixture nodes from those found in tests/index.html
   testEnv.refreshNodes = function(){
     _.raiseIf(!$originalFixtureNodes, 'fixture nodes not defined before attempted node refresh!');
-    nodes = {};
-    for(var i = 0; i < 5; i++){
-      $originalFixtureNodes.clone().find('[fixture]').each(function(which, node){
-        var key = $(node).attr('fixture') + (i ? (i+1).toString() : '');
-        _.raiseIf(nodes[key], 'Two fixture nodes have the same name, "'+key+'"');
-        nodes['$'+key] = window['$'+key] = $(nodes[key] = node).attr('fixture', key);
-      }).end().html('');
+    var nodes = makeFreshFixtureNodes();
+    for(var key in nodes){
+      window[key] = nodes[key];
     }
   };
 
+  var makeFreshFixtureNodes = function(){
+    var nodes = {};
+
+    for(var i = 0; i < 5; i++){
+      var $clonedFixtureNodes = $originalFixtureNodes.clone();
+
+      $clonedFixtureNodes.find('[fixture]').each(function(which, node){
+        var key = $(node).attr('fixture') + (i ? (i+1).toString() : '');
+        _.raiseIf(nodes[key], 'Two fixture nodes have the same name, "'+key+'"');
+        nodes['$'+key] = window['$'+key] = $(node).attr('fixture', key);
+      });
+
+      // disassociate all top-level fixture nodes with any parent (including the fixture node holder)
+      $clonedFixtureNodes.html('');
+    }
+
+    return nodes;
+  };
+
   testEnv.refreshObjects = function(){
-    var scopes = testEnv.makeObjects();
+    var scopes = makeObjects();
     for(var key in scopes){
       global[key] = scopes[key];
     }
   };
 
+  var makeObjects = function(){};
+
   testEnv.defineFixtureObjectMaker = function(fixtureObjectMaker){
-    this.makeObjects = fixtureObjectMaker;
+    makeObjects = fixtureObjectMaker;
   };
 
-  testEnv._integrate = function(){
+  var integrate = function(){
     beforeEach(testEnv.beforeAll);
     afterEach(testEnv.afterAll);
     global.global = global;
   };
 
   testEnv.integrateJasmine = function(){
-    testEnv._integrate();
+    integrate();
     global.any = jasmine.any;
     global.clock = jasmine.Clock;
     global.makeSpied = function(func){
@@ -74,7 +90,9 @@
   };
 
   testEnv.integrateMocha = function(){
-    testEnv._integrate();
+    integrate();
+    mocha.globals(Object.keys(makeObjects()));
+    mocha.globals(Object.keys(makeFreshFixtureNodes()));
   };
 
   // todo: wipe out all new global variables once per test

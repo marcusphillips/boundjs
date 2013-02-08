@@ -10,6 +10,7 @@ describe('rendering', function(){
       expect($empty.render({})).to.equal($empty);
     });
 
+    // june: todo
     xit('proxies an object that has been rendered against', function(){
       $empty.render(empty);
       expect(bound.isProxied(empty)).to.equal(true);
@@ -97,14 +98,6 @@ describe('rendering', function(){
 
   });
 
-  describe('debug directive', function(){
-    it('detects a debug directive', function(){
-      sinon.stub(_, 'debug');
-      $('<div debug/>').render({});
-      expect(_.debug.called).to.be(true);
-    });
-  });
-
   describe('scopes and multiple namespace inputs', function(){
 
     afterEach(function(){
@@ -114,6 +107,7 @@ describe('rendering', function(){
     it('falls back onto the global namespace for keys that are not found on the input namespace', function(){
       global.age = 10;
       expect($age.render({}).html()).to.equal('10');
+      delete global.age;
     });
 
   });
@@ -149,7 +143,7 @@ describe('rendering', function(){
       expect($name2.html()).to.equal('bob');
     });
 
-    xit('should rerender the object that bound("set") on it', function(){
+    xit('should rerender nodes that depend on objects changed with .set()', function(){
       var $node = $('<div>\
         <div bound-with="alice" bound-contents="name"></div>\
         <div bound-with="bob" bound-contents="name"></div>\

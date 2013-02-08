@@ -15,6 +15,6 @@ describe('contents directive', function(){
   it('nodes inserted by a contents directive are not changed in the render operation', function(){
     alice.profile = $('<div bound-contents="email">original</div>');
     expect($('<div bound-contents="profile"></div>').render(alice).find('[bound-contents=email]').html()).to.equal('original');
-  })
+  });
 
 });
