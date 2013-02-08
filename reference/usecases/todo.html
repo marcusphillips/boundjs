@@ -16,21 +16,18 @@
       </div>
     </div>
 
-
 	  <script src="src/bound.js"></script>
     <script>
-      var Item = function(text){
-        B(this).set({
-          content: text || '',
-          done: false
-        });
+      var Item = function(content){
+        this.content = content;
+        this.done = false;
       };
 
       var app = {
         draft: new Item(),
-        [
+        items: [
           new Item('listing todos'),
-          new Item(adding todo')
+          new Item('adding todo')
         ]
       };
     </script>

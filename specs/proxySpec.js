@@ -114,14 +114,48 @@ describe('proxies', function(){
       });
     });
 
-    it('should get the value of properties from the target object when you run the get command', function(){
-      expect(B(alice).get('name')).to.equal('alice');
+    describe('get method', function(){
+
+      it('should get the value of properties from the target object when you run the get command', function(){
+        expect(B(alice).get('name')).to.equal('alice');
+      });
+
     });
 
-    it('should set the value of properties from the target object when you run the set command', function(){
-      B(alice).set('name', 'al');
-      expect(alice.name).to.equal('al');
+    describe('set method', function(){
+
+      it('sets the value of properties from the target object when you run the set command', function(){
+        B(alice).set('name', 'al');
+        expect(alice.name).to.equal('al');
+      });
+
+      xit('TODO (easy, requires: familiarity with bound proxy methods): iterates over all properties of a second argument to B(), passing each pair to .set()', function(){
+        B(alice).set({name: 'al', age: 100});
+        expect(alice.name).to.equal('al');
+        expect(alice.age).to.equal(100);
+      });
+
+      xit('TODO (easy, requires: familiarity with bound proxy methods): treats a call to B() that recieves an object as a second argument as if it were a call to .set()', function(){
+        sinon.spy(B(alice), 'set');
+        B(alice, {name: 'al'});
+        expect(alice.name).to.be('al');
+        expect(B(alice).set.callCount).to.be(1);
+      });
+
+      xit('TODO (hard, requires: understanding dependency invalidation): incurs a single call to .sync() when setting multiple properties', function(){
+        var runCount = 0;
+        B.run(function(){
+          runCount++;
+          B(alice).get('name');
+        });
+        expect(runCount).to.be(1);
+        B(alice, {name: 'al', age: 100});
+        expect(runCount).to.be(2);
+        expect(B.getDependencyInvalidationCount(alice)).to.be(1);
+      });
+
     });
+
 
     it('should delete properties from the target object when you run the del command', function(){
       B(alice).del('name');
