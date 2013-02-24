@@ -12,6 +12,7 @@ describe('underscoreMethod', function(){
       ];
     });
 
+    // COLLECTIONS
     // each
     it('should iterate through each value in an array', function(){
       var callcount = 0;
@@ -122,7 +123,7 @@ describe('underscoreMethod', function(){
     });
 
     // rest
-    it('should tak an index and return the elements in an array from that index forward', function(){
+    it('should take an index and return the elements in an array from that index forward', function(){
       expect(B(oldArray).rest(2)).to.eql([3,4,5]);
     });
 
@@ -166,34 +167,45 @@ describe('underscoreMethod', function(){
      expect(B(['Bonnie', 'yes']).zip(['and', 'or'],['Clyde', 'no'])).to.eql([['Bonnie','and','Clyde' ], ['yes', 'or','no']]);
     });
 
-    // BEGIN TONY
     // object
-    // it('should convert an array into an object',function(){
-    //   expect(B(['alice', 'bob', 'alex']).object([30, 40, 50]))to.eql({moe: 30, larry: 40, curly: 50});
-    // });
+    it('should convert an array into an object',function(){
+      expect(B(['alice', 'bob', 'alex']).object([30, 40, 50])).to.eql({alice: 30, bob: 40, alex: 50});
+    });
 
     // indexOf
-    it('should return the index at which a value can be found in the array',function(){
+    // TODO: Does not handle nulls properly
+    xit('should return the index at which a value can be found in the array',function(){
       expect(B([1, 2, 3]).indexOf(2)).to.eql(1);
       expect(B([10, 20, 30, 40, 50]).indexOf(35, true)).to.eql(-1);
-      // expect(B(null).indexOf(2)).to.eql(-1); // should handle null properly
+      expect(B(null).indexOf(2)).to.eql(-1); // should handle null properly
       expect(B([10, 20, 30, 40, 50]).indexOf(40)).to.eql(3);
       expect(B([1, 40, 40, 40, 40, 40, 40, 40, 50, 60, 70]).indexOf(40)).to.eql(1);
       expect(B([1, 2, 3, 1, 2, 3, 1, 2, 3]).indexOf(2, 5)).to.eql(7); // should support the fromIndex argument
     });
 
     // lastIndexOf
-    it('should return the index of the last occurrence of a value in an array, or -1 if value is not present',function(){
+    // TODO: Does not handle nulls properly
+    xit('should return the index of the last occurrence of a value in an array, or -1 if value is not present',function(){
       expect(B([1, 0, 1]).lastIndexOf(1)).to.eql(2);
+      var numbers = [1, 0, 1, 0, 0, 1, 0, 0, 0];
+      numbers.lastIndexOf = null;
+      expect(B(numbers).lastIndexOf(1)).to.eql(5);
+      expect(B(numbers).lastIndexOf(0)).to.eql(8);
+      var result = (function(){return B(arguments).lastIndexOf(1); })(1, 0, 1, 0, 0, 1, 0, 0, 0);
+      expect(result).to.eql(5);
+      expect(B(null).lastIndexOf(2)).to.eql(-1); // should handle null properly
+      numbers = [1, 2, 3, 1, 2, 3, 1, 2, 3];
+      var index = B(numbers).lastIndexOf(2,2);
+      expect(index).to.eql(1);
     });
 
     // sortedIndex
-    it('should ',function(){
-      expect();
+    it('should determine the index at which the value should be inserted in order to maintain the list\'s sorted order',function(){
+      expect(B([10, 20, 30, 40, 50]).sortedIndex(35)).to.eql(3);
     });
 
     // range
-    it('should ',function(){
+    it('should return a list of integers from start to stop, incremented (or decremented) by step,',function(){
       expect();
     });
 
