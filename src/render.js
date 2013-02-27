@@ -78,7 +78,7 @@
     }),
 
     log: forDirective('log', function(key, $node, scope) {
-      _.log($node[0]);
+      _.log($node[0], scope);
     }),
 
     'with': forDirective('with', function(key, $node, scope) {

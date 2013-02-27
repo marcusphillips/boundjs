@@ -42,4 +42,26 @@ describe('undermore', function(){
 
   });
 
+  describe('log helper', function() {
+    beforeEach(function(){
+      sinon.spy(console, 'log');
+    });
+
+    afterEach(function(){
+      console.log.restore();
+    });
+
+    it('should call the console.log() function when called', function(){
+      _.log(3);
+      expect(console.log.called).to.be(true);
+      expect(console.log.calledWith(3)).to.be(true);
+    });
+
+    it('should call the console.log() function with multiple arguments', function(){
+      _.log(3,4);
+      expect(console.log.calledWith(3,4)).to.be(true);
+    });
+
+  });
+
 });

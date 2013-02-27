@@ -8,7 +8,13 @@ describe('debug directive', function(){
 
 describe('log directive', function(){
 
-  sinon.stub(_,'log');
+  beforeEach(function(){
+    sinon.stub(_,'log');
+  });
+
+  afterEach(function(){
+    _.log.restore();
+  });
 
   it('detects a log directive', function(){
     $('<div bound-log/>').render({});
@@ -17,7 +23,8 @@ describe('log directive', function(){
 
   it('should be called with the node and the scope', function(){
     var $node = $('<div bound-log/>');
-    $node.render({});
-    expect(_.log.calledWith($node[0])).to.be(true);
+    $node.render(alice);
+    expect(_.log.args[0][0]).to.equal($node[0]);
+    expect(_.log.args[0][1].namespace()).to.equal(alice);
   });
 });

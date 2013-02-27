@@ -22,8 +22,8 @@
       if(!arguments.length || condition){ debugger; }
     },
 
-    log: function (node) {
-      console.log(node);
+    log: function () {
+      console.log.apply(console, arguments);
     },
 
     // TODO: write tests for this function
