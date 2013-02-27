@@ -66,15 +66,15 @@ describe('proxies', function(){
 
   describe('iteration', function(){
 
-    xit('skips proxies', function(){
+    xit('TODO (easy, requires minor familiarity with bound proxies): skips proxies', function(){
       var visitedKeys = [];
-      B({key:'val'}).each(function(item, key){
+      B({key: 'val'}).each(function(item, key){
         keys.push(key);
       });
       expect(visitedKeys).to.eql(['key']);
     });
 
-    xit('does not skip .bound properties that are not proxies', function(){
+    xit('TODO (easy, requires minor familiarity with bound proxies): does not skip .bound properties that are not proxies', function(){
       var keys = [];
       B.each({bound: 'val'}, function(item, key){
         keys.push(key);
@@ -162,9 +162,11 @@ describe('proxies', function(){
       expect('name' in alice).not.to.be(true);
     });
 
-    xit('should re-run work that was dependent on calls to "has" after deleting properties that used to exist');
+    xit('should re-run work that was dependent on calls to "has" after deleting properties that used to exist', function(){
+    });
 
-    xit('should re-run work that was dependent on calls to "has" after setting properties that didnt\'t used to exist');
+    xit('should re-run work that was dependent on calls to "has" after setting properties that didnt\'t used to exist', function(){
+    });
 
     it('should return the presence or absence of a property on the target object when you run the has command', function(){
       expect(B(message).has('text')).to.be(true);
