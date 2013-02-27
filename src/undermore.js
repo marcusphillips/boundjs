@@ -22,6 +22,10 @@
       if(!arguments.length || condition){ debugger; }
     },
 
+    log: function (node) {
+      console.log(node);
+    },
+
     // TODO: write tests for this function
     isAncestor: function(parent, child){
       var childHadProp = 'ancestryFlag' in parent;
