@@ -15,6 +15,7 @@
         }
         var suppressRecursion;
         _.each([
+          'log',
           'debug',
           'with-item',
           'with',
@@ -74,6 +75,10 @@
 
     debug: forDirective('debug', function(key, $node, scope) {
       _.debug();
+    }),
+
+    log: forDirective('log', function(key, $node, scope) {
+      _.log($node[0], scope);
     }),
 
     'with': forDirective('with', function(key, $node, scope) {
